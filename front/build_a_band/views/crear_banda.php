@@ -4,7 +4,7 @@
     Tu banda fue guardada satisfactoriamente. 
   </p><br>
   <p>
-    Cuando esté totalmente conformada, no olvides crear su perfil. 
+    No olvides ir a "Perfil/Mis Bandas/Banda/Crear Perfil" para crear el perfil de tu banda!
   </p>
 </div>
 <style>
@@ -33,9 +33,10 @@
             <div class="band-ico">1</div>
             <div class="band-info">
                 <div class="band-tit">Selecciona para iniciar los criterios de búsqueda </div>
-                <div class="help-inshaka" title="<span class='title-help'>Crear banda: Paso 1</span>
+                <div id="first-help" class="help-inshaka" title="<span class='title-help'>Crear banda: Paso 1</span>
                   <div class='content-help'>
                   <p>Este el primer paso para crear tu banda. Selecciona el nombre, la ubicación y los géneros que ayudarán a definir tu banda.</p>
+                  <button class='bot-logout' data-next-help='#second-help' style='border: 0px;' onclick='disparador($(this));'>siguiente</button>
                   </div>" 
                   style="float:right; margin-right: 10px; margin-top: -45px;">
                  </div>
@@ -107,9 +108,10 @@
             <div class="band-ico">2</div>
             <div class="band-info">
                 <div class="band-tit">Selecciona los instrumentos para tu banda</div>
-                <div class="help-inshaka" title="<span class='title-help'>Crear banda: Paso 2</span>
+                <div id="second-help" class="help-inshaka" title="<span class='title-help'>Crear banda: Paso 2</span>
                   <div class='content-help'>
                   <p>En este paso, selecciona los instrumentos que harán parte de tu banda. Haz click sobre la imágen del instrumento y ésta va a aparecer en el escenario. Si deseas borrar el instrumento que elegiste, haz click en la <strong style='color:#E82E7C'>(X)</strong> sobre la imágen</p>
+                  <button class='bot-logout' data-next-help='#third-help' style='border: 0px;' onclick='disparador($(this));'>siguiente</button>
                   </div>" 
                   style="float:right; margin-right: 10px; margin-top: -45px;">
                  </div>
@@ -131,9 +133,11 @@
             <div class="band-ico">3</div>
             <div class="band-info">
                 <div class="band-tit">Selecciona el perfil del músico que <br> estas buscando</div>
-                <div class="help-inshaka" title="<span class='title-help'>Crear banda: Paso 3</span>
+                <div id="third-help" class="help-inshaka" title="<span class='title-help'>Crear banda: Paso 3</span>
                   <div class='content-help'>
-                  <p>Ya casi creas tu banda!. Ahora, haz click en el instrumento para el cual quieres buscar músicos. Si conoces la información de la persona que quieres agregar (usuario inshaka, nombre, correo, etc), haz click en <strong style='color:#E82E7C'>INVITAR UN AMIGO</strong>, de lo contrario busca músico en InShaka haciendo click en <strong style='color:#E82E7C'>BUSCAR EN INSHAKA</strong></p>
+                  <p>Ya casi creas tu banda!. Ahora, haz click en el instrumento para el cual quieres buscar músicos y luego en 'Buscar'.
+                  <br><br> Si conoces la información de la persona que quieres agregar (usuario inshaka, nombre, correo, etc), haz click en <strong style='color:#E82E7C'>INVITAR UN AMIGO</strong>, de lo contrario busca músico en InShaka haciendo click en <strong style='color:#E82E7C'>BUSCAR EN INSHAKA</strong></p>
+                  <button class='bot-logout' data-next-help='#fourth-help' style='border: 0px;' onclick='disparador($(this));'>siguiente</button>
                   </div>" 
                   style="float:right; margin-right: 10px; margin-top: -45px;">
                  </div>
@@ -206,10 +210,11 @@
 
             <textarea name="message" id="" cols="30" rows="10" style="background:#E4E7E7; border-color: #C7C9CA; width: 100%;" placeholder="Envía un mensaje a los músicos seleccionados y empieza tu nueva banda!..."></textarea>
             
-            <div class="help-inshaka" title="<span class='title-help'>Crear banda: Crear</span>
+            <div id='fourth-help' class="help-inshaka" title="<span class='title-help'>Crear banda: Crear</span>
               <div class='content-help'>
               <p>Ya casi terminas! Si estas seguro que deseas crear una banda con estos usuarios, escribeles un mensaje de invitación para que sean parte de tu banda, y haz clic en <strong style='color:#E82E7C'>“Crear”</strong>, les va a llegar un correo con la invitación, y tendrán que decidir si quieren ser parte de tu banda o no.</p><br>
               <p>Para ver a que bandas perteneces y las bandas que has creado, haz clic en <strong style='color:#E82E7C'>Perfil/Mis Bandas</strong>, o <strong style='color:#E82E7C'>Inicio/Mis Bandas</strong></p>
+              <button class='bot-logout' style='border: 0px;' onclick='closetooltip (this)'>Cerrar</button>
               </div>" 
               style="float:right; margin-right: 97px; margin-top: 33px;">
              </div>
@@ -233,6 +238,8 @@
 
 <script type="text/javascript">
   $(function(){
+       $('#first-help').trigger('click');
+    
     $('#search_in_inshaka').on('click', function(){
       if($('#invitation_friend').show()){
         $('#invitation_friend').hide();
@@ -423,6 +430,8 @@
 
 <script>
     $(function(){
+         
+    
         var $this = $(this), sText = $this.html();
         $('#avanzada-button').ready(function(){			
             $('#busqueda-avanzada').toggle().parents('form')[0].reset();
@@ -456,4 +465,5 @@
           });
         });
     });
+   
 </script>

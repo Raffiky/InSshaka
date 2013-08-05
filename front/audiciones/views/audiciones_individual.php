@@ -42,7 +42,7 @@ $(function() {
     <div class="clr"></div>
     <div class="sebusca2">
       <div class="band-ico2">1</div>
-      <div class="band-tit">Seleccione de los siguientes criterios la opción adecuada para iniciar su búsqueda</div>
+      <div class="band-tit">Selecciona de los siguientes criterios la opción adecuada para iniciar tu búsqueda</div>
       <div class="campo-reg-lab" style="width: 165px;">
         <label style="padding-left: 4px;">Ciudad</label>
         <div class="selectBox">

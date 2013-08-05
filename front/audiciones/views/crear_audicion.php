@@ -14,30 +14,53 @@
   <div class="clr"></div>
   <div class="campo-reg-lab" style="width: 320px;">
     <label style="padding-left: 4px;">Título</label>
-    <input name="titulo" type="text" class="campo" placeholder="Ingresa el tipo de audición que deseas crear" value="<?php echo $edit_mode ? $datos->titulo : $this->input->post('titulo') ?>" />
+     <div id='first-help' class="help-inshaka" title="<span class='title-help'>Título de la audición</span>
+        <div class='content-help'>
+        <p>Escríbe un título para la audición. Entre más creativo y directo, mejor!</p>
+           <button class='bot-logout' data-next-help='#second-help' style='border: 0px;' onclick='disparador($(this));'>siguiente</button>
+           </div>" 
+        style="float:right; margin-left: 45px; margin-top: -20px; position:absolute">
+   </div>
+    <input name="titulo" type="text" class="campo" placeholder="Cual es el nombre de tu audición?" value="<?php echo $edit_mode ? $datos->titulo : $this->input->post('titulo') ?>" />
   </div>
 
   <div class="campo-reg-lab" style="width: 320px;">
     <label style="padding-left: 4px;">Ciudad, Municipio o barrio</label>
+         <div id='second-help' class="help-inshaka" title="<span class='title-help'>Ubicación de la Audición</span>
+        <div class='content-help'>
+        <p>En que ciudad va a ser tu audición?</p>
+           <button class='bot-logout' data-next-help='#third-help' style='border: 0px;' onclick='disparador($(this));'>siguiente</button>
+           </div>" 
+        style="float:right; margin-left: 176px; margin-top: -20px; position: absolute">
+   </div>
     <input name="ciudad" id="city"  type="text" class="campo" value="<?php echo $edit_mode ? $datos->ciudad : $this->input->post('ciudad') ?>"  />
   </div>
 
   <div class="campo-reg-lab" style="width: 320px;">
     <label style="padding-left: 4px;">Contacto</label>
+    <div id='third-help' class="help-inshaka" title="<span class='title-help'>Información de Contacto</span>
+        <div class='content-help'>
+        <p>Ingresa un número para que te contacten.</p>
+           <button class='bot-logout' data-next-help='#fourth-help' style='border: 0px;' onclick='disparador($(this));'>siguiente</button>
+           </div>" 
+        style="float:right; margin-left: 66px; margin-top: -20px;position:absolute">
+   </div>
     <input name="contacto" type="text" class="campo" placeholder="Ingresa un número de contacto" value="<?php echo $edit_mode ? $datos->contacto : $this->input->post('contacto') ?>" />
     <div class="clr"></div>
   </div>
-  <div class="fecha2"><div class="audicion-fecha1" style=" margin-top: 21px;"><label for="fecha_inicial">Fecha inicial<br><b>de Publicación</b></label></div></div>
+  <div class="fecha2" ><div class="audicion-fecha1" style=" margin-top: 21px;"><label for="fecha_inicial">Fecha inicial<br><b>de Publicación</b></label></div></div>
+  
   <div class="clr"></div>
+   </div>
   <input name="fecha_inicio" id="fecha_inicial" type="text" class="campo2" placeholder="Año - Mes - Día" readonly="true" value="<?php echo $edit_mode ? $datos->fecha_inicio : $this->input->post('fecha_inicio') ?>"  />
-
   <div class="campo-reg-lab" style="margin-top: -16px; width: 190px;">
     <label style="padding-left: 4px;">Días de publicación</label>
-    <div class="help-inshaka" title="<span class='title-help'>Días de publicación</span>
+    <div id='fourth-help' class="help-inshaka" title="<span class='title-help'>Días de publicación</span>
         <div class='content-help'>
         <p>Ingresa acá los días que va a estar disponible la audición para que la gente aplique a ella.</p>
+        <button class='bot-logout' data-next-help='#fifth-help' style='border: 0px;' onclick='disparador($(this));'>siguiente</button>
         </div>" 
-        style="float:right; margin-right: 8px; margin-top: -4px;">
+        style="float:right; margin-left: 133px; margin-top: -20px;position:absolute">
    </div>
     <div class="selectBox" id="select-medio">
       <select style="width:190px;" class="comboBox1" name="dias_publicacion" >
@@ -49,14 +72,17 @@
       <div class="clr"></div>
     </div>
   </div>  
+  
   <div class="campo-reg-lab" style="width: 175px;margin-top: -16px;">
     <label style="padding-left: 4px;">Talento</label>
-    <div class="help-inshaka" title="<span class='title-help'>Talento</span>
+    <div id='fifth-help' class="help-inshaka" title="<span class='title-help'>Talento</span>
         <div class='content-help'>
         <p>Elige acá si es una audición para banda, solista, o un talento específico</p>
+        <button class='bot-logout' data-next-help='#sixth-help' style='border: 0px;' onclick='disparador($(this));'>siguiente</button>
         </div>" 
-        style="float:right; margin-right: -6px; margin-top: -4px;">
+        style="float:right; margin-left: 56px; margin-top: -20px;position:absolute">
    </div>
+    
     <div class="selectBox" id="select-medio">
         <?php echo form_dropdown('talent_id', $talents, (!empty($datos->talent_id) ? $datos->talent_id : null), 'style="width:188px;"   class="comboBox1"') ?>
         <div class="clr"></div>
@@ -65,19 +91,27 @@
   
   <div class="campo-reg-lab" style="width: 190px; margin-top: -16px; margin-left: 20px;">
     <label style="padding-left: 4px;">Tipo de audición</label>
+     <div id='sixth-help' class="help-inshaka" title="<span class='title-help'>Que tipo de Audición es?</span>
+        <div class='content-help'>
+        <p><br>Elige acá si es una audición para banda ó un talento específico.</p>
+        <button class='bot-logout' data-next-help='#seventh-help' style='border: 0px;' onclick='disparador($(this));'>siguiente</button>
+        </div>" 
+        style="float:right; margin-left: 116px; margin-top: -20px;position:absolute">
+   </div>
     <div class="selectBox" id="select-medio">
       <?php echo form_dropdown('tipo_audicion', array('Individual' => 'Músico', 'Banda' => 'Banda'), (!empty($datos->tipo_audicion) ? $datos->tipo_audicion : 'Individual'), 'onchange="mostrar_ocultar(this.value);" style="width:190px;" class="comboBox1"') ?>
     </div>
   </div>  
+  
   
    <div class="campo-reg-lab" id="genero_banda" style="width: 190px; margin-top: -16px; margin-left: 6px; display: none">
     <label style="padding-left: 4px;">Género</label>
     <div class="help-inshaka" title="<span class='title-help'>Género</span>
         <div class='content-help'>
         <p>Elige un género musical para tu audición.</p>
-        <p>Selecciona el género de la banda que quiere audiciones, si no quieres limitarte a un solo género, haz click en <span style='color: #E82E7C'>'Todos'.</span></p>
+        <p>Selecciona el género de la banda que quieres audicionar, si no quieres limitarte a un solo género, haz click en <span style='color: #E82E7C'>'Todos'.</span></p>
         </div>" 
-        style="float:right; margin-right: -6px; margin-top: -4px;">
+        style="float:right; margin-left: 56px; margin-top: -20px;position:absolute">
    </div>
     <div class="selectBox" id="select-medio">
       <?php echo form_dropdown('musical_gender_id', $genders, (!empty($datos->musical_gender_id) ? $datos->musical_gender_id : 36), 'style="width:190px;"   class="comboBox1"') ?>
@@ -92,12 +126,26 @@
   </div>
   <div class="campo-reg-lab" style="margin-top: 25px; width: 320px;">
     <label style="padding-left: 4px;">Dirección</label>
+    <div id='seventh-help' class="help-inshaka" title="<span class='title-help'>Dónde va a ser la Audición?</span>
+        <div class='content-help'>
+        <p><br>Ingresa la dirección del lugar de la audición.</p>
+        <button class='bot-logout' data-next-help='#eighth-help' style='border: 0px;' onclick='disparador($(this));'>siguiente</button>
+        </div>" 
+        style="float:right; margin-left: 66px; margin-top: -20px;position:absolute">
+   </div>
     <input name="direccion_audicion" type="text" class="campo" placeholder="Dirección para presentar la audición" value="<?php echo $edit_mode ? $datos->direccion_audicion : $this->input->post('direccion_audicion') ?>" />
   </div>
   
   
   <div class="campo-reg-lab" style="width: 175px; margin-left: 0px; margin-top: 25px;">
     <label style="padding-left: 4px;">Nº aplicaciones</label>
+    <div id='eighth-help' class="help-inshaka" title="<span class='title-help'>Cuantos cupos disponibles hay para la audición?</span>
+        <div class='content-help'>
+        <p><br>Escóge el número máximo de personas que pueden aplicar a tu audición.</p>
+        <button class='bot-logout' data-next-help='#ninth-help' style='border: 0px;' onclick='disparador($(this));'>siguiente</button>
+        </div>" 
+        style="float:right; margin-left: 106px; margin-top: -20px;position:absolute">
+   </div>
     <input name="numero_aplicaciones" type="number" class="campo2" min="1" max="100"  value="<?php echo $edit_mode ? $datos->numero_aplicaciones : $this->input->post('numero_aplicaciones') ?>"  />
 
     <div class="clr"></div>
@@ -105,6 +153,13 @@
     
   
   <div class="clr"></div>
+  <div id='ninth-help' class="help-inshaka" title="<span class='title-help'>Carta de Presentacíon</span>
+        <div class='content-help'>
+        <p><br>Escríbe un mensaje con datos adicionales que puedan complementar tu perfil.</p>
+        <button class='bot-logout' style='border: 0px;' onclick='closetooltip (this)'>Cerrar</button>
+        </div>" 
+        style="float:right; margin-left: 6px; margin-top: -0px;position:absolute">
+   </div>
   <div class="area-cont1"><textarea name="descripcion" class="area1" placeholder="Descripción (220 Caracteres)" maxlength="220"><?php echo $edit_mode ? $datos->descripcion : $this->input->post('descripcion') ?></textarea></div>
   
   <div class="clr"></div>
@@ -141,6 +196,7 @@
     $('#fecha_audicion').datetimepicker({
       'showAnim' : 'drop'
     });
+    $('#first-help').trigger('click');
     
   });
 
@@ -150,7 +206,9 @@
       ok = confirm('¿Está seguro de crear la audición?');
     }
     return ok;
-  });
+    
+  });  
+ 
   
   
   function mostrar_ocultar(valor){

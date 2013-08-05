@@ -1,6 +1,7 @@
 <script src="<?php echo base_url('assets/js/mi-build-a-band.js') ?>"></script>
 <script>
   $(function(){
+      $('#first-help').trigger('click');
     var estado = 1;
         var estado2 = 0;
         $(".tab_content").hide();
@@ -144,10 +145,11 @@
               <div id="imgBtMas"></div>
             </a>
           </div>
-          <div class="help-inshaka" title="<span class='title-help'>Pertenezco a una banda</span>
+          <div id="first-help" class="help-inshaka" title="<span class='title-help'>Pertenezco a una banda</span>
               <div class='content-help'>
-              <p>Si perteneces a una banda, ingresa acá el nombre de ella para aparecer como un integrante de la banda en InShaka</p><br>
-              <p>Si no haz creado tu banda, haz clikc en <span style='color:#E82E7C'>'Crear Banda'</span> para crearla</p>
+              <p>Si perteneces a una banda, haz clic en la manito de InShaka para buscar la banda y aparecer como un integrante de la banda en InShaka</p><br>
+              <p>Si no haz creado tu banda, haz clic en <span style='color:#E82E7C'>'Crear Banda'</span> para crearla</p>
+               <button class='bot-logout' style='border: 0px;' onclick='closetooltip (this)'>Cerrar</button>
               </div>" 
               style="float:left; margin-right: 24px; margin-top: 5px;">
          </div>
@@ -372,7 +374,7 @@
 
             <?php else: ?>
 
-                <div><p>No tienes ninguna banda creada. Crea la primera dando <a href="<?php echo site_url('build-a-band/crear-banda') ?>" style="color: #E31873">click acá.</a></p></div>
+                <div><p><p><br>No has creado ninguna banda. Crea la primera haciendo <a href="<?php echo site_url('build-a-band/crear-banda') ?>" style="color: #E31873">click acá.</a></p></div>
 
             <?php endif; ?>
 

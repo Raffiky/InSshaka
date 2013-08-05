@@ -152,8 +152,9 @@
           <!-- // Paginador -->
         <?php endif; ?>
         <?php else: ?>
-        <div><p>No has creado ningún clasificado. Haz <a href="<?php echo site_url('clasificados/crear_anuncio') ?>" style="color: #E31873">click acá.</a> para crear un clasificado</p></div>
-      <?php endif; ?>
+        <div><p>
+               No has creado ningún clasificado. Haz <a href="<?php echo site_url('clasificados/crear_anuncio') ?>" style="color: #E31873">click acá.</a> para crear un clasificado</p></div>
+          <?php endif; ?>
 
       <div class="clr"></div>
     </div>
@@ -214,7 +215,8 @@
           <!-- // Paginador -->
         <?php endif; ?>
         <?php else: ?>
-        <div><p>No has creado ningún clasificado. Haz <a href="<?php echo site_url('clasificados/crear_anuncio') ?>" style="color: #E31873">click acá.</a> para crear un clasificado</p></div>
+        <div><p> <h4>Aún no tienes ningun clasificado elegido como favorito. Para elegir un clasificado que te gusta, haz clic en <span style='color:#E82E7C'>'Clasificados'</span> en el menu. 
+                        Luego, selecciona una categoria, un clasificado y haz clic en la estrella que aparece al lado del anuncio. El clasificado te aparecerá en <span style='color:#E82E7C'>'Mis Clasificados>Mis Favoritos'</span> para acceso directo.</h4>
       <?php endif; ?>
 
       <div class="clr"></div>

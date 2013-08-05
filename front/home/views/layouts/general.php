@@ -102,11 +102,18 @@
                     hoverPause: true
                 });
             });
+                
+        function disparador(elemento){
+                    var next_help = elemento.data('next-help');
+                    $(next_help).trigger('click');
+                 
+  
+  }
         </script>
 
         <script type="text/javascript">
             $(document).ready(function() {
-              
+               
                 $('.help-inshaka').tooltipster({
                   theme: '.theme-help',
                   arrow: true,
@@ -196,6 +203,14 @@
           ga('send', 'pageview');
 
         </script>
+    <style>
+            #capa-help{
+            background-color: rgba(0,0,0, 0.6);
+            z-index: 9999;
+            position: absolute;
+            display: none;
+  }
+    </style>
     </head>
 
     <body>

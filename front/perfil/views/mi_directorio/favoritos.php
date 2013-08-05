@@ -165,7 +165,8 @@
                 <?php endif; ?>
 
             <?php else: ?>
-                <h4>Aún no tienes anuncios establecidos como favoritos.</h4>
+                <h4>Aún no tienes ninguna empresa elegida como favorita. Para elegir un proveedor que te gusta, y del cual deseas recibir más información, haz clic en <span style='color:#E82E7C'>'Directorio'</span> en el menu. 
+                    Luego, haz clic en la estrella que aparece al lado del anuncio. El perfil del proveedor te aparecerá en <span style='color:#E82E7C'>'Mis Directorios'</span> para acceso directo.</h4>
             <?php endif; ?>
 
 
@@ -174,8 +175,7 @@
 
 
         <div id="tab2" class="tab_content">
-           Para crear un anuncio dentro de directorio, debe crear un perfil como proveedor.
-        </div>
+           Debes crear un perfil como proveedor para ser parte del directorio empresarial de <span style='color:#E82E7C'>InShaka</span>
 
         <div class="clr"></div>
     </div>

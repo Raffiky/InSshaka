@@ -144,8 +144,11 @@
   function disparador(elemento){
    var next_help = elemento.data('next-help');
    $(next_help).trigger('click');
-  }
   
+  }
+  function closetooltip (elemento){
+  $(elemento).tooltipster ('hide');
+    }
 </script>
 <style>
   .bgSlider{
@@ -278,12 +281,7 @@
     width: 650px;
     height: 150px;
   }
-  #capa-help{
-    background-color: rgba(0,0,0, 0.6);
-    z-index: 9999;
-    position: absolute;
-    display: none;
-  }
+  
   
 </style>
 
@@ -1008,6 +1006,7 @@
       <div id='sixth_help' class="help-inshaka" title="<span class='title-help'>Comentarios</span>
           <div class='content-help'>
           <p>Otros usuarios te pueden dejar mensajes y ponerte un rating de acuerdo a tu presentación en vivo, profesionalismo y más. Este rating se ve reflejado en el círculo abajo de tu imágen</p>
+          <button class='bot-logout' style='border: 0px;' onclick='closetooltip (this)'>Cerrar</button>
           </div>" 
           style="float:right; margin-right: 156px; margin-top: -29px;">
      </div>
