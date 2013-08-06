@@ -1,4 +1,4 @@
-<script src="<?php echo base_url('assets/js/mi-build-a-band.js') ?>"></script>
+    <script src="<?php echo base_url('assets/js/mi-build-a-band.js') ?>"></script>
 <script>
   $(function(){
       $('#first-help').trigger('click');
@@ -149,7 +149,7 @@
               <div class='content-help'>
               <p>Si perteneces a una banda, haz clic en la manito de InShaka para buscar la banda y aparecer como un integrante de la banda en InShaka</p><br>
               <p>Si no haz creado tu banda, haz clic en <span style='color:#E82E7C'>'Crear Banda'</span> para crearla</p>
-               <button class='bot-logout' style='border: 0px;' onclick='closetooltip (this)'>Cerrar</button>
+               <button class='bot-logout' data-next-help='#second-help' style='border: 0px;' onclick='disparador($(this));'>siguiente</button>
               </div>" 
               style="float:left; margin-right: 24px; margin-top: 5px;">
          </div>
@@ -265,10 +265,10 @@
                     <?php foreach ($datos as $dato) : ?>
 
                         <div class="bandas">
-                            <div class="banda-nom"><a href="<?php echo site_url(array('build-a-band', 'editar', $dato->id, $dato->var)) ?>"><?php echo $dato->name ?></a><div class="help-inshaka" title="<span class='title-help'>Perfil de banda</span>
+                            <div class="banda-nom"><a href="<?= site_url('perfil/pagina/'.$dato->var) ?>"><?php echo $dato->name ?></a><div id="second-help" class="help-inshaka" title="<span class='title-help'>Perfil de banda</span>
               <div class='content-help'>
-              <p>Si ya tienes tu banda conformada. Crea un nuevo registro para tu banda</p><br>
-              <p>Haz click en registro/banda e ingresa los datos para registrar el perfíl de tu banda</p>
+              <p>Si ya tienes tu banda conformada. Haz clic en crear perfil para publicar el perfil de tu banda en InShaka!</p><br>
+              <button class='bot-logout' style='border: 0px;' onclick='closetooltip (this)'>Cerrar</button>
               </div>" 
               style="float:left; margin-right: 10px; ">
          </div></div>
