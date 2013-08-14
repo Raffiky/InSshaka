@@ -387,6 +387,22 @@ class Ajax extends Front_Controller {
         
         return $this->render_json($ok);
     }
+    
+    // ----------------------------------------------------------------------
+    
+    public function delete_follow(){
+      $id = $this->_get('id');
+      
+      // Cargamos la tabla
+      $users_follow = new \Users_follow($id);
+
+      if($users_follow->exists()){
+        $users_follow->where('id', $id)->get()->delete();
+        $users_follow->check_last_query();
+      }
+      
+      
+    }
 
     // ----------------------------------------------------------------------
     
@@ -407,4 +423,5 @@ class Ajax extends Front_Controller {
     }
     
     // ----------------------------------------------------------------------
+    
 }

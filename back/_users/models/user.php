@@ -93,7 +93,7 @@ class User extends DataMapper {
     public $validation = array(
         'username' => array(
             'label' => 'Nombre de usuario',
-            'rules' => array('required', 'unique')
+            'rules' => array('required', 'unique', 'trim', 'min_length' => 3, 'max_length' => 20, 'spaces')
         ),
         'first_name' => array(
             'label' => 'Nombre',
@@ -108,11 +108,11 @@ class User extends DataMapper {
             'label' => 'Email'
         ),
         'inshaka_url' => array(
-            'rules' => array('required', 'unique'),
+            'rules' => array('required', 'unique', 'trim', 'min_length' => 3, 'max_length' => 20, 'spaces'),
             'label' => 'Dirección INSHAKA'
         ),
         'birthday' => array(
-            'rules' => array('required'),
+            'rules' => array('required', 'valid_date'),
             'label' => 'Fecha de nacimiento'
         ),
         'city' => array(
@@ -200,5 +200,21 @@ class User extends DataMapper {
       return $user->inshaka_url;
     }
     // ----------------------------------------------------------------------
-   
+    
+    // Función de validación de espacios entre palabras
+    function _spaces($field) {
+
+        if (!empty($this->{$field})) {
+          // Encontramos los espacios entre palabras
+          $words = explode(" ", $this->{$field});
+          $total = count($words);
+          
+          if($total >= 1){
+            return FALSE;
+          }          
+          return TRUE;
+        }
+    }
+    
+   // ----------------------------------------------------------------------
 }

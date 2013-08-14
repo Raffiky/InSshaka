@@ -46,7 +46,7 @@ class Bands_instruments_user extends DataMapper {
     public function get_band($user_id = null) {
       
       $sql = "SELECT DISTINCT cms_bands.name as banda, cms_bands.var as var, cms_bands.id as id, cms_users.first_name as first_name,
-cms_users.last_name as last_name, cms_users.first_name,
+cms_users.last_name as last_name, cms_bands_instruments_users.id as bands_instruments_users_id,
 cms_users.birthday as birthday FROM
             cms_bands_instruments_users
             INNER JOIN cms_bands_instruments ON cms_bands_instruments.id = cms_bands_instruments_users.bands_instrument_id

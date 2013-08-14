@@ -20,6 +20,7 @@ $lang['related_max_size']	= 'The %s relationship can not exceed %s.';
 $lang['dm_save_rel_failed']	= 'The %s relationship is not properly defined.';
 $lang['dm_save_rel_nothis']	= 'Unable to save the %s relationship: This object is not saved.';
 $lang['dm_save_rel_noobj']	= 'Unable to save the %s relationship: The related object was not saved.';
+$lang['spaces']	= 'The field %s: It must not contain any spaces between words.';
 
 /* End of file datamapper_lang.php */
 /* Location: ./application/language/english/datamapper_lang.php */

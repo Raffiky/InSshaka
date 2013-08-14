@@ -160,4 +160,19 @@ class Build_a_band extends Front_Controller {
     }
     
     // ----------------------------------------------------------------------
+    
+    public function delete_band_invitation(){
+      // Recibimos las variables mediante GET
+      $id = $this->_get('id');
+      
+      // Cargamos la tabla
+      $band_instrument_user = new Bands_instruments_user($id);
+      
+      // Si existe la borramos
+      if($band_instrument_user->exists()){
+        $band_instrument_user->get_by_id($id)->delete();
+      }
+    }
+    
+    // ----------------------------------------------------------------------
 }

@@ -104,11 +104,10 @@
             });
                 
         function disparador(elemento){
-                    var next_help = elemento.data('next-help');
-                    $(next_help).trigger('click');
-                 
-  
-  }
+          var next_help = elemento.data('next-help');
+          $(next_help).trigger('click');
+        }
+        
         </script>
 
         <script type="text/javascript">
@@ -133,6 +132,7 @@
                     continueTooltip();
                   },
                   functionAfter : function(){
+                    $("#capa-help").fadeIn("slow");
                     $("#capa-help").fadeOut("slow");
                   }
                 });
@@ -209,7 +209,7 @@
             z-index: 9999;
             position: absolute;
             display: none;
-  }
+    }
     </style>
     </head>
 

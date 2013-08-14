@@ -20,6 +20,7 @@ $lang['related_max_size']	= 'Se requiere que de %s no exceda %s.';
 $lang['dm_save_rel_failed']	= 'La relación %s no esta bien definida.';
 $lang['dm_save_rel_nothis']	= 'No se puede guardar la relación %s: Este objeto no esta guardado.';
 $lang['dm_save_rel_noobj']	= 'No se puede guardar la relación %s: Este objeto relacionado no esta guardado.';
+$lang['spaces']	= 'El campo %s: No debe contener ningún espacio entre palabras.';
 
 /* End of file datamapper_lang.php */
 /* Location: ./application/language/spanish/datamapper_lang.php */

@@ -11,6 +11,7 @@
     });
     $('.contactar-m').fancybox();
     $('.contratar-m').fancybox();
+    $('#close-help').fancybox();
     $('.valorar-m').fancybox();
     $(function() {
       var alto_show = ($('.conDestacadoPerfil').height() - 150);
@@ -69,7 +70,7 @@
       }
     });
         
-    $("#siguiendo").mouseover(function() {      
+    $("#siguiendo-user, #siguiendo-provider").mouseover(function() {      
       $(this).fadeIn(500, function(){
         $(this).css('margin', '-3px -9px 0px 0px');
         $(this).text('Dejar de seguir');
@@ -118,8 +119,8 @@
     });
   }
   
-  function follow(id, elemento){
-    $(elemento).dialog({
+  function follow(id, elemento1, elemento2, elemento3){
+    $(elemento1).dialog({
       resizable : false,
       modal     : true,
       show      : 'drop',
@@ -127,12 +128,22 @@
       width     : '400px',
       buttons   : {
         "Aceptar" : function(){
-          $.getJSON('<?= site_url("perfil/social/follow") ?>', {
+          var datos = {
             id : id
-          }, function(){
-            location.reload();
+          };
+          $.ajax({
+            type  : "get",
+            url   : "<?= site_url("perfil/social/follow") ?>",
+            data  : datos,
+            success : function(){
+              $(elemento2).fadeOut("slow");
+              $(elemento3).fadeIn("slow");
+            },
+            error   : function(){
+              alert("Se ha producido un error. Inténtelo más tarde");
+            }
           });
-          return $(this).dialog('close');
+          $(this).dialog('close');
         },
         Cancel  : function(){
           $(this).dialog('close');
@@ -146,9 +157,6 @@
    $(next_help).trigger('click');
   
   }
-  function closetooltip (elemento){
-  $(elemento).tooltipster ('hide');
-    }
 </script>
 <style>
   .bgSlider{
@@ -337,26 +345,30 @@
       <div class="bot-acciones">
         <a href="#contactar-cont" class="contactar-m"><div class="bot-acc2">Contactar</div></a>
         <?php if($datos->is_proveedor) : ?>
-        <a href="javascript: addfavorite(<?= $datos->id ?>)"><div class="bot-acc2">Favorito</div></a>
-        <div id="anuncio" title="Agregar a favoritos" style="display:none">
-          <p>
-            Estás seguro que deseas agregar este anuncio a tus favoritos?
-          </p>
-        </div>
+          <?php $follow->where(array('user_follow_id' => $datos->id, 'user_id' => $userinfo->id))->get() ?>
+          <div id="btn-follow-provider-seguir" class="bot-acc2" style="<?= !$follow->exists() ? null : 'display:none;' ?>" onclick="follow(<?= $datos->id ?>, '#follow-provider', '#btn-follow-provider-seguir', '#cancelar_solicitud_provider');">Seguir</div>
+          <div id="follow-provider" title="Seguir" style="display:none">
+            <p>
+              Estás seguro que deseas seguir a este proveedor, y agregarlo a tus favoritos?
+            </p>
+          </div>
+          <div id="siguiendo-provider" class="bot-logout" style="margin: -3px 20px 0px 0px; <?= $follow->allow_follow == true ? null : 'display:none;' ?>" onclick="follow(<?= $datos->id ?>, '#no-follow-provider', '#siguiendo-provider', '#btn-follow-provider-seguir')">Siguiendo</div>
+          <div id="cancelar_solicitud_provider" class="bot-acc2" style="<?= $follow->exists() && $follow->allow_follow == false ? null : 'display:none' ?>" onclick="follow(<?= $datos->id ?>, '#no-follow-provider', '#cancelar_solicitud_provider', '#btn-follow-provider-seguir')">Enviada</div>
+          <div id="no-follow-provider" title="Seguir" style="display:none">
+            <p>
+              Estás seguro que deseas dejar de seguir a este proveedor, y quitarlo de tus favoritos?
+            </p>
+          </div>
         <?php else : ?>
         <?php $follow->where(array('user_follow_id' => $datos->id, 'user_id' => $userinfo->id))->get() ?>
-        <?php if(!$follow->exists()) : ?>
-        <div class="bot-acc2" onclick="follow(<?= $datos->id ?>, '#follow-him-her')">Seguir</div>
+        <div id="btn-follow-user" class="bot-acc2" style="<?= !$follow->exists() ? null : 'display:none;' ?>" onclick="follow(<?= $datos->id ?>, '#follow-him-her', '#btn-follow-user', '#cancelar_solicitud-user')">Seguir</div>
         <div id="follow-him-her" title="Seguir" style="display:none">
           <p>
             Estás seguro que deseas seguir a este usuario?
           </p>
         </div>
-        <?php elseif($follow->allow_follow == true): ?>
-        <div id="siguiendo" class="bot-logout" style="margin: -3px 20px 0px 0px;" onclick="follow(<?= $datos->id ?>, '#follow-her-him')">Siguiendo</div>
-        <?php else : ?>
-        <div id="cancelar_solicitud" class="bot-acc2" onclick="follow(<?= $datos->id ?>, '#follow-her-him')">Enviada</div>
-        <?php endif; ?>
+        <div id="siguiendo-user" class="bot-logout" style="margin: -3px 20px 0px 0px; <?= $follow->allow_follow == true ? null : 'display:none;' ?>" onclick="follow(<?= $datos->id ?>, '#follow-her-him','#siguiendo-user', '#btn-follow-user')">Siguiendo</div>
+        <div id="cancelar_solicitud-user" class="bot-acc2" style="<?= $follow->exists() && $follow->allow_follow == false ? null : 'display:none' ?>" onclick="follow(<?= $datos->id ?>, '#follow-her-him', '#cancelar_solicitud-user', '#btn-follow-user')">Enviada</div>
         <?php endif; ?>
         <a href="#rating-cont" class="valorar-m"><div class="bot-acc2">Rating</div></a>
         <div class="clear"></div>
@@ -1006,10 +1018,16 @@
       <div id='sixth_help' class="help-inshaka" title="<span class='title-help'>Comentarios</span>
           <div class='content-help'>
           <p>Otros usuarios te pueden dejar mensajes y ponerte un rating de acuerdo a tu presentación en vivo, profesionalismo y más. Este rating se ve reflejado en el círculo abajo de tu imágen</p>
-          <button class='bot-logout' style='border: 0px;' onclick='closetooltip (this)'>Cerrar</button>
+          <a id='close-help' class='bot-logout' href='#help-modal'>Cerrar</a>
           </div>" 
           style="float:right; margin-right: 156px; margin-top: -29px;">
      </div>
+      <script>
+      function closetooltip(elemento){
+          $(elemento).tooltipster('hide');
+          console.log(elemento);
+        }
+      </script>
       <?php endif; ?>
       <?php if($es_usuario) : ?>
       <?php if (!$is_owner_usuario): ?>
@@ -1389,3 +1407,10 @@
     margin-bottom: 10px;
   }
 </style>
+<div id="help-modal" style="display:none; width: 520px; height: 140px;">
+  <div class="mensaje-tit">Primeros pasos</div>
+  <div class="clr"></div>
+  <div style="font-family: 'BebasNeueRegular'; color: #585858; font-size: 18px; text-align: justify; width: 510px; line-height: 27px;">
+En la mayoría de las páginas de InShaka.Com, vas a encontrar unos signos de pregunta como este: (<span style="width: 20px; height: 20px; color: transparent" class="help-inshaka">hel</span>).Si haces clic sobre este icono, se desplegará una pequeña ventana con información sobre lo que puedes hacer en esa sección de Inshaka.
+  </div>
+</div>

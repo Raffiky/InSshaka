@@ -37,6 +37,7 @@
 			
         });
   })
+
 </script>
 <style>
   #msdrpdd20_titletext {
@@ -180,7 +181,33 @@
               $( "#banda" ).autocomplete({ 
                 source: "<?php echo site_url('usuarios/registro/get_band') ?>"
               });
-            })
+            });
+             function delete_band_invitation(id, elemento){
+    $("#dialog-delete-band").dialog({
+      modal : true,
+      show  : "drop",
+      hide  : "drop",
+      buttons : {
+        Ok: function(){
+          $.ajax({
+            type  : "get",
+            url   : "<?= site_url('perfil/build_a_band/delete_band_invitation') ?>",
+            data  : {id: id},
+            success : function(){          
+              $(elemento).fadeOut("slow");
+            },
+            error   : function(){
+              alert("Se ha producido un error. Inténtelo más tarde.");
+            }
+          });
+          $( this ).dialog( "close" );
+        },
+        Cancel: function(){
+          $( this ).dialog( "close" );
+        }
+      }
+    });
+  }
           </script>
           <!-- Fin formulario pertenece a banda -->
           <!-- grilla bandas pertenezco -->
@@ -193,11 +220,12 @@
               </div>
             </div>           
             <?php foreach ($band_instrument_user as $member) : ?>
-              <div class="bandas" style="padding-top: 27px; padding-bottom: 40px;">
+              <div id="banda-pertenezco-<?= $member->bands_instruments_users_id ?>" class="bandas" style="padding-top: 27px; padding-bottom: 40px;">
                 <div class="banda-nom">
                   <a href="<?= site_url('perfil/pagina/'.$member->var) ?>"><?= $member->banda ?></a>
                 </div>
                 <div class="opciones-ico">
+                  <div class="borrar" style="cursor: pointer;" onclick="delete_band_invitation(<?= $member->bands_instruments_users_id ?>, '#banda-pertenezco-<?= $member->bands_instruments_users_id ?>' );">Borrar</div>
                   <a href="#integrantes-banda-pertenezco-<?php echo $member->var ?>" class="fancybox-modal">
                     <div class="miembros">Integrantes</div>
                   </a>
@@ -268,7 +296,7 @@
                             <div class="banda-nom"><a href="<?= site_url('perfil/pagina/'.$dato->var) ?>"><?php echo $dato->name ?></a><div id="second-help" class="help-inshaka" title="<span class='title-help'>Perfil de banda</span>
               <div class='content-help'>
               <p>Si ya tienes tu banda conformada. Haz clic en crear perfil para publicar el perfil de tu banda en InShaka!</p><br>
-              <button class='bot-logout' style='border: 0px;' onclick='closetooltip (this)'>Cerrar</button>
+              <button class='bot-logout' style='border: 0px;' onclick='closetooltip(this)'>Cerrar</button>
               </div>" 
               style="float:left; margin-right: 10px; ">
          </div></div>
@@ -390,3 +418,7 @@
     
   })
 </script>
+
+<div id="dialog-delete-band" title="Eliminar banda" style="display:none">
+  Está seguro que desea dejar de pertenecer a esta banda?.
+</div>

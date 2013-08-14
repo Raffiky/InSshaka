@@ -107,15 +107,14 @@ class Social extends Front_Controller {
         }
       }  else {
         $this->_datos
-                ->where(array('user_id' => $this->userinfo->id, 'user_follow_id' => $id))
-                ->get()
-                ->delete_all();
+                ->where(array('user_id' => $this->userinfo->id, 'user_follow_id' => $id))->get()
+                ->delete();
           
         $this->set_message("Ya sigues a este usuario", "error");
       }
       
     }
-
+    
     // ----------------------------------------------------------------------
     
     public function allow_follow(){

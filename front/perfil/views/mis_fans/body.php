@@ -70,6 +70,38 @@
           source: "<?php echo site_url('perfil/social/get_fans') ?>"
         });
   });
+  function follow(id, elemento){
+    $("#follow-her-him").dialog({
+      resizable : false,
+      modal     : true,
+      show      : 'drop',
+      hide      : 'drop',
+      width     : '400px',
+      buttons   : {
+        "Aceptar" : function(){
+          var datos = {
+            id  : id
+          };
+          
+          $.ajax({
+            type  : "get",
+            url   : "<?= site_url("perfil/ajax/delete_follow") ?>",
+            data  : datos,
+            success : function(){
+              $(elemento).fadeOut("slow");
+            },
+           error    : function(){
+              alert("Se ha producido un error. Inténtelo más tarde");
+           }
+          });
+          return $(this).dialog('close');
+        },
+        "Cancelar"  : function(){
+          $(this).dialog('close');
+        }
+      }
+    });
+  } 
 </script>
 <div class="contenido">
   <div class="audiciones-cont">
@@ -87,7 +119,7 @@
         <div class="selectores-buscador">
           <?= form_open(site_url('perfil/social/buscar'), null) ?>
             <input id="search_users_followers" name="s" class="campo4" type="text" placeholder="Digite para buscar personas" >
-            <input class="bot-buscar" type="submit" value="buscar" style="margin-bottom: 60px; float:left; margin-left: 20px;">
+            <input class="bot-buscar" type="submit" value="buscar" style="margin-bottom: 0px; float:left; margin-left: 20px;">
             <div class="clr"></div>
           <?= form_close() ?>
         </div>
@@ -146,15 +178,16 @@
         <div class="selectores-buscador">
           <?= form_open(site_url('perfil/social/buscar'), null) ?>
             <input id="search_users_fan" name="g" class="campo4" type="text" placeholder="Digite para buscar personas" >
-            <input class="bot-buscar" type="submit" value="buscar" style="margin-bottom: 60px; float:left; margin-left: 20px;">
-            <div class="clr"></div>
+            <input class="bot-buscar" type="submit" value="buscar" style="margin-bottom: 0px; float:left; margin-left: 20px;">
           <?= form_close() ?>
+          <button class="bot-aceptar" onclick="$('.elemento-check-list').slideToggle('fast');" style="margin-left: 10px;">Editar</button>
+          <div class="clr" style="margin-bottom: 20px;"></div>
         </div>
          <div id="resultados" style=" width: 987px; margin: 0 auto; padding: 10px">
           <?php if (!empty($i_am_fan)): ?>
             <?php if ($i_am_fan->exists()): ?>
               <?php foreach ($i_am_fan as $i_fan) : ?>
-              <div class="res-perfil">
+              <div class="res-perfil" id="soy-fan-<?= $i_fan->id ?>">
                 <div class="foto-banda">
                   <a href="<?php echo site_url('perfil/' . $usuario_fan->get_url_inshaka($i_fan->user_follow_id)) ?>" style="display:block; height:151px; overflow:hidden;">
                     <?php if(!$user_photo->get_photo($i_fan->user_follow_id)) : ?>
@@ -166,6 +199,9 @@
                   <div class="res-datos">
                     <div class="res-txt">Nombre: <b><?= $usuario_fan->get_name($i_fan->user_follow_id) ?></b></div>
                     <div class="bot-acc"><a href="<?= site_url('perfil/'.$usuario_fan->get_url_inshaka($i_fan->user_follow_id)) ?>">Ver perfil</a></div>
+                    <div class="elemento-check elemento-check-list" style="float: none; display: none; margin-top: 13px;">
+                      <input type="submit" class="bot-logout" value="Dejar de seguir" onclick="follow(<?= $i_fan->id ?>, '#soy-fan-<?= $i_fan->id ?>')" style="float:left; border: 0px; font-size: 0.9em; margin-top: -4px;"/>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -200,4 +236,9 @@
       </div>
       <!-- Fin soy fan de -->
     </div>
+    <div id="follow-her-him" title="Dejar de Seguir" style="display:none">
+        <p>
+          Estás seguro que deseas dejar de seguir a este usuario?
+        </p>
+      </div>
 </div>

@@ -177,6 +177,26 @@
     color: #FFF;
     text-decoration: none;
   }
+  .info-banda{
+        margin: 0 auto;
+        width: 420px;
+    }
+  .dato-banda{
+      color: #505050;
+      font-family: 'BebasNeueRegular';
+      font-size: 28px;
+  }
+  .dato-banda b{
+      color: #E82E7C;
+  }
+  .pregunta{
+        color: #505050;
+        font-family: 'BebasNeueRegular';
+        font-size: 20px;
+        margin-bottom: 20px;
+        margin-top: 20px;
+        text-align: center;
+    }
 </style>
 <div class="bgEncabezado">
     <div class="conEncabezado">
@@ -1014,3 +1034,9 @@
       <!-- Fin blq directorio -->
     </div>  
 </div>
+<script>
+    $(function(){
+        $('.invitation-modal').fancybox(); 
+        $('#audiciones_activas').jScrollPane();
+    });
+</script>
