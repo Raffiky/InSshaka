@@ -18,6 +18,20 @@ class Perfil extends Front_Controller {
                 
         // Cargando datos
         $this->_datos = new User;
+        
+        $user_language = substr($_SERVER["HTTP_ACCEPT_LANGUAGE"],0,2);
+        
+        switch ($user_language) {
+          case "en":
+            $this->lang->load("perfil/english"); 
+            break;
+          case "es":
+            $this->lang->load("perfil/spanish"); 
+            break;
+          default:
+            $this->lang->load("perfil/spanish"); 
+            break;
+        }
     }
 
     // ----------------------------------------------------------------------

@@ -98,12 +98,12 @@ class Front_Controller extends CMS_Controller {
           case "en":
             $this->lang->load("common/english"); 
             break;
-            case "es":
-              $this->lang->load("common/spanish"); 
-              break;
+          case "es":
+            $this->lang->load("common/spanish"); 
+            break;
           default:
             $this->lang->load("common/spanish"); 
-          break;
+            break;
         }
         
         $data['is_usuario'] = $this->is_usuario(); // Es un usuario y está logueado?
