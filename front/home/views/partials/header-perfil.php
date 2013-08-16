@@ -10,7 +10,7 @@
         <a href="<?php echo site_url('perfil/directorios') ?>"><li  class="c5"><?= lang('my_directory') ?></li></a>
         <a href="<?php echo site_url('perfil/clasificados') ?>"><li class="c6"><?= lang('my_classified') ?></li></a>
         <div class="clr"></div>
-        <div class="perfil-tit">perfil privado de proveedor: <?php echo $current_username ?></div>
+        <div class="perfil-tit"><?= lang('text_profile_provider') ?>perfil privado de proveedor: <?php echo $current_username ?></div>
       </ul>
     </div>
   <?php else: ?>
@@ -25,7 +25,7 @@
         <a href="<?php echo site_url('perfil/clasificados') ?>"><li class="c6"><?= lang('my_classified') ?></li></a>
         <a href="<?php echo site_url('perfil/configuracion') ?>"><li class="c7"><?= lang('settings') ?></li></a>
         <div class="clr"></div>
-        <div class="perfil-tit">perfil privado de músico: <?php echo $current_username ?></div>
+        <div class="perfil-tit"><?= lang('text_profile_player') ?>perfil privado de músico: <?php echo $current_username ?></div>
       </ul>
     </div>
   <?php endif; ?>
