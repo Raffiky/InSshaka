@@ -229,14 +229,14 @@
     <div class="conMenu">
         <div class="menu">
             <ul id="menu-horizontal">
-                <li><a class="b1 <?php echo $current_page == 'home' ? 'active' : null ?>" href="<?php echo site_url('/') ?>">INICIO</a></li>
-                <li><a class="b2 <?php echo $current_page == 'mishaka' ? 'active' : null ?>" href="<?php echo site_url('mishaka/buscar?city=&edad=0&anos_experiencia=0&necesitas_band=&numero_conciertos=0&talent=0&gender=0') ?>">MISHAKA</a></li>
-                <li><a class="b3 <?php echo $current_page == 'build-a-band' ? 'active' : null ?>" href="<?php echo site_url('build-a-band') ?>">CREAR BANDA</a></li>
-                <li><a class="b4 <?php echo $current_page == 'audiciones' ? 'active' : null ?>" href="<?php echo site_url('audiciones') ?>">AUDICIONES</a></li>
-                <li><a class="b5 <?php echo $current_page == 'directorio' ? 'active' : null ?>" href="<?php echo site_url('directorio') ?>">DIRECTORIO</a></li>
+              <li><a class="b1 <?php echo $current_page == 'home' ? 'active' : null ?>" href="<?php echo site_url('/') ?>"><?= lang('home') ?></a></li>
+              <li><a class="b2 <?php echo $current_page == 'mishaka' ? 'active' : null ?>" href="<?php echo site_url('mishaka/buscar?city=&edad=0&anos_experiencia=0&necesitas_band=&numero_conciertos=0&talent=0&gender=0') ?>"><?= lang('mishaka') ?></a></li>
+              <li><a class="b3 <?php echo $current_page == 'build-a-band' ? 'active' : null ?>" href="<?php echo site_url('build-a-band') ?>"><?= lang('build_a_band') ?></a></li>
+              <li><a class="b4 <?php echo $current_page == 'audiciones' ? 'active' : null ?>" href="<?php echo site_url('audiciones') ?>"><?= lang('audition') ?></a></li>
+              <li><a class="b5 <?php echo $current_page == 'directorio' ? 'active' : null ?>" href="<?php echo site_url('directorio') ?>"><?= lang('directory') ?></a></li>
                <!-- <li><a class="b6 <?php echo $current_page == 'media' ? 'active' : null ?>" href="<?php echo site_url('media/buscar/pagina/1?artist=0&musical_gender=0') ?>">MEDIA</a></li> -->
-                <li><a class="b7 <?php echo $current_page == 'clasificados' ? 'active' : null ?>" href="<?php echo site_url('clasificados') ?>">CLASIFICADOS</a></li>
-                <li><a class="b8 <?php echo $current_page == 'faqs' ? 'active' : null ?>" href="<?php echo site_url('faqs') ?>">FAQ</a></li>
+              <li><a class="b7 <?php echo $current_page == 'clasificados' ? 'active' : null ?>" href="<?php echo site_url('clasificados') ?>"><?= lang('classified') ?></a></li>
+                <li><a class="b8 <?php echo $current_page == 'faqs' ? 'active' : null ?>" href="<?php echo site_url('faqs') ?>"><?= lang('faq') ?></a></li>
             </ul>
             <?php if (!$is_usuario) : ?>
               <div class="login" style="top:0px; right: 0px;">  

@@ -90,6 +90,21 @@ class Front_Controller extends CMS_Controller {
         $this->load->model('_audiciones/audiciones_aplicacion');
         $this->load->model('_bands/band');
         $this->load->model('_bands/page');
+        $this->load->helper('language');
+        
+        $user_language = substr($_SERVER["HTTP_ACCEPT_LANGUAGE"],0,2);
+        
+        switch ($user_language) {
+          case "en":
+            $this->lang->load("common/english"); 
+            break;
+            case "es":
+              $this->lang->load("common/spanish"); 
+              break;
+          default:
+            $this->lang->load("common/spanish"); 
+          break;
+        }
         
         $data['is_usuario'] = $this->is_usuario(); // Es un usuario y está logueado?
         $data['current_page'] = $this->current_page;
