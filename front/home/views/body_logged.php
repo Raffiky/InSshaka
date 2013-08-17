@@ -662,11 +662,17 @@
               type : "post",
               url: "<?= site_url('perfil/social/load_data') ?>",
               data: datos,
+              beforeSend: function(){
+                if(repetir === false){
+                  return false;
+                }
+              },
               success: function(datos){
                 if (datos != "") {
                   $(".new_follower:last").after(datos);
                 }
                 $('div#last_msg_loader').empty();
+                repetir = true;
               },
               error : function(){
                 alert("hubo un error con la aplicación");
@@ -674,12 +680,16 @@
             });
             return false; 
           };
+          var repetir = true;
           
-          $(window).scroll(function(){
-            if ($(window).scrollTop() >= ($('.new_follower:last').offset().top) ){
-              last_msg_funtion();
-            }
-          });
+          if(repetir === true){
+            $(window).scroll(function(){
+              if ($(window).scrollTop() >= ($('.new_follower:last').offset().top) ){                
+                last_msg_funtion();
+                repetir = false;
+              }
+            });
+          }
         
       });
       
