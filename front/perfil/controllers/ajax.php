@@ -125,7 +125,7 @@ class Ajax extends Front_Controller {
             $this->set_alert($users_show->error->string, 'error');
         }else{
           $intelligence = new Intelligence;
-          $intelligence->show_id = $users_show->id;
+          $intelligence->users_show_id = $users_show->id;
           
           $intelligence->save($user);
         }

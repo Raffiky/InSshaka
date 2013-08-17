@@ -9,7 +9,11 @@ class Users_show extends DataMapper {
             'auto_populate' => true
         )
     );
-    public $has_many = array();
+    public $has_many = array(
+        'intelligence' => array(
+            'auto_populate' => true
+        )
+    );
     public $validation = array(
         'date' => array(
             'label' => 'Fecha y hora del show',
@@ -21,7 +25,7 @@ class Users_show extends DataMapper {
         ),
         'place' => array(
             'label' => 'Lugar',
-            'rules' => array('required', 'max_length' => 20)
+            'rules' => array('required')
         ),
         'adress' => array(
             'label' => 'Direccion',

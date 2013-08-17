@@ -21,7 +21,8 @@ $autoload['model'] = array(
     '_users/intelligences_comment',
     '_bands/page',
     '_bands/pages_photo',
-    '_users/statu'
+    '_users/statu',
+    '_users/users_show'
 );
 
 

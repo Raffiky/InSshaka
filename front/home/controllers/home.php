@@ -51,7 +51,7 @@ class Home extends Front_Controller {
             $intelligence = new Intelligence;
             $intelligence
                     ->where_in_subquery('user_id', $follow->select('user_follow_id')->where_related($user))
-                    ->limit(10, 1)->get();
+                    ->limit(10)->get();
             $this->_data['interacciones'] = $intelligence;
             
             // Cargando total de comentarios

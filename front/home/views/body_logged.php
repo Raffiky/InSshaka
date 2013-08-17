@@ -417,15 +417,17 @@
                   <span><?= !$intelligence->user->is_proveedor ? $intelligence->user->first_name.' '.$intelligence->user->last_name : $intelligence->user->name_proveedor ?></span>
                 </a>
                 <?php if(!empty($intelligence->audicion_id)) : ?>
-                  ha creado una nueva audición
+                  Ha creado una nueva audición
                 <?php elseif(!empty($intelligence->clasificado_id)) : ?>
-                  ha creado un nuevo clasificado
+                  Ha creado un nuevo clasificado
                 <?php elseif(!empty($intelligence->band_id)) : ?>
-                  ha creado una nueva banda
+                  Ha creado una nueva banda
                 <?php elseif(!empty($intelligence->statu_id)) : ?>
-                  ha cambiado su estado
+                  Ha cambiado su estado
                 <?php elseif(!empty($intelligence->audiciones_aplicacion_id)) : ?>
-                  ha aplicado a una audición
+                  Ha aplicado a una audición
+                <?php elseif(!empty($intelligence->users_show_id)) : ?>
+                  Te invita a un evento
                 <?php endif; ?>
                 <span style="font-family: 'Arial'; font-style: italic; font-size: 0.85em; float: right;">
                   <?= fecha_spanish_full_short($intelligence->update_on).' - '. get_hour($intelligence->update_on) ?>
@@ -458,9 +460,14 @@
                       <?php else :?>
                         <img  src="<?= front_asset('images/imagensino.png') ?>" width="80" />
                       <?php endif; ?>
-                    <?php endif; ?>
+                    <?php elseif(!empty($intelligence->users_show_id)) : ?>
+                        <?php $date = fecha_spanish($intelligence->users_show->date); ?>
+                        <div class="show-fecha" style="padding: 15px 5px; width: 80px; height: 50px;">
+                          <b><?php echo $date['dia_text_short'] ?></b></br><?php echo $date['dia'], ' ', $date['mes'] ?>
+                        </div>
+                  <?php endif; ?>
                   </div>
-                  <div class="subcontent_follower" style="float:left; margin-left: 10px; width: 77%;">
+                  <div class="subcontent_follower" style="float:left; margin-left: 10px; width: 72%;">
                     <?php if(!empty($intelligence->audicion_id)) : ?>
                       <a href="<?php echo sprintf($urls->audicion_detalle, $intelligence->audicion->id, $intelligence->audicion->var) ?>">
                         <span><?= $intelligence->audicion->titulo ?></span>
@@ -477,6 +484,8 @@
                       <a href="<?php echo site_url('perfil/pagina/'.$intelligence->band->var) ?>">
                         <span><?= $intelligence->band->name ?></span>
                       </a>
+                    <?php elseif(!empty($intelligence->users_show_id)) : ?>
+                      <span><?= $intelligence->users_show->place ?></span>
                     <?php endif; ?>
                     <div class="clear"></div><br>
                     <p style="font-style: italic; text-align: justify; height: 25px;">
@@ -490,6 +499,11 @@
                         <?= strlen($intelligence->band->page->bio) >= 140 ? substr($intelligence->band->page->bio, 0, 140)."..." : $intelligence->band->page->bio ?>
                       <?php elseif(!empty($intelligence->statu_id)) : ?>
                       <?= strlen($intelligence->statu->status) >= 140 ? substr($intelligence->statu->status, 0, 140)."..." : $intelligence->statu->status ?>
+                      <?php elseif(!empty($intelligence->users_show_id)) : ?>
+                      <?php $date = fecha_spanish($intelligence->users_show->date); ?>
+                        <span style="color: #666; font-style: normal;"><span style="margin-right: 35px;">Hora: </span><?= $date['hora'] ?></span><br>
+                        <span style="color: #666; font-style: normal;"><span style="margin-right: 5px;">Dirección: </span><?= $intelligence->users_show->adress ?></span><br>
+                        <span style="color: #666; font-style: normal;"><?= $intelligence->users_show->city ?></span>
                       <?php endif; ?>
                     </p>
                   </div>
@@ -658,10 +672,11 @@
                 alert("hubo un error con la aplicación");
               }
             });
+            return false; 
           };
           
           $(window).scroll(function(){
-            if ($(window).scrollTop() >= (($('#footer-main').offset().top)-500) && $(".new_follower:last").attr("data-dni") > 5 ){
+            if ($(window).scrollTop() >= ($('.new_follower:last').offset().top) ){
               last_msg_funtion();
             }
           });

@@ -15,8 +15,10 @@ $lang['my_audition'] = 'My Auditions';
 $lang['my_directory'] = 'My Directory';
 $lang['my_classified'] = 'My Classified';
 $lang['settings'] = 'Settings';
+$lang['text_profile_provider'] = 'Profile private of provider';
+$lang['text_profile_player'] = 'Profile private of player';
 
-$lang['genre'] = 'Gender';
+$lang['gender'] = 'Gender';
 $lang['next_tooltip_button'] = 'Next';
 $lang['close_tooltip_button'] = 'Close';
 $lang['send'] = 'Send';
