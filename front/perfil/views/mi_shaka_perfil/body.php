@@ -910,6 +910,7 @@
         <form id="save-song-url-form" action="<?php echo site_url('perfil/ajax/save_song_url') ?>">
           <small style="float:left; font-size:.8em; margin-top:.6em;margin-right: 32px;">URL de la canción en Soundcloud.com: </small><input name="url" type="url" class="campo" placeholder="Ej: http://soundcloud.com/user/song"  required="required" />
           <input class="bot-aceptar" type="submit" value="Guardar">
+          <div class="bot-aceptar" onclick="$('#agrCancion').hide()" style="width: 77px; padding-top: 4px; height: 23px; cursor: pointer;">Cancelar</div>
         </form>
       </div>
 
