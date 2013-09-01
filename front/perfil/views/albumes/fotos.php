@@ -214,15 +214,12 @@
         $('#form').on('submit', function() {
 
             var $this = $(this);
-                
             if (uploader.files.length > 0) {
-
                 uploader.bind('StateChanged', function() {
                     if (uploader.files.length === (uploader.total.uploaded + uploader.total.failed)) {
                         window.location.reload();
                     }
                 });
-
                 uploader.start();
             } else {
                 $('#form')[0].submit();

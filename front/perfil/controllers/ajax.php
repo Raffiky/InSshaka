@@ -38,10 +38,15 @@ class Ajax extends Front_Controller {
         $users_song->url = $url;
         $users_song->created_on = datetime_now();
 
-        $ok = $users_song->save_as_new($user);
+        $ok = $users_song->save($user);
         if ($ok) {
-            $this->_data['url'] = $url;
-        } else {
+          $this->_data['url'] = $url;
+          $intelligence = new Intelligence;
+          $intelligence->created_on = datetime_now();
+          $intelligence->users_song_id = $users_song->id;
+
+          $intelligence->save($user);
+      } else {
             $this->set_alert($users_song->error->string, 'error');
         }
 
@@ -125,6 +130,7 @@ class Ajax extends Front_Controller {
             $this->set_alert($users_show->error->string, 'error');
         }else{
           $intelligence = new Intelligence;
+          $intelligence->created_on = datetime_now();
           $intelligence->users_show_id = $users_show->id;
           
           $intelligence->save($user);
@@ -133,6 +139,29 @@ class Ajax extends Front_Controller {
         return $this->render_json($ok);
     }
 
+    // ----------------------------------------------------------------------
+    
+    public function save_show_loader(){
+      $user = new \User;
+      $user->get_current();
+      
+      $users_show = new \Users_show;
+      $users_show->date = $this->_get("date");
+      $users_show->city = $this->_get("city");
+      $users_show->place = $this->_get("place");
+      $users_show->adress = $this->_get("adress");
+      
+      if($users_show->save($user)){
+        $intelligence = new \Intelligence;
+        $intelligence->created_on = datetime_now();
+        $intelligence->users_show_id = $users_show->id;
+        $intelligence->save($user);
+      }else{
+        echo $users_show->error->string;
+      }
+      
+    }
+    
     // ----------------------------------------------------------------------
 
     public function delete_show($show_id = null) {
@@ -200,7 +229,9 @@ class Ajax extends Front_Controller {
         $user = new \User();        
         $user->get_current();
         
-        $estado = new \Statu;
+        $usuario_notificación = new \User;
+        
+        $estado = new \Statu;        
         $estado->status = $status;
         $estado->save($user);
         
@@ -208,6 +239,18 @@ class Ajax extends Front_Controller {
         $intelligence->statu_id = $estado->id;
         $intelligence->created_on = datetime_now();
         $intelligence->save($user);
+        
+        $patron = "/@_?[a-z0-9]+(_?)([a-z0-9]?)+/i";
+        $encontrado = preg_match_all($patron, $status, $coincidencias, PREG_OFFSET_CAPTURE);
+        if ($encontrado) {
+          $notification = new Notification;
+          $notification->intelligence_id = $intelligence->id;
+          
+          foreach ($coincidencias[0] as $coincide) {
+            $notification->user_id = $usuario_notificación->get_by_username(trim($coincide[0], "@"))->id;
+            $notification->save_as_new();
+          }
+        }
        
         $user->status = $status;
         
@@ -422,6 +465,45 @@ class Ajax extends Front_Controller {
 
     }
     
+    // ----------------------------------------------------------------------
+    
+    protected function comprobarhttp($url){
+      if(!preg_match('#^http://.*#s', trim($url))){
+        $url = "http://".$url;
+      }
+      return $url;
+    }
+    
+    // ----------------------------------------------------------------------
+    
+    public function do_upload() {
+      // Cargamos datos del usuario
+      $user = new \User;
+      $user->get_current();
+      
+      // Cargamos el objeto de las fotos de usuario
+      $users_photo = new \Users_photo;
+      
+      if (!empty($_FILES)) {
+        $tempFile = $_FILES['file']['tmp_name'];
+        $targetPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads/'.$user->username."/photos/";
+        $targetFile = $targetPath . $_FILES['file']['name'];
+        move_uploaded_file($tempFile, $targetFile);
+        
+        // Guardamos en base de datos
+        $users_photo->image = $user->username."/photos/".$_FILES['file']['name'];
+        $users_photo->thumb = $user->username."/photos/".$_FILES['file']['name'];
+        
+        // Creamos la notificación
+        if($users_photo->save($user)) {
+          $intelligence = new \Intelligence;
+          $intelligence->created_on = datetime_now();
+          $intelligence->users_photo_id = $users_photo->id;
+          $intelligence->save($user);
+        }        
+      }
+    }
+
     // ----------------------------------------------------------------------
     
 }

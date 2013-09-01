@@ -169,9 +169,17 @@ class Upload extends Back_Controller {
         // Obteniendo modelos
         $images->image = $image;
         $images->thumb = $thumb;
-
+        
         // Guardando el item con las relaciones
-        return $images->save_as_new($this->_datos);
+        $images->save($this->_datos);
+
+        $intelligence = new \Intelligence;
+        $intelligence->created_on = datetime_now();
+        $intelligence->users_photo_id = $images->id;
+        $intelligence->user_id = $images->user_id;
+        $intelligence->save();
+
+        return true;
     }
 
     // ----------------------------------------------------------------------

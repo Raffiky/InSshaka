@@ -1,7 +1,9 @@
 <div id="dialog-message" title="Banda" style="display: none;">
   <p>
     <span class="ui-icon ui-icon-circle-check" style="float: left; margin: 0 7px 50px 0;"></span>
-    Tu banda fue guardada satisfactoriamente. 
+    <?php if (!empty($alert_messages)) : ?>
+      <div><?php echo $alert_messages ?></div>
+    <?php endif; ?>
   </p><br>
   <p>
     No olvides ir a "Perfil/Mis Bandas/Banda/Crear Perfil" para crear el perfil de tu banda!
@@ -20,9 +22,7 @@
     }
 </style>
 <div class="selectores-band">
-    <?php if (!empty($alert_messages)) : ?>
-      <div><?php echo $alert_messages ?></div>
-    <?php endif; ?>
+    
 
     <?php echo form_open('build-a-band/ajax/save_band/' . (!empty($datos->band->id) ? $datos->band->id : null), 'id="save-band-form"') ?>
 
@@ -288,7 +288,7 @@
           <div class="selectBox s1">
             <label for="nivel_experiencia" style="padding-left: 5px;">Nivel de experiencia</label><br>
             <select  style="width:160px;" class="comboBox1" name="nivel_experiencia" >
-              <option selected="selected" value="">Seleccione...</option>
+              <option selected="selected" value="0">Seleccione...</option>
               <option value="principiante">Principiante</option>
               <option value="intermedio">Intermedio</option>
               <option value="avanzado">Avanzado</option>                       
@@ -299,7 +299,7 @@
           <div class="selectBox s1">
             <label for="experiencia" style="padding-left: 5px;">Experiencia</label><br>
             <select  style="width:160px;" class="comboBox1" name="experiencia" >
-              <option selected="selected" value="">Seleccione...</option>
+              <option selected="selected" value="0">Seleccione...</option>
               <option value="0-2">0-2 años</option>
               <option value="2-4">2-4 años</option>
               <option value="4-6">4-6 años</option> 
@@ -313,7 +313,7 @@
           <div class="selectBox s1">
             <label for="necesitas_band" style="padding-left: 5px;">Necesitas banda</label><br>
             <select  style="width:160px;" class="comboBox1" name="necesitas_band" >
-              <option selected="selected" value="">Seleccione...</option>
+              <option selected="selected" value="0">Seleccione...</option>
               <option value="1">Si</option>
               <option value="0">No</option>
             </select>

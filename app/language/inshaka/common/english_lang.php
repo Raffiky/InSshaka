@@ -4,8 +4,8 @@ $lang['home'] = 'Home';
 $lang['mishaka'] = 'MiShaka';
 $lang['build_a_band'] = 'Build a Band';
 $lang['audition'] = 'Auditions';
-$lang['directory'] = 'Directory';
-$lang['classified'] = 'Classified';
+$lang['directory'] = 'Directories';
+$lang['classified'] = 'Classifieds';
 $lang['faq'] = 'Faq';
 
 // Menú privado de perfil   

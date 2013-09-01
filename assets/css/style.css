@@ -53,6 +53,18 @@ a {text-decoration:none;}
 .clasificado:hover {font:600 11px Arial, sans-serif; color:#e82e7c; line-height:14px; cursor: pointer;}
 .fechaClasificado {font:400 11px Arial, sans-serif; color:#999; line-height:20px;}
 .derechos {font:400 14px 'BebasNeueRegular'; color:#bab8b9;}
+.lapiz_tooltip{
+  background-image: url("../images/editar.png");
+  background-position: right top;
+  background-repeat: no-repeat;
+  background-clip: content-box; 
+  background-size: contain;
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  position: relative;
+}
+
 /*───────────────────────────────FIN SPAN*/
 
 .header {height: 50px; width: 100%; background-color: #dedede;}
@@ -279,6 +291,28 @@ ul#menu-footer li:hover ul {display: block;}
 .red2:hover { background-position:0 -32px;}
 .red3 {width:32px; height:32px; float:left; margin-top:8px; background:url(../images/red3.png) no-repeat;}
 .red3:hover { background-position:0 -32px;}
+#add-image{
+  background: transparent url('../images/add_img.png') no-repeat;
+}
+#add-show{
+  background: transparent url('../images/add_show.png') no-repeat;
+  width: 14px;
+}
+#add-user{
+  background: transparent url('../images/add_user.png') no-repeat;
+  width: 18px;
+  height: 13px;
+}
+.btn-adjuntar{
+  float: left;  
+  width: 22px;
+  height: 12px;
+  border-right: 1px solid #BABABA;
+  cursor: pointer;
+  margin-left: 5px;
+}
+#add-image:hover, #add-show:hover{background-position: 0 -12px;}
+#add-user:hover{background-position: 0 -13px;}
 
 /*──────────────────────────COPY IMAGINAMOS*/
 .copyHome { float: right;

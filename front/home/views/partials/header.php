@@ -121,6 +121,7 @@
     -moz-border-radius: 7px;
     -webkit-border-radius: 7px;
     height: 40px;
+    overflow: hidden;
   }
   #search-inshaka-users{
     float: right;
@@ -133,98 +134,6 @@
     padding: 3px 9px;
   }
 </style>
-
-
-<script type="text/javascript">
-  $(document).ready(function(){
-      $('.registro-modal').fancybox();
-
-      $("#notificaciones").on('click', function(){
-        if($("#seguidores").show())
-          $("#seguidores").hide();
-
-        $("#permitido").slideToggle('slow');
-      });
-
-      $("#solicitudes").on('click', function(){
-        if($("#permitido").show())
-          $("#permitido").hide();
-
-        $("#seguidores").slideToggle('slow');
-      });
-
-      if(<?= $follow_me->result_count() ?> >= 1){
-        $("#cant_not").show();
-        $("#cant_not").text(<?= $follow_me->result_count() ?>);
-      }
-      
-      var notificacion = <?= $notifications->where(array('ready' => false, 'user_id' => $userinfo->id))->get()->result_count() ?>;
-      
-      if( notificacion >= 1){
-        $("#notify_not").show();
-        $("#notify_not").text(notificacion);
-      }
-
-  });
-    
-  function allow_follow(elemento, id, status){
-    var cantidad = parseInt($("#cant_not").text());
-    var datos = {
-      id: id,
-      status: status
-    };
-    $.ajax({
-      url : "<?= site_url('perfil/social/allow_follow') ?>",
-      type : "get",
-      data : datos,
-      beforeSend : function(){
-        if(cantidad == 0){
-          $("#cant_not").hide();
-        }
-      },
-      success : function(){
-        $(elemento).fadeOut("slow");
-        $("#cant_not").fadeOut("slow").fadeIn("slow").text(cantidad - 1);
-      },
-      complete : function(){
-        if(cantidad == 0){
-          $("#cant_not").hide();
-          $("#seguidores").hide();
-        }
-      }
-    });      
-  }
-  
-  function ready_notify(elemento, id){
-    var cant = parseInt($("#notify_not").text());
-    var data = {
-      id: id
-    };
-    $.ajax({
-      url   : "<?= site_url('perfil/social/ready_notify') ?>",
-      type  : "get",
-      data  : data,
-      beforeSend  : function(){
-        if(cant == 0){
-          $("#notify_not").hide();
-        }
-      },
-      success     : function(){
-        $(elemento).css("background-color", "#D5D5D5");
-        $("#notify_not").fadeOut("slow").fadeIn("slow").text(cant - 1);
-        $(location).attr('href', "<?= site_url('perfil/social/detalle?id=') ?>" +id  );
-      },
-      complete    : function(){
-        if(cant == 0){
-          $("#notify_not").hide();
-          $("#permitido").hide();
-        }
-      }
-    });
-  }
-</script>
-
-
 <div class="header">
     <div class="conMenu">
         <div class="menu">
@@ -248,6 +157,93 @@
               </div>
           <?php endif; ?>
             <a href="#seleccion-registro" class="registro-modal" style="display:<?php echo ($is_usuario ? 'none' : 'block') ?>;"><div class="bot-registro" style="margin-left: 1067px;position: absolute;">Regístrate</div></a>
+            <script type="text/javascript">
+              $(document).ready(function(){
+
+                  $("#notificaciones").on('click', function(){
+                    if($("#seguidores").show())
+                      $("#seguidores").hide();
+
+                    $("#permitido").slideToggle('slow');
+                  });
+
+                  $("#solicitudes").on('click', function(){
+                    if($("#permitido").show())
+                      $("#permitido").hide();
+
+                    $("#seguidores").slideToggle('slow');
+                  });
+
+                  if(<?= $follow_me->result_count() ?> >= 1){
+                    $("#cant_not").show();
+                    $("#cant_not").text(<?= $follow_me->result_count() ?>);
+                  }
+
+                  var notificacion = <?= $notifications->where(array('ready' => false, 'user_id' => $userinfo->id))->get()->result_count() ?>;
+
+                  if( notificacion >= 1){
+                    $("#notify_not").show();
+                    $("#notify_not").text(notificacion);
+                  }
+
+              });
+
+              function allow_follow(elemento, id, status){
+                var cantidad = parseInt($("#cant_not").text());
+                var datos = {
+                  id: id,
+                  status: status
+                };
+                $.ajax({
+                  url : "<?= site_url('perfil/social/allow_follow') ?>",
+                  type : "get",
+                  data : datos,
+                  beforeSend : function(){
+                    if(cantidad == 0){
+                      $("#cant_not").hide();
+                    }
+                  },
+                  success : function(){
+                    $(elemento).fadeOut("slow");
+                    $("#cant_not").fadeOut("slow").fadeIn("slow").text(cantidad - 1);
+                  },
+                  complete : function(){
+                    if(cantidad == 0){
+                      $("#cant_not").hide();
+                      $("#seguidores").hide();
+                    }
+                  }
+                });      
+              }
+
+              function ready_notify(elemento, id){
+                var cant = parseInt($("#notify_not").text());
+                var data = {
+                  id: id
+                };
+                $.ajax({
+                  url   : "<?= site_url('perfil/social/ready_notify') ?>",
+                  type  : "get",
+                  data  : data,
+                  beforeSend  : function(){
+                    if(cant == 0){
+                      $("#notify_not").hide();
+                    }
+                  },
+                  success     : function(){
+                    $(elemento).css("background-color", "#D5D5D5");
+                    $("#notify_not").fadeOut("slow").fadeIn("slow").text(cant - 1);
+                    $(location).attr('href', "<?= site_url('perfil/social/detalle?id=') ?>" +id  );
+                  },
+                  complete    : function(){
+                    if(cant == 0){
+                      $("#notify_not").hide();
+                      $("#permitido").hide();
+                    }
+                  }
+                });
+              }
+            </script>
             
             <a href="<?php echo site_url('usuarios/logout') ?>" style="display:<?php echo (!$is_usuario ? 'none' : 'block') ?>;"><div class="bot-logout">Logout</div></a>
             <a href="<?php echo site_url('perfil/' . $this->session->userdata('inshaka_url')) ?>" style="display:<?php echo (!$is_usuario ? 'none' : 'block') ?>;"><div class="bot-logout" style="margin-right: .5em">Perfil</div></a>
@@ -262,7 +258,7 @@
             <script type="text/javascript">
               $(function(){
                 $( "#find-inshaka-users" ).autocomplete({ 
-                  source: "<?php echo site_url('home/home/get_all') ?>"
+                  source: "<?= site_url('home/get_all') ?>"
                 });
               })
             </script>
@@ -290,7 +286,7 @@
           <?php if ($photo_user->exists()) : ?>
             <img  src="<?= uploads_url($photo_user->get_photo($my_follow->user_id)) ?>" width="77" height="73"/>
           <?php else :?>
-            <img  src="images/imagensino.png" width="77" height="73" />
+            <img  src="images/foto-perfil.png" width="77" height="73" />
           <?php endif; ?>
         </div>
         <div style="float:left; margin-left: 10px;">
@@ -324,7 +320,7 @@
           <?php if ($photo_user->exists()) : ?>
             <img  src="<?= uploads_url($photo_user->get_photo($allowed->intelligence->users_follow->user_follow_id)) ?>" width="77" height="73"/>
           <?php else :?>
-            <img  src="images/imagensino.png" width="77" height="73" />
+            <img  src="images/foto-perfil.png" width="77" height="73" />
           <?php endif; ?>
         </div>
         <div style="float:left; margin-left: 10px;">
@@ -337,13 +333,13 @@
       <?php elseif(!empty($allowed->intelligence->audiciones_aplicacion_id)) : ?>
         <?php foreach ($allowed->intelligence->audiciones_aplicacion as $apply_audition) : ?>
           <div id="allowed_<?= $allowed->id ?>" class="my_follow notify" style="cursor: pointer;  <?= !$allowed->ready ? 'background-color: #D5D5D5' : null ?>" onclick="ready_notify('#allowed_<?= $allowed->id ?>', <?= $allowed->id ?>)">
-            <?php $photo_user->where('user_id', $apply_audition->user_id)->get(); ?>
+            <?php $photo_user->where(array('user_id' => $apply_audition->user_id, 'profile_active' => true))->get(); ?>
             <div style="float:left">
               <?php $photo_profile = $photo_user->get_photo($apply_audition->user_id) ?>
               <?php if ($photo_profile) : ?>
                 <img  src="<?= uploads_url($photo_profile) ?>" width="77" height="73"/>
               <?php else :?>
-                <img  src="images/imagensino.png" width="77" height="73" />
+                <img  src="images/foto-perfil.png" width="77" height="73" />
               <?php endif; ?>
             </div>
             <div style="float:left; margin-left: 10px; width: 214px;">
@@ -364,18 +360,39 @@
             </div>
           </div>
         <?php endforeach; ?>
+      <?php elseif(!empty($allowed->intelligence->statu_id)) : ?>
+        <?php foreach ($allowed->intelligence->statu as $mencionado) : ?>
+          <div id="allowed_<?= $allowed->id ?>" class="my_follow notify" style="cursor: pointer;  <?= !$allowed->ready ? 'background-color: #D5D5D5' : null ?>" onclick="ready_notify('#allowed_<?= $allowed->id ?>', <?= $allowed->id ?>)">
+            <?php $photo_user->where(array('user_id' => $mencionado->user_id, 'profile_active' => true))->get(); ?>
+            <div style="float:left">
+              <?php $photo_profile = $photo_user->get_photo($mencionado->user_id) ?>
+              <?php if ($photo_profile) : ?>
+                <img  src="<?= uploads_url($photo_profile) ?>" width="77" height="73"/>
+              <?php else :?>
+                <img  src="images/foto-perfil.png" width="77" height="73" />
+              <?php endif; ?>
+            </div>
+            <div style="float:left; margin-left: 10px; width: 214px;">
+              <p><span style="font-weight: bold;"><?= $usuario_->get_name($mencionado->user_id) ?></span> Te han mencionado en su estado</p>
+              <div class="clear" style='margin-top: 10px;'></div>
+              <div class="sobre_notificacion" style='height: 25px; <?= !$allowed->ready ? 'background-color: #D5D5D5' : null ?>'>
+                <?= strlen($allowed->intelligence->statu->status) > 50 ? substr($allowed->intelligence->statu->status, 0, 50)."..." : $allowed->intelligence->statu->status ?>
+              </div>
+            </div>
+          </div>
+        <?php endforeach; ?>
       <!-- Bloq. de comentarios -->
       <?php else : ?>
         <?php $comentarios = $allowed->intelligence->intelligences_comment->get() ?>
         <?php foreach ($comentarios as $comentario) :?>
           <div id="allowed_<?= $allowed->id ?>" class="my_follow notify" style="cursor: pointer;  <?= !$allowed->ready ? 'background-color: #D5D5D5' : null ?>" onclick="ready_notify('#allowed_<?= $allowed->id ?>', <?= $allowed->id ?>)">
-            <?php $photo_user->where('user_id', $comentario->user_id)->get(); ?>
+            <?php $photo_user->where(array('user_id' => $comentario->user_id, 'profile_active' => true))->get(); ?>
             <div style="float:left">
               <?php $photo_profile = $photo_user->get_photo($comentario->user_id) ?>
               <?php if ($photo_profile) : ?>
                 <img  src="<?= uploads_url($photo_profile) ?>" width="77" height="73"/>
               <?php else :?>
-                <img  src="images/imagensino.png" width="77" height="73" />
+                <img  src="images/foto-perfil.png" width="77" height="73" />
               <?php endif; ?>
             </div>
             <div style="float:left; margin-left: 10px; width: 214px;">
@@ -442,8 +459,22 @@
                     
                     <!-- Bloq. status -->
                     <?php elseif(!empty($allowed->intelligence->statu_id)) : ?>
-                      <?= strlen($allowed->intelligence->user->status) > 50 ? substr($allowed->intelligence->user->status, 0, 50)."..." : $allowed->intelligence->user->status ?>
+                      <?= strlen($allowed->intelligence->statu->status) > 50 ? substr($allowed->intelligence->user->status, 0, 50)."..." : $allowed->intelligence->statu->status ?>
                     <!-- Fin bloq. status -->
+                    
+                    <!-- Bloq. shows -->
+                    <?php elseif(!empty($allowed->intelligence->users_show_id)) : ?>
+                      <?php $date = fecha_spanish($allowed->intelligence->users_show->date); ?>
+                      <div class="show-fecha" style="padding: 7px 5px; width: 40px; height: 30px; margin-right: 5px; float:left;">
+                        <b style="font-size: 23px"><?php echo $date['dia_text_short'] ?></b></br><?php echo $date['dia'], ' ', $date['mes'] ?>
+                      </div>
+                      <span><?= $allowed->intelligence->users_show->place ?></span>
+                    <!-- Fin bloq. shows -->
+                    
+                    <!-- Bloq. photo -->
+                    <?php elseif(!empty($allowed->intelligence->users_photo_id)) : ?>
+                    <img src="<?= uploads_url($allowed->intelligence->users_photo->thumb) ?>" style="width: 181px;">
+                    <!-- Fin bloq. photo -->
                     
                     <?php endif; ?>
                   </span>

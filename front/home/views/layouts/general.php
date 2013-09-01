@@ -4,7 +4,7 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" class="ie9" xmlns:fb="http://ogp.me/ns/fb#"> <!--<![endif]-->
     <head>
-        <meta charset="utf-8">
+        <meta content="text/html;" http-equiv="content-type" charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
         <title><?php echo $template['title']; ?></title>
@@ -112,7 +112,7 @@
 
         <script type="text/javascript">
             $(document).ready(function() {
-               
+               $('.registro-modal').fancybox();
                 $('.help-inshaka').tooltipster({
                   theme: '.theme-help',
                   arrow: true,
@@ -120,6 +120,7 @@
                   arrowColor: '#FFF',
                   position: 'bottom-right',
                   interactive : true,
+                  delay : 500,
                   trigger: 'click',
                   functionBefore : function(origin, continueTooltip){
                     var ancho_ventana = $(window).width();

@@ -3,7 +3,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
- * @author rigobcastro
+ * @author Cristian Rivas
  */
 class Home extends Front_Controller {
 
@@ -35,6 +35,9 @@ class Home extends Front_Controller {
         if ($this->is_usuario()) {
             $user = new User;
             $user->get_current();
+            
+            $usuario = new \User;
+            $this->_data['usuario'] = $usuario;
             
             $body = 'body_logged';
                         
@@ -133,6 +136,7 @@ class Home extends Front_Controller {
     // ----------------------------------------------------------------------
     
     public function get_all() {
+
       $banda = new \Band;
       $user = new \User;
       $clasificado = new \Clasificado;
@@ -151,27 +155,33 @@ class Home extends Front_Controller {
         $resultado2 = $user->get();
         $resultado3 = $clasificado->get();
         $resultado4 = $audicion->get();
+        $resultado5 = $user->where('is_proveedor', true)->like('name_proveedor', $q)->get();
         
-        if($resultado->exists() || $resultado2->exists() || $resultado3->exists() || $resultado4->exists() ){
+        if($resultado->exists() || $resultado2->exists() || $resultado3->exists() || $resultado4->exists() || $resultado5->exists() ){
           foreach ($resultado->all_to_array() as $row){
-            $new_row['label']=htmlentities(stripslashes($row['name']));
-            $new_row['value']=htmlentities(stripslashes($row['name']));
+            $new_row['label']=htmlentities(stripslashes(utf8_decode($row['name'])));
+            $new_row['value']=htmlentities(stripslashes(utf8_decode($row['name'])));
             $row_set[] = $new_row; //build an array
           }
           foreach ($resultado2->all_to_array() as $row2){
-            $new_row2['label']=htmlentities(stripslashes($row2['first_name']." ".$row2['last_name']));
-            $new_row2['value']=htmlentities(stripslashes($row2['first_name']." ".$row2['last_name']));
+            $new_row2['label']=htmlentities(stripslashes(utf8_decode($row2['first_name']." ".$row2['last_name'])));
+            $new_row2['value']=htmlentities(stripslashes(utf8_decode($row2['first_name']." ".$row2['last_name'])));
             $row_set[] = $new_row2; //build an array
           }
           foreach ($resultado3->all_to_array() as $row3){
-            $new_row3['label']=htmlentities(stripslashes($row3['titulo']));
-            $new_row3['value']=htmlentities(stripslashes($row3['titulo']));
+            $new_row3['label']=htmlentities(stripslashes(utf8_decode($row3['titulo'])));
+            $new_row3['value']=htmlentities(stripslashes(utf8_decode($row3['titulo'])));
             $row_set[] = $new_row3; //build an array
           }
           foreach ($resultado4->all_to_array() as $row4){
-            $new_row4['label']=htmlentities(stripslashes($row4['titulo']));
-            $new_row4['value']=htmlentities(stripslashes($row4['titulo']));
+            $new_row4['label']=htmlentities(stripslashes(utf8_decode($row4['titulo'])));
+            $new_row4['value']=htmlentities(stripslashes(utf8_decode($row4['titulo'])));
             $row_set[] = $new_row4; //build an array
+          }
+          foreach ($resultado5->all_to_array() as $row5){
+            $new_row5['label']=htmlentities(stripslashes($row5['name_proveedor']));
+            $new_row5['value']=htmlentities(stripslashes($row5['name_proveedor']));
+            $row_set[] = array_map('utf8_encode',$new_row5); //build an array
           }
           echo json_encode($row_set); //format the array into json data
         }
@@ -216,6 +226,34 @@ class Home extends Front_Controller {
       $this->set_datos($random_users);
       
       return parent::view('social/sugerencias_registro', false);
+    }
+    
+    // ----------------------------------------------------------------------
+    
+    public function get_users() {
+      $user = new \User;
+      $my_followers = new \Users_follow; 
+      
+      $prueba = $this->_get('term'); 
+      
+      if (isset($prueba)){
+        $q = strtolower($prueba);
+        $u = trim(strstr(strrchr($q, "@"), "@"), "@");
+        
+        $my_followers->where(array('user_follow_id' => $this->userinfo->id, 'allow_follow' => true));
+        $my_followers->group_start()->like_related('user', 'first_name', $u);
+        $my_followers->or_like_related('user', 'last_name', $u)->group_end();
+        $resultado = $my_followers->get();
+        
+        if($resultado->exists()){
+          foreach ($resultado->all_to_array() as $row){
+            $new_row['label']= stripslashes($user->get_name($row['user_id']));
+            $new_row['value']= strip_tags(stripslashes(substr($prueba, 0, strripos($prueba, "@"))."@".$user->get_username($row['user_id'])));
+            $row_set[] = $new_row; //build an array
+          }
+          echo json_encode($row_set); //format the array into json data
+        }
+      }
     }
     
     // ----------------------------------------------------------------------

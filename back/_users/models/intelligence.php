@@ -28,6 +28,9 @@ class Intelligence extends DataMapper {
         ),
         'users_show' => array(
             'auto_populate' => true
+        ),
+        'users_photo' => array(
+            'auto_populate' => true
         )
     );
     public $has_many = array(

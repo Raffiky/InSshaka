@@ -22,7 +22,9 @@ $autoload['model'] = array(
     '_bands/page',
     '_bands/pages_photo',
     '_users/statu',
-    '_users/users_show'
+    '_users/users_show',
+    '_users/users_song',
+    '_users/users_video'
 );
 
 

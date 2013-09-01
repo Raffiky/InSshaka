@@ -1,13 +1,13 @@
 <?php
 // tooltips 
 $lang['tooltip_edit_personal_info'] = 'Edit Personal Info';
-$lang['tooltip_content_edit_personal_info'] = 'Click on the [] to edit personal info such as:<br>Location,<br>Phone,<br>Biography';
+$lang['tooltip_content_edit_personal_info'] = 'Click on the <i class=\'lapiz_tooltip\'></i> to edit personal info such as:<br>Location,<br>Phone,<br>Biography';
 $lang['tooltip_edit_photos_and_videos'] = 'Edit Photos & Videos';
-$lang['tooltip_content_edit_photos_and_videos'] = 'Click on the [] to add photos & videos';
+$lang['tooltip_content_edit_photos_and_videos'] = 'Click on the <i class=\'lapiz_tooltip\'></i> to add photos & videos';
 $lang['tooltip_edit_professional_info'] = 'Edit Professional Information';
-$lang['tooltip_content_edit_professional_info'] = 'Click on the [] to edit professional info such as:<p>Experience Level<br>,<br>Influences,<br>Years of Experience,<br>Contact Links,<br>Number of Concerts,<br>Website';
+$lang['tooltip_content_edit_professional_info'] = 'Click on the <i class=\'lapiz_tooltip\'></i> to edit professional info such as:<p>Experience Level<br>,<br>Influences,<br>Years of Experience,<br>Contact Links,<br>Number of Concerts,<br>Website';
 $lang['tooltip_add_songs'] = 'Agregar canciones';
-$lang['tooltip_content_add_songs'] = "Paste your Soundcloud song link here<p>Don't have a Soundcloud account? Click here to create a new one";
+$lang['tooltip_content_add_songs'] = "Paste your Soundcloud song link here<p><br><strong style=\'font-size:10px;\'>Don't have a Soundcloud account? <a href=\'https://soundcloud.com/\' target=\'_blank\'><strong style=\'color: #E82E7C\'>Click here</strong></a> to create a new one</strong>";
 $lang['tooltip_add_show'] = 'Add Show';
 $lang['tooltip_content_add_show'] = 'Click here to add any upcoming gigs or concerts';
 $lang['tooltip_comments'] = 'Comments';

@@ -37,7 +37,7 @@ $lang['activation_email_unsuccessful']   	 = 'No se ha podido enviar el email de
 
 // Login / Logout
 $lang['login_successful'] 		  	 = 'Sesión iniciada con éxito';
-$lang['login_unsuccessful'] 		  	 = '<strong>Email</strong> o <strong>contraseña</strong> no válidos';
+$lang['login_unsuccessful'] 		  	 = '<strong>Usuario</strong> o <strong>contraseña</strong> no válidos';
 $lang['logout_successful'] 		 	 = 'Sesión finalizada con éxito';
 
 // Account Changes

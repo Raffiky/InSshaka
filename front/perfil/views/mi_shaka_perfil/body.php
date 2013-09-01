@@ -309,11 +309,10 @@
 
     <?php if ($is_owner_usuario): ?>
       <div class="lapiz2" style="margin-top: 50px;"><a href="<?php echo site_url('perfil/editar/informacion_personal') ?>"><img src="<?php echo base_url('assets/images/editar.png') ?>" /></a></div>
-      <div id="first-help" class="help-inshaka" title="<span class='title-help'>Editar información personal</span>
+      <div id="first-help" class="help-inshaka" title="<span class='title-help'><?= lang('tooltip_edit_personal_info') ?></span>
           <div class='content-help'>
-          <p>Haz click acá para editar tu información personal como:</p><br>
-          <p>Ubicación<br>Teléfono<br>Biografía</p>
-          <button class='bot-logout' data-next-help='#secound_help' style='border: 0px;' onclick='disparador($(this));'>siguiente</button>
+          <?= lang('tooltip_content_edit_personal_info') ?>
+          <button class='bot-logout' data-next-help='#secound_help' style='border: 0px;' onclick='disparador($(this));'><?= lang('next_tooltip_button') ?></button>
           </div>" 
           style="float:right; margin-right: -10px; margin-top: 21px; ">
      </div>
@@ -492,10 +491,10 @@
       <div class="lapiz3" style="display: none; ">
          <a href="<?php echo sprintf($urls->current_inshaka_url_format, 'fotos') ?>"><img src="<?php echo base_url('assets/images/editar.png') ?>" /></a>
       </div>
-      <div id="secound_help" class="help-inshaka" title="<span class='title-help'>Editar Fotos y Videos</span>
+      <div id="secound_help" class="help-inshaka" title="<span class='title-help'><?= lang('tooltip_edit_photos_and_videos') ?></span>
         <div class='content-help'>
-        <p>Haz click acá para subir tus fotos y videos</p>
-        <button class='bot-logout' data-next-help='#third_help' style='border: 0px;' onclick='disparador($(this));'>siguiente</button>
+        <?= lang('tooltip_content_edit_photos_and_videos') ?>
+        <button class='bot-logout' data-next-help='#third_help' style='border: 0px;' onclick='disparador($(this));'><?= lang('next_tooltip_button') ?></button>
         </div>" 
         style="float:right; margin-right: 20px; margin-top: -29px;">
       </div>
@@ -580,26 +579,10 @@
             <a href="<?php echo site_url('perfil/editar/informacion_profesional') ?>"><img src="<?php echo base_url('assets/images/editar.png') ?>" /></a>
           </div>
           <?php if (!$datos->is_proveedor) : ?>
-            <div id="third_help" class="help-inshaka" title="<span class='title-help'>Editar información profesional</span>
+            <div id="third_help" class="help-inshaka" title="<span class='title-help'><?= lang('tooltip_edit_professional_info') ?></span>
               <div class='content-help'>
-              <p>Haz click acá para editar tu información profesional como:</p><br>
-              <p>
-                <table border='0'>
-                  <tr>
-                    <td width='160px'>Nivel de experiencia</td>
-                    <td width='160px'>Influencias</td>
-                  </tr>
-                  <tr>
-                    <td width='160px'>Años de experiencia</td>
-                    <td width='160px'>Links de contacto</td>
-                  </tr>
-                  <tr>
-                    <td width='160px'>Número de conciertos</td>
-                    <td width='160px'>Sitio web</td>
-                  </tr>
-                </table>
-              </p>
-              <button class='bot-logout' data-next-help='#fourth_help' style='border: 0px;' onclick='disparador($(this));'>siguiente</button>
+              <?= lang('tooltip_content_edit_professional_info') ?>
+              <button class='bot-logout' data-next-help='#fourth_help' style='border: 0px;' onclick='disparador($(this));'><?= lang('next_tooltip_button') ?></button>
               </div>" 
               style="float:right; margin-right: 20px; margin-top: -1px;">
             </div>
@@ -695,7 +678,7 @@
 
         <?php echo form_open('perfil/ajax/update_status', 'id="profile-status-form" style="display:none;"') ?> 
         <div>
-          <?php echo form_textarea(array('name' => 'status', 'required' => 'required', 'maxlength' => 100)) ?>
+          <?php echo form_textarea(array('name' => 'status', 'required' => 'required', 'maxlength' => 200)) ?>
           <input class="btn-primary" type="submit" value="Actualizar" />
           <a class="cancel" href="#">Cancelar</a>
         </div>
@@ -895,13 +878,10 @@
           <div id="imgBtMas"></div>
         </a>
       </div>
-      <div id='fourth_help' class="help-inshaka" title="<span class='title-help'>Agregar canciones</span>
+      <div id='fourth_help' class="help-inshaka" title="<span class='title-help'><?= lang('tooltip_add_songs') ?></span>
         <div class='content-help'>
-        <p>
-        Pega acá el link a tu canción en soundcloud<br><br>
-        <strong style='font-size:9px;'>Si no tienes cuenta en soundcloud, haz <a href='https://soundcloud.com/' target='_blank'><strong style='color: #E82E7C'>click acá</strong></a> para crear una.</strong>       
-        </p>
-        <button class='bot-logout' data-next-help='#fifth_help' style='border: 0px;' onclick='disparador($(this));'>siguiente</button>
+        <?= lang('tooltip_content_add_songs') ?>
+        <button class='bot-logout' data-next-help='#fifth_help' style='border: 0px;' onclick='disparador($(this));'><?= lang('next_tooltip_button') ?></button>
         </div>" 
         style="float:right; margin-right: 158px; margin-top: -55px;">
       </div>
@@ -975,10 +955,10 @@
             <div id="imgBtMas"></div>
           </a>
         </div>
-        <div id='fifth_help' class="help-inshaka" title="<span class='title-help'>Agregar Show</span>
+        <div id='fifth_help' class="help-inshaka" title="<span class='title-help'><?= lang('tooltip_add_show') ?></span>
           <div class='content-help'>
-          <p>Haz click acá para agregar los próximos toques/show que tengas</p>
-          <button class='bot-logout' data-next-help='#sixth_help' style='border: 0px;' onclick='disparador($(this));'>siguiente</button>
+          <?= lang('tooltip_content_add_show') ?>
+          <button class='bot-logout' data-next-help='#sixth_help' style='border: 0px;' onclick='disparador($(this));'><?= lang('next_tooltip_button') ?></button>
           </div>" 
           style="float:right; margin-right: 158px; margin-top: -26px;">
         </div>
@@ -1016,10 +996,10 @@
     <div class="perfil-extra-de">
       <div class="regis-tit">Comentarios</div>
       <?php if ($is_owner_usuario): ?>
-      <div id='sixth_help' class="help-inshaka" title="<span class='title-help'>Comentarios</span>
+      <div id='sixth_help' class="help-inshaka" title="<span class='title-help'><?= lang('tooltip_comments') ?></span>
           <div class='content-help'>
-          <p>Otros usuarios te pueden dejar mensajes y ponerte un rating de acuerdo a tu presentación en vivo, profesionalismo y más. Este rating se ve reflejado en el círculo abajo de tu imágen</p>
-          <a id='close-help' class='bot-logout' href='#help-modal'>Cerrar</a>
+          <?= lang('tooltip_content_comments') ?>
+          <a id='close-help' class='bot-logout' href='#help-modal'><?= lang('close_tooltip_button') ?></a>
           </div>" 
           style="float:right; margin-right: 156px; margin-top: -29px;">
      </div>

@@ -9,7 +9,11 @@ class Users_photo extends DataMapper {
             'auto_populate' => true
         )
     );
-    public $has_many = array();
+    public $has_many = array(
+        'intelligence' => array(
+            'auto_populate' => true
+        )
+    );
     public $validation = array(
         'image' => array(
             'label' => 'Image',

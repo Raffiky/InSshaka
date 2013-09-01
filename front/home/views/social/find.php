@@ -7,6 +7,7 @@
     </div>
 </div>
 <div class="contenido">
+  <?php if(!empty($find_user) || !empty($find_band) || !empty($find_audiciones) || !empty($find_clasificados) || !empty($find_directorio)): ?>
   <!-- Cargando usuarios -->
   <?php if(!empty($find_user)) : ?>
     <?php if($find_user->exists()) : ?>
@@ -141,4 +142,35 @@
     <?php endif; ?>
   <?php endif; ?>
   <!-- Fin clasificados -->
+  <div class="clear"></div>
+  <!-- Cargando directorio -->
+  <?php if(!empty($find_directorio)) : ?>
+    <?php if($find_directorio->exists()) : ?>
+    <div class="resultados-perfil">
+      <div class="resultados">Resultados encontrados <b>(<?php echo $find_directorio->paged->total_rows; ?>)</b> para directorio</div>
+      <?php foreach ($find_directorio as $f_directorio) : ?>
+      <div class="res-perfil">
+        <div class="foto-banda">
+          <a href="<?php echo site_url('perfil/' . $f_directorio->inshaka_url) ?>" style="display:block; height:201px; overflow:hidden;">
+            <?php if(!$user_photo->get_photo($f_directorio->id)) : ?>
+              <img src="images/imagensino.png" style="width:253px;" >
+            <?php else: ?>
+             <img width="253" height="205" src="<?php echo uploads_url($user_photo->get_photo($f_directorio->id)) ?>" style="width:253px;">
+            <?php endif; ?>
+          </a>
+          <div class="res-datos">
+            <div class="res-txt">Nombre: <b><?php echo $f_directorio->name_proveedor ?></b></div>
+          </div>
+        </div>
+      </div>
+      <?php endforeach; ?>
+    </div>
+    <?php else : ?>
+      <div class="resultados">Su búsqueda no produjo resultados.</div>
+    <?php endif; ?>
+  <?php endif; ?>
+  <!-- Fin de directorio -->
+  <?php else : ?>
+  <div class="resultados">Su búsqueda no produjo resultados.</div>
+  <?php endif; ?>
 </div>

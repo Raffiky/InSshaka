@@ -68,7 +68,6 @@
         
         $(this).addClass('active').siblings().removeClass('active');
         $('#titulo-buscar-musicos').text($('.instrumento.active').data('instrument-name'));
-        $('#talent_name').val($('.instrumento.active').data('instrument-name'));
     });
     
     // Evento del boton cerrar
@@ -115,7 +114,8 @@
         
         // Agregando la exclución de usuarios
         lista_activa.find('.user').each(function(index, element){
-            return $('<input class="temp_input_user" name="_users[]" type="hidden" value="' + $(element).data('user-id') + '" />').appendTo($this);
+            return $('<input class="temp_input_user" name="_users[]" type="hidden" value="' + $(element).data('user-id') + '" />').appendTo($this) +
+            $('<input class="temp_input_user" name="talent_id" type="hidden" value="' + $('.instrumento.active').data('instrument-name') + '" />').appendTo($this);
         });
        
         // Ejecución del ajax

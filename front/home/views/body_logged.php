@@ -1,3 +1,17 @@
+<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+<script>
+  !function(d,s,id){
+    var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+    if(!d.getElementById(id)){
+      js=d.createElement(s);
+      js.id=id;
+      js.src=p+'://platform.twitter.com/widgets.js';
+      fjs.parentNode.insertBefore(js,fjs);
+    }
+  }(document, 'script', 'twitter-wjs');
+</script>
+<link href="<?= front_asset('css/dropzone.css') ?>" type="text/css" rel="stylesheet" />
+<script src="<?= front_asset('js/dropzone.js') ?>"></script>
 <style type="text/css">
 /*  .header, #seguidores, #permitido{
     position: fixed;
@@ -80,9 +94,11 @@
     -moz-border-radius: 8px;
     -webkit-border-radius: 8px;
     margin-top: 3px;
-    height: 80px;
+    min-height: 80px;
     padding: 10px 20px;
     background-color: #E5E5E5;
+    position: relative;
+    overflow: hidden;
   }
   
   #blq-publicitario{
@@ -197,6 +213,15 @@
         margin-top: 20px;
         text-align: center;
     }
+  .btn-adicionales{
+    background-color: #E9E9E9;
+    height: 19px;
+    border-bottom: 1px solid #FFF;
+    border-left: 1px solid #FFF;
+    border-right: 1px solid #FFF;
+    border-top: 1px solid #DBDBDB;
+    padding: 5px 10px;
+  }
 </style>
 <div class="bgEncabezado">
     <div class="conEncabezado">
@@ -209,9 +234,9 @@
   
   <!-- Campo de status -->
   <div class="regis-tit" style="text-align: center;">Actualizar estado</div>
-  <div class="usuario-subtit close-form" style="position:relative; background-color: #EEE; border: 1px solid #FFF; border-radius: 7px; -moz-border-radius: 7px; -webkit-border-radius: 7px; padding: 7px;">
+  <div class="usuario-subtit close-form" style="position:relative; background-color: #EEE; border-top: 1px solid #FFF; border-left: 1px solid #FFF; border-right: 1px solid #FFF; padding: 7px;">
     <div class="edit-profile-status" data-profile-status="inline"></div>
-    <span id="profile-status" style="text-align: center;">
+    <span id="profile-status" style="text-align: center; min-height: 33px;">
       <?php if (!empty($userinfo->status)) : ?>
         <?php echo $userinfo->status ?>
       <?php else: ?>
@@ -220,11 +245,44 @@
     </span>
     <?php echo form_open('perfil/ajax/update_status', 'id="profile-status-form" style="display:none;"') ?> 
     <div>
-      <?php echo form_textarea(array('name' => 'status', 'required' => 'required', 'maxlength' => 100)) ?>
-      <input class="btn-primary" type="submit" value="Actualizar" />
-      <div class="cancel" style="display: inline-block; margin-left: 20px; cursor:pointer;" >Cancelar</div>
+      <?php echo form_textarea(array('name' => 'status', 'required' => 'required', 'maxlength' => 500, 'id' => 'status')) ?>
+      <div class="clr"></div>
+      <input class="btn-primary bot-logout" type="submit" value="Publicar" style="font-size: 0.6em; border: 0px; float: none; padding: .3em 1em;" />
+      <div class="cancel bot-logout" style="display: inline-block; height: 17px; font-size: 0.6em; margin-left: 20px; cursor:pointer; float: none" >Cancelar</div>
     </div>
     <?php echo form_close() ?>
+      <!-- Drag and Drop para imágenes-->
+      <form action="<?= site_url("perfil/ajax/do_upload") ?>" class="dropzone" id="form" style="display: none;"></form>
+      
+      <!-- Formulario de shows -->
+      <div class="campos-show" style="display:none;">
+        <form id="add-shows-form">
+
+          <div class="messages" style="display:none;"></div>
+
+          <div class="calendar">
+            <div class="calendar-tit">Fecha próximo evento</div>
+            <input name="date" type="text" id="basic_example_1" class="date-picker campo" placeholder="Fecha y hora del show">
+          </div>
+
+          <div class="selectBox"  id="select-largo2">
+
+            <input name="place" id="place" type="text" class="campo" placeholder="Lugar del show"  />
+          </div>
+          <div class="selectBox"  id="select-largo2">
+
+            <input name="adress" type="text" id="adress" class="campo" placeholder="Dirección del show"  />
+          </div>
+
+          <div class="selectBox" id="select-largo2">
+            <div class="ui-widget">
+              <input name="city-add" type="text" id="city-add" class="campo" placeholder="Ciudad"/>
+            </div>
+          </div>
+          <div class="clear"></div>
+          <div id="btn-show" class="bot-aceptar" style="cursor: pointer; width: 78px; height: 22px; padding-top: 4px; float: right; margin-top: -30px; margin-right: 242px;">Publicar</div>
+        </form><!-- // Formulario para agregar shows -->
+      </div>
     <script>
       var form_status = $('#profile-status-form'),
          status_inline = '[data-profile-status="inline"]',
@@ -278,8 +336,19 @@
         form_status.hide();
         parent.addClass('close-form');
       }
+      
+      function attach(elemento, elemento2, elemento3){
+        $(elemento).slideToggle("slow");
+        if($(elemento2).show())
+          $(elemento2 + ", " + elemento3).hide();
+      }
 
     </script>
+  </div>
+  <div class="btn-adicionales">
+    <div class="btn-adjuntar help-add" id="add-image" title="Click aquí para compartir imágenes" onclick="attach('#form', '.campos-show', '.campos-show')"></div>
+    <div class="btn-adjuntar help-add" id="add-show" title="Click aquí para compartir tus eventos" onclick="attach('.campos-show', '#form', '#form')"></div>
+    <div class="btn-adjuntar help-add" id="add-user" title="Click aquí para mencionar un amigo en tu post" onclick="attach('.campos-show', '#form', '#form')"></div>
   </div>
   <!-- Fin campos status -->
   
@@ -297,6 +366,79 @@
     </ul>
     <script type="text/javascript">
       $(function(){
+        
+        $("#status").keypress(function(e){                
+          if(e.which === 64){         
+            $(this).autocomplete({
+              source: "<?= site_url("home/get_users") ?>"
+            });
+          }
+        });
+        
+        $("#btn-show").on("click", function(){
+          var datos = {
+            date  : $("#basic_example_1").val(),
+            place : $("#place").val(),
+            adress: $("#adress").val(),
+            city : $("#city-add").val()
+          };
+
+          $.ajax({
+           type   : "get" ,
+           url    : "<?= site_url("perfil/ajax/save_show_loader") ?>",
+           data   : datos,
+           success  : function(){
+            $(".campos-show").delay(500).fadeOut("slow");
+           },
+           error    : function(){
+            alert("Se ha producido un error. Inténtelo más tarde!");
+           }
+          });
+        });
+        function log(message) {
+          $("<div>").text(message).prependTo("#log");
+          $("#log").scrollTop(0);
+        }
+        $("#city-add").autocomplete({
+          source: function(request, response) {
+            $.ajax({
+              url: "http://ws.geonames.org/searchJSON",
+              dataType: "jsonp",
+              data: {
+                featureClass: "P",
+                style: "full",
+                maxRows: 12,
+                name_startsWith: request.term
+              },
+              success: function(data) {
+                response($.map(data.geonames, function(item) {
+                  return {
+                    label: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName,
+                    value: item.name
+                  };
+                }));
+              }
+            });
+          },
+          minLength: 2,
+          select: function(event, ui) {
+            log(ui.item ?
+              "Selected: " + ui.item.label :
+              "Nothing selected, input was " + this.value);
+          },
+          open: function() {
+            $(this).removeClass("ui-corner-all").addClass("ui-corner-top");
+          },
+          close: function() {
+            $(this).removeClass("ui-corner-top").addClass("ui-corner-all");
+          }
+        });
+        $('.help-add').tooltipster({
+          theme: '.theme-help',
+          arrow: true,
+          arrowColor: '#FFF'
+        });
+        
         $(".nav-social").on("click", function(){            
             var ref1 = $(".my-btn-social-active").attr("data-div");
             $(ref1).slideUp("slow");            
@@ -348,20 +490,20 @@
                 <?php if ($photo->exists()) : ?>
                   <img  src="<?= uploads_url($photo->get_photo($intelligence->user->id)) ?>" width="80" />
                 <?php else :?>
-                  <img  src="<?= front_asset('images/imagensino.png') ?>" width="80" />
+                  <img  src="<?= front_asset('images/foto-perfil.png') ?>" width="80" />
                 <?php endif; ?>
               </div>
               <div class="content_follower">
                 <a href="<?= site_url('perfil/'.$intelligence->user->inshaka_url) ?>">
                   <span><?= !$intelligence->user->is_proveedor ? $intelligence->user->first_name.' '.$intelligence->user->last_name : $intelligence->user->name_proveedor ?></span>
-                </a> tiene un nuevo fan <span style="font-family: 'Arial'; font-style: italic; font-size: 0.85em; float: right;"><?= fecha_spanish_full_short($intelligence->update_on).' - '. get_hour($intelligence->update_on) ?></span>
+                </a> Tiene un nuevo fan <span style="font-family: 'Arial'; font-style: italic; font-size: 0.85em; float: right;"><?= fecha_spanish_full_short($intelligence->update_on).' - '. get_hour($intelligence->update_on) ?></span>
                 <div class="follower_new">
                   <?php $photo->where(array('user_id' => $intelligence->users_follow->user->id, 'profile_active' => true))->get(); ?>
                   <div style="float:left">
                     <?php if ($photo->exists()) : ?>
                       <img  src="<?= uploads_url($photo->get_photo($intelligence->users_follow->user->id)) ?>" style="width: 80px; height: 80px;" />
                     <?php else :?>
-                      <img  src="<?= front_asset('images/imagensino.png') ?>" width="80" />
+                      <img  src="<?= front_asset('images/foto-perfil.png') ?>" width="80" />
                     <?php endif; ?>
                   </div>
                   <div class="subcontent_follower" style="float:left; margin-left: 10px; width: 77%;">
@@ -378,19 +520,9 @@
                         <div class="btn_follow_follower" style="<?= ($intelligence->users_follow->user->id == $userinfo->id) ? 'display:none' : null ?>" onclick="follow(<?= $intelligence->users_follow->user->id ?>, 'Follow', '#follow-him-her')">
                           Seguir
                         </div>
-                        <div id="follow-him-her" title="Seguir" style="display:none">
-                          <p>
-                            Estás seguro que deseas seguir a este usuario?
-                          </p>
-                        </div>
                       <?php else : ?>
                         <div class="btn_follow_follower" style="<?= ($intelligence->users_follow->user->id == $userinfo->id) ? 'display:none' : null ?>" onclick="follow(<?= $intelligence->users_follow->user->id ?>, 'Unfollow', '#unfollow-him-her')">
                           Dejar de seguir
-                        </div>
-                        <div id="unfollow-him-her" title="Dejar de seguir" style="display:none">
-                          <p>
-                            Estás seguro que deseas dejar de seguir a este usuario?
-                          </p>
                         </div>
                       <?php endif; ?>
                     </p>
@@ -409,7 +541,7 @@
                 <?php if ($photo->exists()) : ?>
                   <img  src="<?= uploads_url($photo->get_photo($intelligence->user->id)) ?>" width="80" />
                 <?php else :?>
-                  <img  src="<?= front_asset('images/imagensino.png') ?>" width="80" />
+                  <img  src="<?= front_asset('images/foto-perfil.png') ?>" width="80" />
                 <?php endif; ?>
               </div>
               <div class="content_follower">
@@ -428,6 +560,8 @@
                   Ha aplicado a una audición
                 <?php elseif(!empty($intelligence->users_show_id)) : ?>
                   Te invita a un evento
+                <?php elseif(!empty($intelligence->users_photo_id)) : ?>
+                  Ha subido una imágen a su album
                 <?php endif; ?>
                 <span style="font-family: 'Arial'; font-style: italic; font-size: 0.85em; float: right;">
                   <?= fecha_spanish_full_short($intelligence->update_on).' - '. get_hour($intelligence->update_on) ?>
@@ -465,9 +599,27 @@
                         <div class="show-fecha" style="padding: 15px 5px; width: 80px; height: 50px;">
                           <b><?php echo $date['dia_text_short'] ?></b></br><?php echo $date['dia'], ' ', $date['mes'] ?>
                         </div>
+                    <?php elseif(!empty($intelligence->users_photo_id)) : ?>
+                      <a class="group" href="<?php echo uploads_url($intelligence->users_photo->image) ?>" rel="fancy-gallery">
+                        <img id="photo-<?= $intelligence->id ?>" src="<?php echo uploads_url($intelligence->users_photo->thumb) ?>" style="max-height: 163px; width: 270px;"/>
+                        <div id="mas-<?= $intelligence->id ?>" class="mas" style="margin-left: 227px; position: absolute;"><img src="images/mas.png" /></div>
+                        <script>
+                          $(function(){
+                            alto = $("#photo-<?= $intelligence->id ?>").innerHeight();
+                            $("#mas-<?= $intelligence->id ?>").css("margin-top", alto - 44 + "px");
+                          });
+                        </script>
+                      </a>
+                    <?php elseif(!empty($intelligence->statu_id)) : ?>
+                        <?php if(is_youtube_url($intelligence->statu->status)) :  $intelligence->statu->get_oembed()?>
+                        <a class="group iframe" href="<?php echo $intelligence->statu->oembed->status ?>" rel="fancy-gallery-iframe">
+                            <img src="<?= $intelligence->statu->oembed->thumbnail_url ?>" style="width: 80px; height: 80px; position: absolute" />
+                            <div class="mas" style=" margin-left: 37px; margin-top: 36px;"><img src="<?= front_asset('images/mas.png') ?>" /></div>
+                        </a>
+                        <?php endif; ?>
                   <?php endif; ?>
                   </div>
-                  <div class="subcontent_follower" style="float:left; margin-left: 10px; width: 72%;">
+                  <div class="subcontent_follower" style="float:left; margin-left: 10px; width: 72%; <?= !empty($intelligence->users_photo_id) ? "display:none" : null ?>">
                     <?php if(!empty($intelligence->audicion_id)) : ?>
                       <a href="<?php echo sprintf($urls->audicion_detalle, $intelligence->audicion->id, $intelligence->audicion->var) ?>">
                         <span><?= $intelligence->audicion->titulo ?></span>
@@ -498,7 +650,25 @@
                       <?php elseif(!empty($intelligence->band_id)) : ?>
                         <?= strlen($intelligence->band->page->bio) >= 140 ? substr($intelligence->band->page->bio, 0, 140)."..." : $intelligence->band->page->bio ?>
                       <?php elseif(!empty($intelligence->statu_id)) : ?>
-                      <?= strlen($intelligence->statu->status) >= 140 ? substr($intelligence->statu->status, 0, 140)."..." : $intelligence->statu->status ?>
+                        <?php if(is_youtube_url($intelligence->statu->status)) :  $intelligence->statu->get_oembed()?>
+                          <?= $intelligence->statu->oembed->title ?>
+                        <?php else : ?>
+                          <?php 
+                            $patron = "/@_?[a-z0-9]+(_?)([a-z0-9]?)+/i";
+                            if(preg_match_all($patron, $intelligence->statu->status, $coincidencias, PREG_OFFSET_CAPTURE)) {
+                              foreach ($coincidencias[0] as $coincide) {
+                                $words_search[] = $coincide[0];
+                                $url_status = str_replace($coincide[0], "<a href='".site_url("perfil/".$usuario->get_by_username(trim($coincide[0], "@"))->inshaka_url)."' style='color: #e82e7c; font-style: normal;' >".$coincide[0]."</a>", $coincide[0]);
+                                $mension[] = $url_status;
+                              }
+                              $status_replace = str_replace($words_search, $mension, $intelligence->statu->status);
+                            }else{
+                              $status_replace = $intelligence->statu->status;
+                            }
+                          ?>
+                      
+                          <?= strlen($status_replace) >= 900 ? substr($status_replace, 0, 900)."..." : $status_replace ?>
+                        <?php endif; ?>
                       <?php elseif(!empty($intelligence->users_show_id)) : ?>
                       <?php $date = fecha_spanish($intelligence->users_show->date); ?>
                         <span style="color: #666; font-style: normal;"><span style="margin-right: 35px;">Hora: </span><?= $date['hora'] ?></span><br>
@@ -538,98 +708,63 @@
                 <div id="comment-<?= $intelligence->id ?>" style="display:none; padding: 10px; min-height: 40px;">
                     <textarea name="comment-intelligence" id="comment-intelligence-<?= $intelligence->id ?>" cols="20" rows="3" maxlength="145" style="font-family: 'Arial'; background:#E4E7E7; border-color: #C7C9CA; width: 100%;" placeholder="Deja aquí su comentario (máx. 140 caracteres)"></textarea>
                     <input class="bot-aceptar" type="submit" onclick="save_comment(<?= $intelligence->id ?>, '#comment-intelligence-<?= $intelligence->id ?>', '#ajax-load-<?= $intelligence->id ?>', '#comentarios-<?= $intelligence->id ?>' );" value="Enviar">
+                    <script>
+                      $(function(){
+                        $("#comment-intelligence-<?= $intelligence->id ?>").keypress(function(e){                
+                          if(e.which === 64){         
+                            $(this).autocomplete({
+                              source: "<?= site_url("home/get_users") ?>"
+                            });
+                          }
+                        });
+                      });
+                    </script>
                 </div>
                 <div class="clear"></div>
                 <div id="share-<?= $intelligence->id ?>" style="display:none; padding: 20px;">
-                <?php if(!empty($intelligence->audicion_id)) : ?>
+                <?php 
+                  if(!empty($intelligence->audicion_id)) {
+                    $url = sprintf($urls->audicion_detalle, $intelligence->audicion->id, $intelligence->audicion->var);
+                    $text = $intelligence->audicion->titulo;
+                  }elseif(!empty ($intelligence->clasificado_id)){
+                    $url = sprintf($urls->clasificado_detalle, $intelligence->clasificado->id, $intelligence->clasificado->var);
+                    $text = $intelligence->clasificado->titulo;
+                  }elseif(!empty ($intelligence->band_id)){
+                    $url = site_url('perfil/pagina/'.$intelligence->band->var);
+                    $text = "Una nueva banda con el power InShaka se ha creado recientemente. Éxitos para esta banda ";
+                  }elseif(!empty ($intelligence->audiciones_aplicacion_id)){
+                    $url = sprintf($urls->audicion_detalle, $intelligence->audiciones_aplicacion->audicion->id, $intelligence->audiciones_aplicacion->audicion->var);
+                    $text = "Estamos aplicando a esta audición ".$intelligence->audiciones_aplicacion->audicion->titulo." en Inshaka.com";
+                  }elseif(!empty ($intelligence->users_show_id)){
+                    $url = sprintf($urls->inshaka_url, $intelligence->users_show->user->inshaka_url);
+                    $date = fecha_spanish($intelligence->users_show->date);
+                    $text = "Nuevo show en ".$intelligence->users_show->place." el ".$date['dia']." de ".$date['mes']. " a las ".$date['hora'];
+                  }elseif(!empty ($intelligence->users_song_id)){
+                    $url = sprintf($urls->inshaka_url, $intelligence->users_song->user->inshaka_url);
+                    $text = "Un nuevo single con el power InShaka ".$intelligence->users_song->url ;
+                  }elseif(!empty ($intelligence->users_photo_id)){
+                    $url = sprintf($urls->inshaka_url, $intelligence->users_photo->user->inshaka_url);
+                  }elseif(!empty ($intelligence->users_video_id)){
+                    $url = sprintf($urls->inshaka_url, $intelligence->users_video->user->inshaka_url);
+                  }elseif(!empty ($intelligence->statu_id)){
+                    $url = sprintf($urls->inshaka_url, $intelligence->statu->user->inshaka_url);
+                    $text = $intelligence->statu->user->first_name." ".$intelligence->statu->user->last_name.' ha cambiado su estado en InShaka.com';
+                  }
+                ?>
+                  <!-- Enlaces de compartir -->
+                  <!-- Facebook -->
                   <div class="share-social-network" style="float: left; width: 100px;"> 
-                    <div class="fb-like" data-send="false" data-href="<?= sprintf($urls->audicion_detalle, $intelligence->audicion->id, $intelligence->audicion->var) ?>" data-layout="button_count" data-width="100" data-show-faces="false" data-action="like" ></div>
+                    <div class="fb-like" data-send="false" data-href="<?= $url ?>" data-layout="button_count" data-width="100" data-show-faces="false" data-action="like" ></div>
                   </div>
+                  <!-- Twitter --><!--
                   <div class="share-social-network" style="float: left; width: 100px;"> 
-                    <a href="https://twitter.com/share" class="twitter-share-button" data-url="<?= sprintf($urls->audicion_detalle, $intelligence->audicion->id, $intelligence->audicion->var) ?>" data-text="<?= $intelligence->audicion->titulo ?>" data-via="inshaka" data-lang="es" data-hashtags="TryInshaka">Twittear</a>
-                  </div>
-                  <script>
-                    !function(d,s,id){
-                      var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
-                      if(!d.getElementById(id)){
-                        js=d.createElement(s);
-                        js.id=id;
-                        js.src=p+'://platform.twitter.com/widgets.js';
-                        fjs.parentNode.insertBefore(js,fjs);
-                      }
-                    }(document, 'script', 'twitter-wjs');
-                  </script>
-                  <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+                    <a href="https://twitter.com/share" class="twitter-share-button" data-url="<?= $url ?>" data-text="<?= $text ?>" data-via="inshaka" data-lang="es" data-hashtags="TryInshaka">Twittear</a>
+                  </div> -->
+                  <!-- Google + -->
                   <div class="share-social-network" style="float: left; margin-left: 20px; width: 100px;"> 
-                    <div class="g-plusone" data-size="medium" data-href="<?= sprintf($urls->audicion_detalle, $intelligence->audicion->id, $intelligence->audicion->var) ?>"></div>
+                    <div class="g-plusone" data-size="medium" data-href="<?= $url ?>"></div>
                   </div>
-                <?php elseif(!empty($intelligence->clasificado_id)) : ?>
-                  <div class="share-social-network" style="float: left; width: 100px;"> 
-                    <div class="fb-like" data-send="false" data-href="<?= sprintf($urls->clasificado_detalle, $intelligence->clasificado->id, $intelligence->clasificado->var) ?> ?>" data-layout="button_count" data-width="100" data-show-faces="false"></div>
-                  </div>
-                  <div class="share-social-network" style="float: left; width: 100px;"> 
-                    <a href="https://twitter.com/share" class="twitter-share-button" data-url="<?= sprintf($urls->clasificado_detalle, $intelligence->clasificado->id, $intelligence->clasificado->var) ?>" data-text="<?= $intelligence->clasificado->titulo ?>" data-via="inshaka" data-lang="es" data-hashtags="TryInshaka">Twittear</a>
-                  </div>
-                  <script>
-                    !function(d,s,id){
-                      var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
-                      if(!d.getElementById(id)){
-                        js=d.createElement(s);
-                        js.id=id;
-                        js.src=p+'://platform.twitter.com/widgets.js';
-                        fjs.parentNode.insertBefore(js,fjs);
-                      }
-                    }(document, 'script', 'twitter-wjs');
-                  </script>
-                  <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-                  <div class="share-social-network" style="float: left; margin-left: 20px; width: 100px;"> 
-                    <div class="g-plusone" data-size="medium" data-href="<?= sprintf($urls->clasificado_detalle, $intelligence->clasificado->id, $intelligence->clasificado->var) ?>"></div>
-                  </div>
-                <?php elseif(!empty($intelligence->audiciones_aplicacion_id)) : ?>
-                  <div class="share-social-network" style="float: left; width: 100px;"> 
-                    <div class="fb-like" data-send="false" data-href="<?= sprintf($urls->audicion_detalle, $intelligence->audiciones_aplicacion->audicion->id, $intelligence->audiciones_aplicacion->audicion->var) ?>" data-layout="button_count" data-width="100" data-show-faces="false" data-action="like" ></div>
-                  </div>
-                  <div class="share-social-network" style="float: left; width: 100px;"> 
-                    <a href="https://twitter.com/share" class="twitter-share-button" data-url="<?= sprintf($urls->audicion_detalle, $intelligence->audiciones_aplicacion->audicion->id, $intelligence->audiciones_aplicacion->audicion->var) ?>" data-text="<?= $intelligence->audiciones_aplicacion->audicion->titulo ?>" data-via="inshaka" data-lang="es" data-hashtags="TryInshaka">Twittear</a>
-                  </div>
-                  <script>
-                    !function(d,s,id){
-                      var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
-                      if(!d.getElementById(id)){
-                        js=d.createElement(s);
-                        js.id=id;
-                        js.src=p+'://platform.twitter.com/widgets.js';
-                        fjs.parentNode.insertBefore(js,fjs);
-                      }
-                    }(document, 'script', 'twitter-wjs');
-                  </script>
-                  <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-                  <div class="share-social-network" style="float: left; margin-left: 20px; width: 100px;"> 
-                    <div class="g-plusone" data-size="medium" data-href="<?= sprintf($urls->audicion_detalle, $intelligence->audiciones_aplicacion->audicion->id, $intelligence->audicion->var) ?>"></div>
-                  </div>
-                <?php elseif(!empty($intelligence->band_id)) : ?>
-                  <div class="share-social-network" style="float: left; width: 100px;">
-                    <div class="fb-like" data-send="false" data-href="<?= site_url('perfil/pagina/'.$intelligence->band->var) ?>" data-layout="button_count" data-width="100" data-show-faces="false" data-action="like" data-stream="false" data-show-border="false" data-header="false" ></div>
-                  </div>
-                  <div class="share-social-network" style="float: left; width: 100px;"> 
-                    <a href="https://twitter.com/share" class="twitter-share-button" data-url="<?= site_url('perfil/pagina/'.$intelligence->band->var) ?>" data-text="<?= $intelligence->band->name ?>" data-via="inshaka" data-lang="es" data-hashtags="TryInshaka">Twittear</a>
-                  </div>
-                  <script>
-                    !function(d,s,id){
-                      var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
-                      if(!d.getElementById(id)){
-                        js=d.createElement(s);
-                        js.id=id;
-                        js.src=p+'://platform.twitter.com/widgets.js';
-                        fjs.parentNode.insertBefore(js,fjs);
-                      }
-                    }(document, 'script', 'twitter-wjs');
-                  </script>
-                  <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-                  <div class="share-social-network" style="float: left; margin-left: 20px; width: 100px;"> 
-                    <div class="g-plusone" data-size="medium" data-href="<?= site_url('perfil/pagina/'.$intelligence->band->var) ?>"></div>
-                  </div>
-                <?php endif; ?>
+                  <!-- Fin enlaces de compartir -->
                 </div>
                 <div class="clear"></div>
                 <div class="comments-intelligence" id="comentarios-<?= $intelligence->id ?>" data-load-url="<?= site_url('perfil/social/load_comments/'.$intelligence->id) ?>">
@@ -1065,3 +1200,14 @@
         $('#audiciones_activas').jScrollPane();
     });
 </script>
+<!-- Modales -->
+<div id="follow-him-her" title="Seguir" style="display:none">
+  <p>
+    Estás seguro que deseas seguir a este usuario?
+  </p>
+</div>
+<div id="unfollow-him-her" title="Dejar de seguir" style="display:none">
+  <p>
+    Estás seguro que deseas dejar de seguir a este usuario?
+  </p>
+</div>

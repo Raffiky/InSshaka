@@ -173,10 +173,15 @@ class Ajax extends Front_Controller {
         $num_conciertos = $this->_get('num_conciertos') ? $this->_get('num_conciertos') : $keyword;
         $nivel_experiencia = $this->_get('niv_experiencia') ? $this->_get('niv_experiencia') : $keyword;
         $experiencia = $this->_get('experiencia') ? $this->_get('experiencia') : $keyword;
-        $ubicacion = $this->_get('city') ? $this->_get('city') : $keyword;
+        $city = $this->_get('city') ? $this->_get('city') : $keyword;
         $necesitas_band = $this->_get('necesitas_band') ? $this->_get('necesitas_band') : $keyword;
         $users = $this->_get('_users');
-                
+        $instrument = $this->_get('talent_id') ? explode(":",$this->_get('talent_id')) : $keyword;
+        
+        // Cargamos la categoría del instrumento
+        $talents_category = new \Talents_category;
+        $talents_category->get_by_name($instrument[0]);
+        
         if (!empty($num_conciertos)) {
           $params['numero_conciertos'] = $num_conciertos;
         }
@@ -193,8 +198,9 @@ class Ajax extends Front_Controller {
           $params['anos_experiencia'] = $experiencia;
         }
         
-        if (!empty($ubicacion)) {
-          $params['ubicacion'] = $ubicacion;
+        if (!empty($city)) {
+          $params['city'] = $city;
+          $info_personal->ilike_related('users', 'city', $city);
         }
 
         if (!empty($users) && @is_array($users)) {
@@ -203,7 +209,13 @@ class Ajax extends Front_Controller {
         }
 
         if (!empty($params)) {
-            $info_personal->ilike($params)->get();
+          $info_personal
+                  ->ilike($params)
+                  ->where_in_related_subquery('users', 'id', $datos->select("id")->where_related_subquery('talent', "id", $datos->talent
+                          ->select('id')
+                          ->where('name', $instrument[1])
+                          ->where_related('talents_categories', 'id', $talents_category->id)))
+                  ->get();
             
             if ($info_personal->exists()) {
               foreach ($info_personal as $dato) {

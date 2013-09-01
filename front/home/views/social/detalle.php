@@ -80,9 +80,11 @@
     -moz-border-radius: 8px;
     -webkit-border-radius: 8px;
     margin-top: 3px;
-    height: 80px;
+    min-height: 80px;
     padding: 10px 20px;
     background-color: #E5E5E5;
+    position: relative;
+    overflow: hidden;
   }
   
   #blq-publicitario{
@@ -185,12 +187,12 @@
 </style>
 <div class="contenido">
   <div class="new_follower">
-    <?php $photo->where('user_id', $datos->intelligence->user->id)->get(); ?>
+    <?php $photo->where(array('user_id' => $datos->intelligence->user->id, 'profile_active' => true))->get(); ?>
     <div style="float:left">
       <?php if ($photo->exists()) : ?>
         <img  src="<?= uploads_url($photo->get_photo($datos->intelligence->user->id)) ?>" width="80" />
       <?php else :?>
-        <img  src="images/imagensino.png" width="80" />
+        <img  src="images/foto-perfil.png" width="80" />
       <?php endif; ?>
     </div>
     <div class="content_follower" style="<?= empty($datos->intelligence->users_follow_id) ? 'display:none' : null ?>">
@@ -214,15 +216,17 @@
         <span><?= $datos->intelligence->user->first_name.' '.$datos->intelligence->user->last_name ?></span>
       </a>
       <?php if(!empty($datos->intelligence->audicion_id)) : ?>
-        ha creado una nueva audición
+        Ha creado una nueva audición
       <?php elseif (!empty($datos->intelligence->band_id)) : ?>
-        ha creado una nueva banda
+        Ha creado una nueva banda
       <?php elseif (!empty($datos->intelligence->clasificado_id)) : ?>
-        ha creado un nuevo clasificado
+        Ha creado un nuevo clasificado
       <?php elseif (!empty($datos->intelligence->statu_id)) : ?>
-        ha cambiado su estado
+        Ha cambiado su estado
       <?php elseif (!empty($datos->intelligence->audiciones_aplicacion_id)) : ?>
-        ha aplicado a una audición
+        Ha aplicado a una audición
+      <?php elseif (!empty($datos->intelligence->users_show_id)) : ?>
+        Ha creado un evento
       <?php endif; ?>
       <span style="font-family: 'Arial'; font-style: italic; font-size: 0.85em; float: right;">
         <?= fecha_spanish_full_short($datos->intelligence->update_on).' - '. get_hour($datos->intelligence->update_on) ?>
@@ -239,13 +243,34 @@
           <?php endif; ?>
         </div>
         <?php else : ?>
-        <div style="float:left; <?= !empty($datos->intelligence->statu_id) ? 'display: none' : null  ?>">
+        <div style="float:left; <?= !empty($datos->intelligence->statu_id) && !is_youtube_url($datos->intelligence->statu->status) ? 'display: none' : null  ?>">
           <?php if (!empty($datos->intelligence->audicion->imagen)) : ?>
             <img  src="<?= uploads_url($datos->intelligence->audicion->imagen) ?>" width="80" />
           <?php elseif (!empty($datos->intelligence->audiciones_aplicacion->audicion->imagen)) : ?>
             <img  src="<?= uploads_url($datos->intelligence->audiciones_aplicacion->audicion->imagen) ?>" width="80" />
           <?php elseif (!empty($datos->intelligence->clasificado->imagen)) : ?>
             <img  src="<?= uploads_url($datos->intelligence->clasificado->imagen) ?>" width="80" />
+          <?php elseif(is_youtube_url($datos->intelligence->statu->status)) :  $datos->intelligence->statu->get_oembed()?>
+            <a class="group iframe" href="<?php echo $datos->intelligence->statu->oembed->status ?>" rel="fancy-gallery-iframe">
+                <img src="<?= $datos->intelligence->statu->oembed->thumbnail_url ?>" style="width: 80px; height: 80px; position: absolute" />
+                <div class="mas" style=" margin-left: 37px; margin-top: 36px;"><img src="<?= front_asset('images/mas.png') ?>" /></div>
+            </a>
+          <?php elseif(!empty($datos->intelligence->users_photo_id)) : ?>
+            <a class="group" href="<?php echo uploads_url($datos->intelligence->users_photo->image) ?>" rel="fancy-gallery">
+              <img id="photo-<?= $datos->intelligence->id ?>" src="<?php echo uploads_url($datos->intelligence->users_photo->thumb) ?>" style="max-height: 163px; width: 270px;"/>
+              <div id="mas-<?= $datos->intelligence->id ?>" class="mas" style="margin-left: 227px; position: absolute;"><img src="images/mas.png" /></div>
+              <script>
+                $(function(){
+                  alto = $("#photo-<?= $datos->intelligence->id ?>").innerHeight();
+                  $("#mas-<?= $datos->intelligence->id ?>").css("margin-top", alto - 44 + "px");
+                });
+              </script>
+            </a>
+          <?php elseif(!empty($datos->intelligence->users_show_id)) : ?>
+             <?php $date = fecha_spanish($datos->intelligence->users_show->date); ?>
+            <div class="show-fecha" style="padding: 15px 5px; width: 80px; height: 50px; margin-right: 0px;">
+              <b><?php echo $date['dia_text_short'] ?></b></br><?php echo $date['dia'], ' ', $date['mes'] ?>
+            </div>
           <?php else :?>
             <img  src="images/imagensino.png" width="80" />
           <?php endif; ?>
@@ -284,9 +309,32 @@
             <p style="font-style: italic; text-align: justify; height: 25px;">
               <?= strlen($datos->intelligence->clasificado->descripcion) >= 140 ? substr($datos->intelligence->clasificado->descripcion, 0, 140)."..." : $datos->intelligence->clasificado->descripcion ?>
             </p>
+          <?php elseif(!empty($datos->intelligence->users_show_id)) : ?>
+            <?php $date = fecha_spanish($datos->intelligence->users_show->date); ?>
+              <span style="color: #666; font-style: normal;"><span style="margin-right: 35px;">Hora: </span><?= $date['hora'] ?></span><br>
+              <span style="color: #666; font-style: normal;"><span style="margin-right: 5px;">Dirección: </span><?= $datos->intelligence->users_show->adress ?></span><br>
+              <span style="color: #666; font-style: normal;"><?= $datos->intelligence->users_show->city ?></span>
           <?php elseif(!empty($datos->intelligence->statu_id)) : ?>
             <p style="font-style: italic; text-align: justify; height: 25px;">
-              <?= strlen($datos->intelligence->user->status) >= 140 ? substr($datos->intelligence->user->status, 0, 140)."..." : $datos->intelligence->user->status ?>
+            <?php if(is_youtube_url($datos->intelligence->statu->status)) :  $datos->intelligence->statu->get_oembed()?>
+              <?= $datos->intelligence->statu->oembed->title ?>
+            <?php else : ?>
+              <?php 
+                $patron = "/@_?[a-z0-9]+(_?)([a-z0-9]?)+/i";
+                if(preg_match_all($patron, $datos->intelligence->statu->status, $coincidencias, PREG_OFFSET_CAPTURE)) {
+                  foreach ($coincidencias[0] as $coincide) {
+                    $words_search[] = $coincide[0];
+                    $url_status = str_replace($coincide[0], "<a href='".site_url("perfil/".$usuario->get_by_username(trim($coincide[0], "@"))->inshaka_url)."' style='color: #e82e7c; font-style: normal;' >".$coincide[0]."</a>", $coincide[0]);
+                    $mension[] = $url_status;
+                  }
+                  $status_replace = str_replace($words_search, $mension, $datos->intelligence->statu->status);
+                }else{
+                  $status_replace = $datos->intelligence->statu->status;
+                }
+              ?>
+
+              <?= strlen($status_replace) >= 500 ? substr($status_replace, 0, 500)."..." : $status_replace ?>
+            <?php endif; ?>
             </p>
           <?php endif; ?>
         </div>
@@ -321,6 +369,17 @@
       <div id="comment-<?= $datos->intelligence->id ?>" style="display:none; padding: 10px; min-height: 40px;">
           <textarea name="comment-intelligence" id="comment-intelligence-<?= $datos->intelligence->id ?>" cols="20" rows="3" maxlength="145" style="font-family: 'Arial'; background:#E4E7E7; border-color: #C7C9CA; width: 100%;" placeholder="Deja aquí su comentario (máx. 140 caracteres)"></textarea>
           <input class="bot-aceptar" type="submit" onclick="save_comment(<?= $datos->intelligence->id ?>, '#comment-intelligence-<?= $datos->intelligence->id ?>', '#ajax-load-<?= $datos->intelligence->id ?>', '#comentarios-<?= $datos->intelligence->id ?>' );" value="Enviar">
+          <script>
+            $(function(){
+              $("#comment-intelligence-<?= $datos->intelligence->id ?>").keypress(function(e){                
+                if(e.which === 64){         
+                  $(this).autocomplete({
+                    source: "<?= site_url("home/get_users") ?>"
+                  });
+                }
+              });
+            });
+          </script>
       </div>
       <div class="clear"></div>
       <div id="share-<?= $datos->intelligence->id ?>" style="display:none; padding: 20px;">

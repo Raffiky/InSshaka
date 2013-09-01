@@ -2,6 +2,15 @@
 .comboBox1{
 	width:160px !important;
 }
+#restablecer-filtro{
+  margin-bottom: 60px;
+  margin-top: 19px;
+  float: left;
+  padding: 3px 8px;
+  width: 146px;
+  font-size: 20px;
+  border-radius: 3px;
+}
 </style>
 <div class="bgEncabezado">
     <div class="conEncabezado">
@@ -92,9 +101,8 @@
                         
                     </div>
                     <div class="clr"></div>
-
                         <input type="submit" class="bot-buscar" value="buscar" style=" margin-bottom: 60px; margin-top: 19px; float:left;"/>
-                        <a class="bot-registro2 cambia-cont" href="<?= site_url('mishaka') ?>" style="margin-bottom: 60px; margin-top: 19px; float:left; padding-left: 8px; width: 90px;">Restablecer</a>
+                        <a class="bot-logout cambia-cont" id="restablecer-filtro" href="<?= site_url('mishaka') ?>">Restablecer filtros</a>
                 </form>
                 <div class="clear"></div>
 

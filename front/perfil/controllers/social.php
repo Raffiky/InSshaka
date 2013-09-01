@@ -119,30 +119,37 @@ class Social extends Front_Controller {
     
     public function allow_follow(){
       $id = $this->_get('id');
-      $status = $this->_get('status');
+      $status = $this->_get('status');      
+      $datos = $this->_datos->get_by_id($id);
+      $users_follow = new \Users_follow;
+      
       $intelligence = new Intelligence;
       
-      $datos = $this->_datos->get_by_id($id);
-      
       if($datos->exists()){
-        if($status == 'Allow'){
-          $this->_datos->where('id', $id)->update('allow_follow', true);
-          
-          $intelligence->user_id = $this->_datos->user_follow_id;
-          $intelligence->users_follow_id = $id;
-          $intelligence->created_on = datetime_now();
-          if($intelligence->save()){
+        switch ($status) {
+          case "Allow":
+            $this->_datos->where('id', $id)->update('allow_follow', true);          
             
-            $notification = new \Notification;
-            $notification->user_id = $this->_datos->user_id;
-            $notification->intelligence_id = $intelligence->id;
-
-            $notification->save();
-          }
-          
-        }else {
-          $this->_datos->where('id', $id)->delete();
+            $intelligence->user_id = $this->_datos->user_follow_id;
+            $intelligence->users_follow_id = $id;
+            $intelligence->created_on = datetime_now();
+            
+            if($intelligence->save()){
+              $notification = new \Notification;
+              $notification->user_id = $this->_datos->user_id;
+              $notification->intelligence_id = $intelligence->id;
+              $notification->save();
+            }
+            break;
+          case "Deny":
+            $users_follow->where('id', $id)->get()->delete();
+            break;
+          default:
+            $this->_datos->where('id', $id)->get()->delete();
+            break;
         }
+      }else{
+        $this->set_alert("El usuario ya no existe", "error");
       }
     }
     
@@ -161,8 +168,12 @@ class Social extends Front_Controller {
     // ----------------------------------------------------------------------
     
     public function detalle(){
+      $this->set_title("Detalle de notificación");
       $id = $this->_get('id');
       $this->show_header_perfil = false;
+      
+      $usuario = new \User;
+      $this->_data['usuario'] = $usuario;
       
       // Cargando fotos de usuario
       $photo = new Users_photo;
@@ -273,6 +284,19 @@ class Social extends Front_Controller {
           $notification->intelligence_id = $id;
           
           $notification->save();
+          
+          $patron = "/@_?[a-z0-9]+(_?)([a-z0-9]?)+/i";
+          $encontrado = preg_match_all($patron, $comentario, $coincidencias, PREG_OFFSET_CAPTURE);
+          if ($encontrado) {
+            $usuario_notificación = new \User;
+            $notification_user = new Notification;
+            $notification_user->intelligence_id = $intelligences->id;
+
+            foreach ($coincidencias[0] as $coincide) {
+              $notification_user->user_id = $usuario_notificación->get_by_username(trim($coincide[0], "@"))->id;
+              $notification_user->save_as_new();
+            }
+          }
         }
       }
     }
@@ -287,6 +311,9 @@ class Social extends Front_Controller {
         // Cargando fotos de usuario
         $photo = new Users_photo;
         $this->_data['photo'] = $photo;
+        
+        $usuario = new \User;
+        $this->_data['usuario'] = $usuario;
         
         $this->set_datos($intelligence_comments);
         return parent::view('home/social/comments_inshaka', false);
@@ -316,6 +343,7 @@ class Social extends Front_Controller {
         $band->like('name', $field)->or_like_related('musical_gender', 'name', $field)->get_paged($page, 100);
         $audiciones->like('titulo',$field)->or_like('descripcion', $field)->get_paged($page, 100);
         $clasificados->like('titulo', $field)->or_like('descripcion', $field)->get_paged($page, 100);
+        $directorio = $user->like('name_proveedor', $field)->get_paged($page, 100);
 
         if($user->exists()){
           $this->_data['find_user'] = $user;
@@ -353,6 +381,15 @@ class Social extends Front_Controller {
           }
           $this->_count = $clasificados->count_distinct();
         }
+        if($directorio->exists()){
+          $this->_data['find_directorio'] = $directorio;
+          if ($this->_get(null)) {
+            $datos = $directorio;            
+            $paginator_url = site_url('perfil/social/find_inshaka/pagina/%d/');
+            $this->_data['paginator_url'] = $_SERVER['QUERY_STRING'] ? $paginator_url . '?' . $_SERVER['QUERY_STRING'] : $paginator_url;
+          }
+          $this->_count = $directorio->count_distinct();
+        }
         
         return $this->build('home/social/find');
       }
@@ -366,6 +403,9 @@ class Social extends Front_Controller {
       $user = new User;
       $user->get_current();
       $this->_data['userinfo'] = $user;
+      
+      $usuario = new \User;
+      $this->_data['usuario'] = $usuario;
       
       // Cargando follows
       $follow = new Users_follow;
