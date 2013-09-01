@@ -237,6 +237,17 @@
         <div id="comment-<?= $intelligence->id ?>" style="display:none; padding: 10px; min-height: 40px;">
             <textarea name="comment-intelligence" id="comment-intelligence-<?= $intelligence->id ?>" cols="20" rows="3" maxlength="145" style="font-family: 'Arial'; background:#E4E7E7; border-color: #C7C9CA; width: 100%;" placeholder="Deja aquí su comentario (máx. 140 caracteres)"></textarea>
             <input class="bot-aceptar" type="submit" onclick="save_comment(<?= $intelligence->id ?>, '#comment-intelligence-<?= $intelligence->id ?>', '#ajax-load-<?= $intelligence->id ?>', '#comentarios-<?= $intelligence->id ?>' );" value="Enviar">
+            <script>
+                $(function(){
+                  $("#comment-intelligence-<?= $intelligence->id ?>").keypress(function(e){                
+                    if(e.which === 64){         
+                      $(this).autocomplete({
+                        source: "<?= site_url("home/get_users") ?>"
+                      });
+                    }
+                  });
+                });
+              </script>
         </div>
         <div class="clear"></div>
         <div id="share-<?= $intelligence->id ?>" style="display:none; padding: 20px;">
