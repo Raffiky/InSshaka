@@ -120,7 +120,7 @@
         $('div#last_msg_loader').html('<img src="<?= front_asset('images/load_notifications.gif') ?>">');
         $.ajax({
           type : "post",
-          url: "<?= site_url('perfil/social/load_data') ?>",
+          url: "<?= site_url('perfil/social/load_self_data') ?>",
           data: datos,
           beforeSend: function(){
             if(repetir === false){
@@ -312,9 +312,9 @@
                 <span><?= $dato->audicion->titulo ?></span>
               </a>
             <?php elseif(!empty($dato->users_follow_id)) : ?>
-              <p style="font-style: italic; text-align: justify; height: 25px;">
-                <?= strlen($dato->users_follow->user->bio) >= 140 ? substr($dato->users_follow->user->bio, 0, 140)."..." : $dato->users_follow->user->bio ?>
-              </p>
+              <a href="<?= site_url('perfil/'.$dato->users_follow->user->inshaka_url) ?>">
+                <span><?= $dato->users_follow->user->first_name." ".$dato->users_follow->user->last_name ?></span>
+              </a>
             <?php elseif(!empty($dato->clasificado_id)) : ?>
               <a href="<?php echo sprintf($urls->clasificado_detalle, $dato->clasificado->id, $dato->clasificado->var) ?>">
                 <span><?= $dato->clasificado->titulo ?></span>
@@ -334,6 +334,10 @@
             <p style="font-style: italic; text-align: justify; height: 25px;">
               <?php if(!empty($dato->audicion_id)) : ?>
                 <?= strlen($dato->audicion->descripcion) >= 140 ? substr($dato->audicion->descripcion, 0, 140)."..." : $dato->audicion->descripcion ?>
+              <?php elseif(!empty($dato->users_follow_id)) : ?>
+                <p style="font-style: italic; text-align: justify; height: 25px;">
+                  <?= strlen($dato->users_follow->user->bio) >= 140 ? substr($dato->users_follow->user->bio, 0, 140)."..." : $dato->users_follow->user->bio ?>
+                </p>
               <?php elseif(!empty($dato->clasificado_id)) : ?>
                 <?= strlen($dato->clasificado->descripcion) >= 140 ? substr($dato->clasificado->descripcion, 0, 140)."..." : $dato->clasificado->descripcion ?>
               <?php elseif(!empty($dato->audiciones_aplicacion_id)) : ?>
@@ -476,15 +480,5 @@
       </div>
     </div>
   <?php endforeach; ?>
-  <div id="last_msg_loader" style="margin: 28px 230px;"></div>
-  <div id="post-compartido" title="Compartir post" style="display:none">
-    <p>
-      Este post ha sido compartido en tu muro!.
-    </p>
-  </div>
-  <div id="aplicar-compartido" title="Aplicar audición" style="display:none">
-    <p>
-      Haz aplicado a la audición correctamente!.
-    </p>
-  </div>
+  
 <?php endif; ?>

@@ -1062,6 +1062,17 @@
       <div id="posts-list" data-load-url="<?php echo site_url('perfil/' . $datos->inshaka_url . '/load_posts') ?>">
         <p><small>Cargando posts...</small></p>
       </div>
+      <div id="last_msg_loader" style="margin: 28px 230px;"></div>
+      <div id="post-compartido" title="Compartir post" style="display:none">
+        <p>
+          Este post ha sido compartido en tu muro!.
+        </p>
+      </div>
+      <div id="aplicar-compartido" title="Aplicar audición" style="display:none">
+        <p>
+          Haz aplicado a la audición correctamente!.
+        </p>
+      </div>
       <script>
         $(function(){
           $("#posts-list").load($("#posts-list").data('load-url'));

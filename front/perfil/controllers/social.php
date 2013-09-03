@@ -439,5 +439,47 @@ class Social extends Front_Controller {
     }
     
     // ----------------------------------------------------------------------
+    
+    public function load_self_data(){
+      // Cargando datos de usuario
+      $user = new User;
+      $user->get_current();
+      $this->_data['userinfo'] = $user;
+      
+      $usuario = new \User;
+      $this->_data['usuario'] = $usuario;
+      
+      // Cargando follows
+      $follow = new Users_follow;
+      $follow->get_by_related($user);
+      $this->_data['seguidos_por_mi'] = $follow;
+
+      // Clone followers
+      $clone_f = clone $follow;
+      $this->_data['clone_f'] = $clone_f;
+            
+      // Cargando interacciones
+      $intelligence = new Intelligence;
+      $intelligence->where('id <', $this->_post('id'))
+              ->where_related($user)
+              ->limit(5)->get();
+      $this->_data['interacciones'] = $intelligence;
+      $this->_data['total_resultados'] = $intelligence->result_count();
+      
+      // Cargando total de comentarios
+      $intelligence_comments = new \Intelligences_comment;
+      $this->_data['intelligence_comments'] = $intelligence_comments;
+      
+      // Cargando fotos de usuario
+      $photo = new Users_photo;
+      $this->_data['photo'] = $photo;
+        
+      $this->set_datos($intelligence);
+      
+      if($intelligence->exists())
+        return parent::view('perfil/mi_shaka_perfil/posts', false); 
+    }
+    
+    // ---------------------------------------------------------------------
 
 }
