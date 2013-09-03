@@ -174,7 +174,6 @@ class Audiciones extends Front_Controller {
     // ----------------------------------------------------------------------
 
     public function save($id = null) {
-
         $datos =& $this->_datos;
         
         if(!empty($id)){
@@ -190,20 +189,14 @@ class Audiciones extends Front_Controller {
         if ($this->_post(null)) {
 
             $datos->from_array($this->_post(null));
-
-
             $dias_publicacion = $this->_post('dias_publicacion');
-
-
             if (!empty($dias_publicacion)) {
                 $fecha_inicial = $this->_post('fecha_inicio');
 
                 if (!empty($fecha_inicial)) {
                     $fecha_inicial = new DateTime($fecha_inicial);
                     $fecha_cierre = clone $fecha_inicial;
-
                     $fecha_cierre->modify('+' . $dias_publicacion . ' days');
-
                     $datos->fecha_cierre = $fecha_cierre->format(DATE_MYSQL);
                 }
             }

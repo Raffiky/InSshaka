@@ -3066,8 +3066,6 @@ a{
 }
 .perfil-extra-iz{
     float: left;
-    margin-bottom: 40px;
-    margin-right: 20px;
     margin-top: 30px;
     width: 300px;
 }
@@ -3082,7 +3080,7 @@ a{
     float: right;
     height: 30px;
     margin-right: 18px;
-    margin-top: 20px;
+    margin-top: -30px;
     width: 124px;
 }
 .perfil-extra-iz #txBtMas {
@@ -3147,7 +3145,7 @@ a{
     margin-top: 10px;
     padding-bottom: 10px;
     padding-right: 0;
-    width: 300px;
+    width: 257px;
 }
 #crea-con .selector-de {
     background-image: url("../images/sombra-vertical.png");

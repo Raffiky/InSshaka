@@ -258,11 +258,15 @@
           <?php elseif(!empty($datos->intelligence->users_photo_id)) : ?>
             <a class="group" href="<?php echo uploads_url($datos->intelligence->users_photo->image) ?>" rel="fancy-gallery">
               <img id="photo-<?= $datos->intelligence->id ?>" src="<?php echo uploads_url($datos->intelligence->users_photo->thumb) ?>" style="max-height: 163px; width: 270px;"/>
-              <div id="mas-<?= $datos->intelligence->id ?>" class="mas" style="margin-left: 227px; position: absolute;"><img src="images/mas.png" /></div>
+              <div id="mas-<?= $datos->intelligence->id ?>" class="mas" style="position: absolute;"><img src="images/mas.png" /></div>
               <script>
                 $(function(){
-                  alto = $("#photo-<?= $datos->intelligence->id ?>").innerHeight();
-                  $("#mas-<?= $datos->intelligence->id ?>").css("margin-top", alto - 44 + "px");
+                  alto = $("#photo-<?= $intelligence->id ?>").innerHeight();
+                  ancho = $("#photo-<?= $intelligence->id ?>").innerWidth();
+                  $("#mas-<?= $intelligence->id ?>").css({
+                    "margin-top" : alto - 44 + "px",
+                    "margin-left": ancho -43 + "px"
+                  });
                 });
               </script>
             </a>

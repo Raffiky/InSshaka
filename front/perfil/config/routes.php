@@ -9,6 +9,7 @@ $route['(perfil)/(social|editar|ajax|audiciones|clasificados|conciertos|build_a_
 
 // Rutas para el cargue de shows
 $route["(perfil)/({$regexp})/(load_shows)"] = 'ajax/$3/$2';
+$route["(perfil)/({$regexp})/(load_posts)"] = 'ajax/$3/$2';
 
 // Rutas para las fotos y videos
 $route['(perfil)/([a-zA-Z0-9.-_]+)/(fotos|videos)'] = 'album/$3/$2';

@@ -643,6 +643,154 @@
     </div>
       <?php endif; ?>
     <div class="clear"></div>
+    <!-- Shows -->
+    <?php if(!$datos->is_proveedor) : ?>
+    <div class="perfil-extra-iz">
+      <div class="regis-tit">Shows</div>
+      <?php if ($is_owner_usuario): ?>
+        <div class="conBtMas ver-campos-show">
+          <div id="txBtMas">
+            <a>
+              <span class="verMas ">Agregar show</span>
+            </a>
+          </div>
+          <a href="#">
+            <div id="imgBtMas"></div>
+          </a>
+        </div>
+        <div id='fifth_help' class="help-inshaka" title="<span class='title-help'><?= lang('tooltip_add_show') ?></span>
+          <div class='content-help'>
+          <?= lang('tooltip_content_add_show') ?>
+          <button class='bot-logout' data-next-help='#sixth_help' style='border: 0px;' onclick='disparador($(this));'><?= lang('next_tooltip_button') ?></button>
+          </div>" 
+          style="float:right; margin-right: 158px; margin-top: -26px;">
+        </div>
+        <div class="campos-show" style="display:none;">
+          <form id="add-shows-form" action="<?php echo site_url('perfil/ajax/save_show') ?>">
+
+            <div class="messages" style="display:none;"></div>
+
+            <div class="calendar">
+              <div class="calendar-tit">Fechas próximos toques</div>
+              <input name="date" type="text" id="basic_example_1" class="date-picker campo" placeholder="Fecha y hora del show">
+            </div>
+
+            <div class="selectBox"  id="select-largo2">
+
+              <input name="place" type="text" class="campo" placeholder="Lugar del show"  />
+            </div>
+            <div class="selectBox"  id="select-largo2">
+
+              <input name="adress" type="text" class="campo" placeholder="Dirección del show"  />
+            </div>
+
+            <div class="selectBox" id="select-largo2">
+              <div class="ui-widget">
+                <input name="city" type="text" id="city" class="campo" placeholder="Ciudad"/>
+              </div>
+            </div>
+            <div class="clear"></div>
+            <input class="bot-aceptar" type="submit" value="Enviar">
+          </form><!-- // Formulario para agregar shows -->
+        </div>
+      <?php endif; ?>
+      <div class="clear"></div>
+      <div id="shows-list" data-load-url="<?php echo site_url('perfil/' . $datos->inshaka_url . '/load_shows') ?>" style="width: 280px;">
+        <p><small>Cargando shows...</small></p>
+      </div>
+    </div>
+    <?php endif; ?>
+    <!-- Fin shows -->
+    
+    <!-- Comentarios -->
+    <div class="clear"></div>
+    <div class="perfil-extra-de">
+      <div class="regis-tit">Comentarios</div>
+      <?php if ($is_owner_usuario): ?>
+      <div id='sixth_help' class="help-inshaka" title="<span class='title-help'><?= lang('tooltip_comments') ?></span>
+          <div class='content-help'>
+          <?= lang('tooltip_content_comments') ?>
+          <a id='close-help' class='bot-logout' href='#help-modal'><?= lang('close_tooltip_button') ?></a>
+          </div>" 
+          style="float:right; margin-right: 156px; margin-top: -29px;">
+     </div>
+      <script>
+      function closetooltip(elemento){
+          $(elemento).tooltipster('hide');
+          console.log(elemento);
+        }
+      </script>
+      <?php endif; ?>
+      <?php if($es_usuario) : ?>
+      <?php if (!$is_owner_usuario): ?>
+        <a class="valorar-m" href="#rating-cont">
+          <div class="bot-acc2">Rating</div></a>
+        <div class="clear"></div>
+      <?php endif; ?>
+      <?php endif; ?>
+
+
+      <?php if ($datos->comment->exists()): ?>
+
+        <div class="coment-cont" id="scroll20" style="width: 280px; <?php echo !$datos->is_proveedor ? '' : 'height: 260px !important; margin-bottom: 50px;' ?>">
+          <div class="coment-list" style="width: 250px;">
+            <ul>
+              <?php foreach ($datos->comment as $comment): ?>
+                <?php $date = fecha_spanish($comment->created_on); ?>
+                <li style="min-height: 35px;">
+                  <?php echo $comment->comentario ?>
+                  <div class="clear"></div>
+                  <div style="padding-top:10px;">
+                    <?php if($comment->get_rating($comment->id) <= 2 && $comment->get_rating($comment->id) >= 1 ) : ?> 
+                    <img src="images/star.png">
+                    <img src="images/star-disabled.png">
+                    <img src="images/star-disabled.png">
+                    <img src="images/star-disabled.png">
+                    <img src="images/star-disabled.png">
+                    <?php elseif($comment->get_rating($comment->id) <= 4 && $comment->get_rating($comment->id) > 2 ) :?>
+                    <img src="images/star.png">
+                    <img src="images/star.png">
+                    <img src="images/star-disabled.png">
+                    <img src="images/star-disabled.png">
+                    <img src="images/star-disabled.png">
+                    <?php elseif($comment->get_rating($comment->id) <= 6 && $comment->get_rating($comment->id) > 4 ) :?>
+                    <img src="images/star.png">
+                    <img src="images/star.png">
+                    <img src="images/star.png">
+                    <img src="images/star-disabled.png">
+                    <img src="images/star-disabled.png">
+                    <?php elseif($comment->get_rating($comment->id) <= 8 && $comment->get_rating($comment->id) > 6 ) :?>
+                    <img src="images/star.png">
+                    <img src="images/star.png">
+                    <img src="images/star.png">
+                    <img src="images/star.png">
+                    <img src="images/star-disabled.png">
+                    <?php elseif($comment->get_rating($comment->id) <= 10 && $comment->get_rating($comment->id) > 8 ) :?>
+                    <img src="images/star.png">
+                    <img src="images/star.png">
+                    <img src="images/star.png">
+                    <img src="images/star.png">
+                    <img src="images/star.png">
+                    <?php endif; ?>
+                  </div>
+                  <div class="clear"></div>
+                  <div style="padding-top: 4px;">
+                    <div class="show-txt" style="color:#E82E7C; font-size: 11px;">
+                      Publicado por:<a href="<?= site_url('perfil/'.$comment->get_id_user_comment($comment->user_creator_id)->inshaka_url) ?>" target="_blank"> <?php echo $comment->get_id_user_comment($comment->user_creator_id)->username ?></a>
+                      <?php echo ', '.$date['dia'].'-'.$date['mes_short'].'-'.$date['año'].' : '. $date['hora'] ?>
+                    </div>
+                  </div>
+                  
+                </li>
+              <?php endforeach; ?>
+            </ul>
+          </div>
+        </div>
+
+      <?php endif; ?>
+
+    </div>
+    <!-- Fin comentarios -->
   </div>
   <div class="perfil-cont-de">
     <?php if(!$datos->is_proveedor) : ?>
@@ -807,36 +955,7 @@
       <?php endif; ?>
     <?php endif; ?>
     <!-- Fin integrantes - banda -->
-    
-    <!-- carusel de imágenes comentado -->
-    <!--
-    <?php //if ($datos->users_image->exists()) : ?>
-      <div class="carrusel">
-        <div class="carousel-container">
-          <div id="carousel">
-            <?php //foreach ($datos->users_image->all as $user_image) : ?>
-
-              <div class="carousel-feature">
-                <a href="#"><img class="carousel-image" alt="<?php //echo $user_image->name, ': ' . SITENAME ?>" src="<?php //echo uploads_url($user_image->image) ?>">
-
-                  <div class="album-info2"><?php //echo $user_image->name ?></div>
-                  <div class="mas2"><img src="<?php //echo uploads_url($user_image->image) ?>" /></div>
-                </a>
-              </div>
-            <?php //endforeach; ?>
-
-          </div>
-
-          <div id="carousel-left"><img src="<?php //echo base_url('assets/images/arrow-left.png') ?>" /></div>
-          <div id="carousel-right"><img src="<?php //echo base_url('assets/images/arrow-right.png') ?>" /></div>
-        </div>
-      </div>
-    <?php //endif; ?>
-    -->
-    <!-- Fin carusel comentado -->
-
-
-
+   
     <div class="clr"></div>
 
     <!-- Inicio div de fotografias para proveedores -->
@@ -936,151 +1055,20 @@
     <?php endif; ?>
     <!-- Fin prueba video -->
     <div class="clear"></div>
-    <?php if(!$datos->is_proveedor) : ?>
-    <div class="perfil-extra-iz">
-      <div class="regis-tit">Shows</div>
-
-      <div id="shows-list" data-load-url="<?php echo site_url('perfil/' . $datos->inshaka_url . '/load_shows') ?>">
-        <p><small>Cargando shows...</small></p>
+    
+    <!-- Bloque de posts -->
+    <div class="perfil-extra-iz" style="width: 98%;">
+      <div class="regis-tit">Mis Posts</div>
+      <div id="posts-list" data-load-url="<?php echo site_url('perfil/' . $datos->inshaka_url . '/load_posts') ?>">
+        <p><small>Cargando posts...</small></p>
       </div>
-
-      <?php if ($is_owner_usuario): ?>
-        <div class="conBtMas ver-campos-show">
-          <div id="txBtMas">
-            <a>
-              <span class="verMas ">Agregar show</span>
-            </a>
-          </div>
-          <a href="#">
-            <div id="imgBtMas"></div>
-          </a>
-        </div>
-        <div id='fifth_help' class="help-inshaka" title="<span class='title-help'><?= lang('tooltip_add_show') ?></span>
-          <div class='content-help'>
-          <?= lang('tooltip_content_add_show') ?>
-          <button class='bot-logout' data-next-help='#sixth_help' style='border: 0px;' onclick='disparador($(this));'><?= lang('next_tooltip_button') ?></button>
-          </div>" 
-          style="float:right; margin-right: 158px; margin-top: -26px;">
-        </div>
-        <div class="campos-show" style="display:none;">
-          <form id="add-shows-form" action="<?php echo site_url('perfil/ajax/save_show') ?>">
-
-            <div class="messages" style="display:none;"></div>
-
-            <div class="calendar">
-              <div class="calendar-tit">Fechas próximos toques</div>
-              <input name="date" type="text" id="basic_example_1" class="date-picker campo" placeholder="Fecha y hora del show">
-            </div>
-
-            <div class="selectBox"  id="select-largo2">
-
-              <input name="place" type="text" class="campo" placeholder="Lugar del show"  />
-            </div>
-            <div class="selectBox"  id="select-largo2">
-
-              <input name="adress" type="text" class="campo" placeholder="Dirección del show"  />
-            </div>
-
-            <div class="selectBox" id="select-largo2">
-              <div class="ui-widget">
-                <input name="city" type="text" id="city" class="campo" placeholder="Ciudad"/>
-              </div>
-            </div>
-            <div class="clear"></div>
-            <input class="bot-aceptar" type="submit" value="Enviar">
-          </form><!-- // Formulario para agregar shows -->
-        </div>
-      <?php endif; ?>
-    </div>
-    <?php endif; ?>
-    <div class="perfil-extra-de">
-      <div class="regis-tit">Comentarios</div>
-      <?php if ($is_owner_usuario): ?>
-      <div id='sixth_help' class="help-inshaka" title="<span class='title-help'><?= lang('tooltip_comments') ?></span>
-          <div class='content-help'>
-          <?= lang('tooltip_content_comments') ?>
-          <a id='close-help' class='bot-logout' href='#help-modal'><?= lang('close_tooltip_button') ?></a>
-          </div>" 
-          style="float:right; margin-right: 156px; margin-top: -29px;">
-     </div>
       <script>
-      function closetooltip(elemento){
-          $(elemento).tooltipster('hide');
-          console.log(elemento);
-        }
+        $(function(){
+          $("#posts-list").load($("#posts-list").data('load-url'));
+        });
       </script>
-      <?php endif; ?>
-      <?php if($es_usuario) : ?>
-      <?php if (!$is_owner_usuario): ?>
-        <a class="valorar-m" href="#rating-cont">
-          <div class="bot-acc2">Rating</div></a>
-        <div class="clear"></div>
-      <?php endif; ?>
-      <?php endif; ?>
-
-
-      <?php if ($datos->comment->exists()): ?>
-
-        <div class="coment-cont" id="scroll20" style="<?php echo !$datos->is_proveedor ? '' : 'height: 260px !important; margin-bottom: 50px;' ?>">
-          <div class="coment-list">
-            <ul>
-              <?php foreach ($datos->comment as $comment): ?>
-                <?php $date = fecha_spanish($comment->created_on); ?>
-                <li style="min-height: 35px;">
-                  <?php echo $comment->comentario ?>
-                  <div class="clear"></div>
-                  <div style="padding-top:10px;">
-                    <?php if($comment->get_rating($comment->id) <= 2 && $comment->get_rating($comment->id) >= 1 ) : ?> 
-                    <img src="images/star.png">
-                    <img src="images/star-disabled.png">
-                    <img src="images/star-disabled.png">
-                    <img src="images/star-disabled.png">
-                    <img src="images/star-disabled.png">
-                    <?php elseif($comment->get_rating($comment->id) <= 4 && $comment->get_rating($comment->id) > 2 ) :?>
-                    <img src="images/star.png">
-                    <img src="images/star.png">
-                    <img src="images/star-disabled.png">
-                    <img src="images/star-disabled.png">
-                    <img src="images/star-disabled.png">
-                    <?php elseif($comment->get_rating($comment->id) <= 6 && $comment->get_rating($comment->id) > 4 ) :?>
-                    <img src="images/star.png">
-                    <img src="images/star.png">
-                    <img src="images/star.png">
-                    <img src="images/star-disabled.png">
-                    <img src="images/star-disabled.png">
-                    <?php elseif($comment->get_rating($comment->id) <= 8 && $comment->get_rating($comment->id) > 6 ) :?>
-                    <img src="images/star.png">
-                    <img src="images/star.png">
-                    <img src="images/star.png">
-                    <img src="images/star.png">
-                    <img src="images/star-disabled.png">
-                    <?php elseif($comment->get_rating($comment->id) <= 10 && $comment->get_rating($comment->id) > 8 ) :?>
-                    <img src="images/star.png">
-                    <img src="images/star.png">
-                    <img src="images/star.png">
-                    <img src="images/star.png">
-                    <img src="images/star.png">
-                    <?php endif; ?>
-                  </div>
-                  <div class="clear"></div>
-                  <div style="padding-top: 4px;">
-                    <div class="show-txt" style="color:#E82E7C; font-size: 11px;">
-                      Publicado por:<a href="<?= site_url('perfil/'.$comment->get_id_user_comment($comment->user_creator_id)->inshaka_url) ?>" target="_blank"> <?php echo $comment->get_id_user_comment($comment->user_creator_id)->username ?></a>
-                      <?php echo ', '.$date['dia'].'-'.$date['mes_short'].'-'.$date['año'].' : '. $date['hora'] ?>
-                    </div>
-                  </div>
-                  
-                </li>
-              <?php endforeach; ?>
-            </ul>
-          </div>
-        </div>
-
-      <?php endif; ?>
-
     </div>
-    <div class="clear"></div>
-
+    <!-- Fin bloque de posts -->
   </div>
   <div class="clr"></div>
 </div>
@@ -1106,26 +1094,10 @@
 		<div class="campo-msg_SZ">Para:</div>
 		<textarea id="textos" class="area-msg" placeholder="Escribele un mensaje a este usuario en este espacio..."></textarea>
       </div>
-      <div class="clr"></div>
-     
+      <div class="clr"></div>     
 	 <div class="lista-check2">
-<!--
-        <div class="elemento-check">
-          <div class="check-tit">Post to</div>
-        </div>
-        <div class="elemento-check">
-          <input id="check_prim" type="checkbox" name="check_01">
-          <label for="check_01">Facebook</label>
-        </div>
-        <div class="elemento-check">
-          <input id="check_prim" type="checkbox" name="check_01">
-          <label for="check_01">Twitter </label>
-        </div>
-		-->
         <input class="bot-enviar"  id="envios_fi1" type="submit" value="enviar">
-		
       </div>
-	  
     </form>
     <div class="clr"></div>
   </div>
@@ -1155,19 +1127,6 @@
       </div>
       <div class="clr"></div>
       <div class="lista-check2">
-<!--
-        <div class="elemento-check">
-          <div class="check-tit">Post to</div>
-        </div>
-        <div class="elemento-check">
-          <input id="check_prim" type="checkbox" name="check_01">
-          <label for="check_01">Facebook</label>
-        </div>
-        <div class="elemento-check">
-          <input id="check_prim" type="checkbox" name="check_01">
-          <label for="check_01">Twitter </label>
-        </div>
-		-->
         <input class="bot-enviar"  id="envios_fi" type="submit" value="enviar">
 
       </div>

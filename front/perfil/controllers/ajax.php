@@ -115,6 +115,21 @@ class Ajax extends Front_Controller {
     }
 
     // ----------------------------------------------------------------------
+    
+    public function load_posts($inshaka_url = null) {
+        $user = new \User;
+        $user->get_by_inshaka_url($inshaka_url);
+        
+        if( ! $user->exists()){
+           return '<strong>¡Error en la aplicación!</strong>';
+        }
+
+        $this->set_datos($user->intelligence->limit(10)->get());
+
+        return parent::view('mi_shaka_perfil/posts', false);
+    }
+
+    // ----------------------------------------------------------------------
 
     public function save_show($show_id = null) {
         $user = new \User;

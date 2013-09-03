@@ -1,15 +1,4 @@
 <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-<script>
-  !function(d,s,id){
-    var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
-    if(!d.getElementById(id)){
-      js=d.createElement(s);
-      js.id=id;
-      js.src=p+'://platform.twitter.com/widgets.js';
-      fjs.parentNode.insertBefore(js,fjs);
-    }
-  }(document, 'script', 'twitter-wjs');
-</script>
 <link href="<?= front_asset('css/dropzone.css') ?>" type="text/css" rel="stylesheet" />
 <script src="<?= front_asset('js/dropzone.js') ?>"></script>
 <style type="text/css">
@@ -601,12 +590,16 @@
                         </div>
                     <?php elseif(!empty($intelligence->users_photo_id)) : ?>
                       <a class="group" href="<?php echo uploads_url($intelligence->users_photo->image) ?>" rel="fancy-gallery">
-                        <img id="photo-<?= $intelligence->id ?>" src="<?php echo uploads_url($intelligence->users_photo->thumb) ?>" style="max-height: 163px; width: 270px;"/>
-                        <div id="mas-<?= $intelligence->id ?>" class="mas" style="margin-left: 227px; position: absolute;"><img src="images/mas.png" /></div>
+                        <img id="photo-<?= $intelligence->id ?>" src="<?php echo uploads_url($intelligence->users_photo->thumb) ?>" style="max-height: 204px; max-width: 270px;"/>
+                        <div id="mas-<?= $intelligence->id ?>" class="mas" style="position: absolute;"><img src="images/mas.png" /></div>
                         <script>
                           $(function(){
                             alto = $("#photo-<?= $intelligence->id ?>").innerHeight();
-                            $("#mas-<?= $intelligence->id ?>").css("margin-top", alto - 44 + "px");
+                            ancho = $("#photo-<?= $intelligence->id ?>").innerWidth();
+                            $("#mas-<?= $intelligence->id ?>").css({
+                              "margin-top" : alto - 44 + "px",
+                              "margin-left": ancho -43 + "px"
+                            });
                           });
                         </script>
                       </a>
@@ -756,10 +749,22 @@
                   <div class="share-social-network" style="float: left; width: 100px;"> 
                     <div class="fb-like" data-send="false" data-href="<?= $url ?>" data-layout="button_count" data-width="100" data-show-faces="false" data-action="like" ></div>
                   </div>
-                  <!-- Twitter --><!--
-                  <div class="share-social-network" style="float: left; width: 100px;"> 
-                    <a href="https://twitter.com/share" class="twitter-share-button" data-url="<?= $url ?>" data-text="<?= $text ?>" data-via="inshaka" data-lang="es" data-hashtags="TryInshaka">Twittear</a>
-                  </div> -->
+                  <!-- Twitter --> <!--
+                <div class="share-social-network" style="float: left; width: 100px;"> 
+                  <a href="https://twitter.com/share" class="twitter-share-button" data-url="<?= $url ?>" data-text="<?= $text ?>" data-via="inshaka" data-lang="es" data-hashtags="TryInshaka">Twittear</a>
+                </div>
+                <script>
+                  !function(d,s,id){
+                    var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+                    if(!d.getElementById(id)){
+                      js=d.createElement(s);
+                      js.id=id;
+                      js.src=p+'://platform.twitter.com/widgets.js';
+                      fjs.parentNode.insertBefore(js,fjs);
+                    }
+                  }(document, 'script', 'twitter-wjs');
+                </script> -->
+
                   <!-- Google + -->
                   <div class="share-social-network" style="float: left; margin-left: 20px; width: 100px;"> 
                     <div class="g-plusone" data-size="medium" data-href="<?= $url ?>"></div>
