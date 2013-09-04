@@ -125,6 +125,8 @@ class Ajax extends Front_Controller {
         }
 
         $this->set_datos($user->intelligence->limit(10)->get());
+        $this->_data["is_usuario"] = $this->is_usuario();
+        $this->_data["is_inshaka_url"] = $inshaka_url;
 
         return parent::view('mi_shaka_perfil/posts', false);
     }
@@ -221,8 +223,6 @@ class Ajax extends Front_Controller {
         } else {
             $this->set_alert($datos->errors->string, 'error');
         }
-        
-      
 
         $this->render_json($ok);
     }

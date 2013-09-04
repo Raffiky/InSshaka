@@ -16,23 +16,23 @@ class Comment extends DataMapper {
     public $validation = array(
         'comentario' => array(
             'label' => 'Comentario',
-            'rules' => array('required', 'trim', 'xss_clean')
+            'rules' => array('trim', 'xss_clean')
         ),
         'sonido' => array(
             'label' => 'Sonido',
-            'rules' => array('required', 'is_numeric', 'intval')
+            'rules' => array('is_numeric', 'intval')
         ),
         'presentacion' => array(
             'label' => 'Presentación',
-            'rules' => array('required', 'is_numeric', 'intval')
+            'rules' => array('is_numeric', 'intval')
         ),
         'profesionalismo' => array(
             'label' => 'Profesionalismo',
-            'rules' => array('required', 'is_numeric', 'intval')
+            'rules' => array('is_numeric', 'intval')
         ),
         'actitud' => array(
             'label' => 'Actitud',
-            'rules' => array('required', 'is_numeric', 'intval')
+            'rules' => array('is_numeric', 'intval')
         )
     );
     

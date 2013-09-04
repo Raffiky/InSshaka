@@ -114,10 +114,6 @@ class User extends DataMapper {
         'birthday' => array(
             'rules' => array('required', 'valid_date'),
             'label' => 'Fecha de nacimiento'
-        ),
-        'city' => array(
-            'rules' => array('required'),
-            'label' => 'Ciudad'
         )
     );
 

@@ -7,7 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Social extends Front_Controller {
 
-    protected $user_area = true;
+    protected $user_area = false;
     private $_datos = null;
     private $_count = 0;
 
@@ -332,6 +332,7 @@ class Social extends Front_Controller {
       
       $user = new \User;
       $band = new \Band;
+      $directorio = clone $user;
       $audiciones = new \Audicion;
       $clasificados = new \Clasificado;
       $user_photo = new \Users_photo;
@@ -343,7 +344,7 @@ class Social extends Front_Controller {
         $band->like('name', $field)->or_like_related('musical_gender', 'name', $field)->get_paged($page, 100);
         $audiciones->like('titulo',$field)->or_like('descripcion', $field)->get_paged($page, 100);
         $clasificados->like('titulo', $field)->or_like('descripcion', $field)->get_paged($page, 100);
-        $directorio = $user->like('name_proveedor', $field)->get_paged($page, 100);
+        $directorio = $directorio->like('name_proveedor', $field)->get_paged($page, 100);
 
         if($user->exists()){
           $this->_data['find_user'] = $user;
@@ -440,10 +441,10 @@ class Social extends Front_Controller {
     
     // ----------------------------------------------------------------------
     
-    public function load_self_data(){
+    public function load_self_data($inshaka_url = null){
       // Cargando datos de usuario
       $user = new User;
-      $user->get_current();
+      $user->get_by_inshaka_url($inshaka_url);
       $this->_data['userinfo'] = $user;
       
       $usuario = new \User;
@@ -457,6 +458,7 @@ class Social extends Front_Controller {
       // Clone followers
       $clone_f = clone $follow;
       $this->_data['clone_f'] = $clone_f;
+      $this->_data["is_usuario"] = $this->is_usuario();
             
       // Cargando interacciones
       $intelligence = new Intelligence;

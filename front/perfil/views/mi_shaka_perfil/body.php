@@ -1162,7 +1162,7 @@
 
 <?php if (!$is_owner_usuario): ?>
   <div id="rating-cont" class="rating-cont" style="display:none;">
-  <?php echo form_open('perfil/ajax/create_comment', 'id="create-comment-form"', array('ui' => base64_encode($datos->id))) ?>
+  <?php echo form_open(null, 'id="create-comment-form"', array('ui' => base64_encode($datos->id))) ?>
 
     <div class="mensaje-tit">Rating</div>
     <div class="rating-txt">Conoces a este artista? Que piensas de él? Lo has visto tocar en Vivo? Dale un Rating o déjale un comentario!</div>
@@ -1215,13 +1215,39 @@
         <div class="clr"></div>
         <div class="messages"></div>
         <div class="lista-check2">
-          <input class="bot-enviar" type="submit" value="enviar">
+          <input id="btn-send-comment" class="bot-enviar" type="submit" value="enviar">
         </div>
         <div class="clr"></div>
       </div>
     </div>
   <?php echo form_close() ?>
   </div>
+  <script>
+  $(function(){
+    $("form#create-comment-form").on("submit", function(){
+      var datos = $(this).serialize();
+      $.ajax({
+        type  : "post",
+        url   : "<?= site_url("perfil/ajax/create_comment") ?>",
+        data  : datos,
+        beforeSend  : function(){
+          $("#btn-send-comment").val("Enviando...").css("opacity", "0.6");
+        },
+        success : function(){
+          $.fancybox.close();
+        },
+        complete  : function(){
+          $("#btn-send-comment").val("Enviar").css("opacity", "1");
+          $.fancybox.close();
+        },
+        error   : function(){
+          $.fancybox.close();
+          $("#btn-send-comment").val("Enviar").css("opacity", "1");
+        }
+      });
+    });
+  });
+  </script>
   <?php endif; ?>
 
 <!-- Show delete dialog -->

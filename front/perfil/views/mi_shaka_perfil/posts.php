@@ -120,7 +120,7 @@
         $('div#last_msg_loader').html('<img src="<?= front_asset('images/load_notifications.gif') ?>">');
         $.ajax({
           type : "post",
-          url: "<?= site_url('perfil/social/load_self_data') ?>",
+          url: "<?= site_url('perfil/social/load_self_data/'.$is_inshaka_url) ?>",
           data: datos,
           beforeSend: function(){
             if(repetir === false){
@@ -374,6 +374,7 @@
           </div>
         </div>
         <div class="clear"></div>
+        <?php if($is_usuario) : ?>
         <div class="btn-share-like-comment">
           <?php if(!empty($dato->audicion_id)) : ?>
             <a class="btn-sociales" href="<?= sprintf($urls->audicion_detalle, $dato->audicion->id, $dato->audicion->var) ?>" >
@@ -399,6 +400,7 @@
             <?= $cant_comentarios ? 'Total comentarios: '.$cant_comentarios->result_count() : null  ?>
           </div>
         </div>
+        <?php endif; ?>
         <div class="clear"></div>
         <div id="comment-<?= $dato->id ?>" style="display:none; padding: 10px; min-height: 40px;">
           <textarea name="comment-intelligence" id="comment-intelligence-<?= $dato->id ?>" cols="20" rows="3" maxlength="145" style="font-family: 'Arial'; background:#E4E7E7; border-color: #C7C9CA; width: 100%;" placeholder="Deja aquí su comentario (máx. 140 caracteres)"></textarea>
@@ -444,6 +446,9 @@
           }elseif(!empty ($dato->statu_id)){
             $url = sprintf($urls->inshaka_url, $dato->statu->user->inshaka_url);
             $text = $dato->statu->user->first_name." ".$dato->statu->user->last_name.' ha cambiado su estado en InShaka.com';
+          }elseif(!empty ($dato->users_follow_id)){
+            $url = sprintf($urls->inshaka_url, $dato->users_follow->user->inshaka_url);
+            $text = $dato->users_follow->user->first_nam." ".$dato->users_follow->user->last_name." tiene un nuevo fan";
           }
         ?>
           <!-- Enlaces de compartir -->

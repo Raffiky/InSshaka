@@ -141,6 +141,7 @@ class Home extends Front_Controller {
       $user = new \User;
       $clasificado = new \Clasificado;
       $audicion = new \Audicion;
+      $proveedor = clone $user;
       $prueba = $this->input->get('term'); 
       
       if (isset($prueba)){
@@ -155,7 +156,7 @@ class Home extends Front_Controller {
         $resultado2 = $user->get();
         $resultado3 = $clasificado->get();
         $resultado4 = $audicion->get();
-        $resultado5 = $user->where('is_proveedor', true)->like('name_proveedor', $q)->get();
+        $resultado5 = $proveedor->where('is_proveedor', true)->like('name_proveedor', $q)->get();
         
         if($resultado->exists() || $resultado2->exists() || $resultado3->exists() || $resultado4->exists() || $resultado5->exists() ){
           foreach ($resultado->all_to_array() as $row){
@@ -164,8 +165,8 @@ class Home extends Front_Controller {
             $row_set[] = $new_row; //build an array
           }
           foreach ($resultado2->all_to_array() as $row2){
-            $new_row2['label']=htmlentities(stripslashes(utf8_decode($row2['first_name']." ".$row2['last_name'])));
-            $new_row2['value']=htmlentities(stripslashes(utf8_decode($row2['first_name']." ".$row2['last_name'])));
+            $new_row2['label']=htmlentities(stripslashes($row2['first_name']." ".$row2["last_name"]));
+            $new_row2['value']=htmlentities(stripslashes($row2['first_name']." ".$row2["last_name"]));
             $row_set[] = $new_row2; //build an array
           }
           foreach ($resultado3->all_to_array() as $row3){
