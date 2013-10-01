@@ -11,14 +11,7 @@
             <?php echo form_open($save_url, 'data-action="ajax-form" data-after-save="reload"') ?>
             <div class="section">
               <label for="categoria">Categoría</label>
-                <select style="width: 455px; height: 28px" name="id_categoria_faq">
-                  <?php if($categoria->exists()) : ?>
-                  <option value = "" selected="selected">Seleccione la categoría...</option>
-                    <?php foreach ($categoria as $cat) : ?>
-                      <option value = "<?=$cat->id ?>"><?=$cat->categoria_faq ?></option>
-                    <?php endforeach; ?>
-                  <?php endif; ?>
-                </select>
+                <?= form_dropdown("id_categoria_faq", $categoria) ?>
             </div>
             
             <div class="section">
@@ -34,9 +27,9 @@
             <div class="section">
               <label for="activo">Estado</label>
               <select style="width: 250px; height: 28px" name="activo">
-                <option value = "" selected="selected">Seleccione el estado...</option>
-                <option value = "true">Activo</option>
-                <option value = "false">Inactivo</option>
+                <option value = "0" selected="selected">Seleccione el estado...</option>
+                <option value = "1">Activo</option>
+                <option value = "0">Inactivo</option>
               </select>
             </div>
 
@@ -71,6 +64,9 @@
               <th><div class="th_wrapp">Respuesta</div></th>
               <th><div class="th_wrapp">Categoría</div></th>
               <th><div class="th_wrapp">Estado</div></th>
+              <th><div class="th_wrapp">Usuario</div></th>
+              <th><div class="th_wrapp">Email</div></th>
+              <th><div class="th_wrapp">Fecha</div></th>
           <th style="width:200px;"><div class="th_wrapp">Acciones</div></th>
           </tr>
           </thead>
@@ -80,8 +76,11 @@
                 <tr class="odd gradeX parent-delete">
                   <td class="center"><?php echo $dato->titulo_faq ?></td>
                   <td class="center"><em><?php echo $dato->respuesta_faq ?></em></td>
-                  <td class="center"><em><?php echo $categoria->get_cat_faq($dato->id_categoria_faq) ?></em></td>
+                  <td class="center"><em><?php echo $cat->get_cat_faq($dato->id_categoria_faq) ?></em></td>
                   <td class="center"><em><?= $dato->activo ? "Activo" : "Inactivo" ?></em></td>
+                  <td class="center"><em><?= !empty($dato->full_name) ? $dato->full_name : $dato->user->first_name." ".$dato->user->last_name ?></em></td>
+                  <td class="center"><em><?= !empty($dato->email) ? $dato->email : $dato->user->email ?></em></td>
+                  <td class="center"><em><?= $dato->created_on ?></em></td>
                   <td class="center">
                     <span class="tip">
                       <a href="<?php echo sprintf($edit_url, $dato->id) ?>" class="uibutton special">Editar</a>

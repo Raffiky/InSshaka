@@ -90,9 +90,16 @@ class Front_Controller extends CMS_Controller {
         $this->load->model('_audiciones/audiciones_aplicacion');
         $this->load->model('_bands/band');
         $this->load->model('_bands/page');
+        $this->load->model('_users/users_song');
         $this->load->helper('language');
         
-        $user_language = substr($_SERVER["HTTP_ACCEPT_LANGUAGE"],0,2);
+        
+        if(isset($_SERVER["HTTP_ACCEPT_LANGUAGE"])){
+          $user_language = substr($_SERVER["HTTP_ACCEPT_LANGUAGE"],0,2);
+        }  else {
+          $user_language = "en";
+        }
+        
         
         switch ($user_language) {
           case "en":
@@ -150,6 +157,19 @@ class Front_Controller extends CMS_Controller {
         $this->load->model('_users/user');
         $usuario_ = new \User;
         $this->_data['usuario_'] = $usuario_;
+        
+        // Cargando mensajes directos
+        $this->load->model('_users/inbox');
+        // Clonamos el usuario
+        $__usuario = clone $usuario_;
+        // Si existe un usuario logueado cargamos los mensajes
+        if($this->is_usuario()){
+          $__usuario->get_current();
+          $inbox = new \Inbox;
+          $inbox->select("user_id")->where("ready", false)->get_by_related($__usuario);
+          $this->_data["inbox"] = (int) $inbox->result_count();
+        }
+        
 
         // Cargando profile photo
         $this->load->model('_users/users_photo');

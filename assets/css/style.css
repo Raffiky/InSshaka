@@ -238,8 +238,7 @@ ul.acordeon div.panel a:hover {
   width: 268px !important;
   font-size: 20px;
   clear: both;
-  margin-top: 290px;
-  margin-left: -120px;
+  margin-top: 313px;
 }
 #content-faq {  
   clear: right;
@@ -373,15 +372,6 @@ ul#menu-footer li:hover ul {display: block;}
     margin: 0 auto;
     width: 1000px;
 }
-
-ul.tabs {
-    background-image: url("../images/fondo-tab.png");
-    height: 51px;
-    margin-left: 0;
-    margin-top: 40px;
-    width: auto;
-
-}
 .buildaband-cont ul.tabs {
     background-image: url("../images/fondo-tab2.png");
     height: 51px;
@@ -390,6 +380,15 @@ ul.tabs {
     width: 421px;
 
 }
+ul.tabs {
+    background-image: url("../images/fondo-tab.png");
+    height: 51px;
+    margin-left: 0;
+    margin-top: 40px;
+    width: auto;
+
+}
+
 ul.tabs li{
     background: url("../images/left.png") no-repeat scroll left top transparent;
     float: left;
@@ -675,21 +674,28 @@ ul.tabs li a:hover {
 .audicion-txt{
     margin-top: 20px;
 }
-.ver-mas{
-    background-image: url("../images/ver-mas.png");
+.ver-mas, .inbox{    
     background-position: right top;
     background-repeat: no-repeat;
     color: #666666;
     cursor: pointer;
     float: right;
     font-size: 13px;
-    height: 31px;
-    margin-top: 20px;
+    height: 31px;    
     padding-top: 9px;
     text-transform: uppercase;
-    width: 97px;
 }
-.ver-mas:hover{
+.ver-mas{
+  background-image: url("../images/ver-mas.png");
+  width: 97px;
+  margin-top: 20px;
+}
+.inbox{
+  background-image: url("../images/inbox.png");
+  width: 115px;
+  margin-left: 20px;
+}
+.ver-mas:hover, .inbox:hover{
     color:#E82E7C;
 }
 .paginador{
@@ -2017,7 +2023,7 @@ padding-right: 10px;
     width: 655px;
 }
 .link-perfil{
-    margin-bottom: 70px;
+    margin-bottom: 15px;
     margin-top: 10px;
 }
 .link-perfil-tit{
@@ -3689,3 +3695,22 @@ width: 26px;}
     -moz-column-rule: 2px solid #666;
     -o-column-rule: 2px solid #666;
 }
+/*************** Redes sociales **************************/
+.cf:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; }
+* html .cf { zoom: 1; }
+*:first-child+html .cf { zoom: 1; }
+
+.shared-network p, .shared-network li { font-size: 1em; line-height: 1.5em; margin: 0 0 0.5em 0; }
+.shared-network li { margin: 0 0 0.25em 0; }
+
+.vhidden { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
+
+/*
+ * Socialite Look-a-like defaults
+ */
+
+.social-buttons { display: block; list-style: none; padding: 0; }
+.social-buttons > li { display: block; margin: 0; padding: 0px; float: left; }
+.social-buttons .socialite-loaded { background: none !important; }
+
+/******************************** Fin redes sociales ****************************************************/

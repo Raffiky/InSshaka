@@ -24,6 +24,7 @@
         <a href="<?php echo site_url('perfil/directorios/favoritos') ?>"><li  class="c5"><?= lang('my_directory') ?></li></a>
         <a href="<?php echo site_url('perfil/clasificados') ?>"><li class="c6"><?= lang('my_classified') ?></li></a>
         <a href="<?php echo site_url('perfil/configuracion') ?>"><li class="c7"><?= lang('settings') ?></li></a>
+        <a href="<?php echo site_url('perfil/mensajes') ?>"><li class="c8"><?= lang('inbox') ?></li></a>
         <div class="clr"></div>
         <div class="perfil-tit"><?= lang('text_profile_player') ?>: <?php echo $current_username ?></div>
       </ul>

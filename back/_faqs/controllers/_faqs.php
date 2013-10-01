@@ -23,13 +23,16 @@ class _Faqs extends Back_Controller {
         $categoria = new Categoria_faq;
         $categoria->get();
         
+        $__cat = clone $categoria;
+        
         $save_url = cms_url('faqs/save');
 
         $this->_data['save_url'] = $save_url;
 
         $this->_data['datos'] = $datos;
         
-        $this->_data['categoria'] = $categoria;
+        $this->_data['categoria'] = $categoria->get_for_select("Seleccione...");
+        $this->_data["cat"] = $__cat;
 
         $this->_data['edit_url'] = cms_url('faqs/editar/%d/');
 
@@ -50,7 +53,7 @@ class _Faqs extends Back_Controller {
 
         $save_url = cms_url('faqs/save/' . $id);
         $this->_data['save_url'] = $save_url;
-        $this->_data['categoria'] = $categoria;
+        $this->_data['categoria'] = $categoria->get_for_select("Seleccione...");
         
         return $this->set_datos($datos)->build('editar');
     }
@@ -62,8 +65,10 @@ class _Faqs extends Back_Controller {
 
         $datos->var = seo_name($this->_post('name'));
 
-        $ok = $datos->from_array($this->_post(null), null, true);
-
+        $datos->from_array($this->_post(null));
+        $datos->created_on = datetime_now();
+        
+        $ok = $datos->save();
 
 
         if (!$ok) {

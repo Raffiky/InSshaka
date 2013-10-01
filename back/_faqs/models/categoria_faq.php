@@ -35,4 +35,22 @@ class Categoria_faq extends DataMapper {
       
       return $datos->categoria_faq;
     }
+    
+    // ----------------------------------------------------------------------
+    
+    public function get_for_select($text = 'Seleccione...') {
+        $return = array(0 => $text);
+
+        $datos = clone $this;
+
+        $datos->get();
+
+        foreach ($datos->all as $dato) {
+            $return[$dato->id] = $dato->categoria_faq;
+        }
+
+        return $return;
+    }
+    
+    // ----------------------------------------------------------------------
 }

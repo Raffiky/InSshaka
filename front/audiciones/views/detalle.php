@@ -80,7 +80,7 @@
             <input class="bot-publicar" type="submit" value="aplicar" style="margin-top:10px; float: left;">
             <?php echo form_close() ?>
             <div class="clr"></div>
-          <?php elseif($can_apply_band->exists()) : ?>
+          <?php elseif(($can_apply_band->exists() OR $datos->musical_gender->name == "Todos") AND $datos->tipo_audicion == "Banda") : ?>
           <a class="bot-rosa2 cambia-cont" id="apply-band" href="#bandas">Aplicar con banda</a>
           <?php else: ?>
             <div class="regis-subtit"><?php echo $dias_restantes ?></div>            
@@ -96,7 +96,7 @@
 
 <!-- Ventanas modal -->
 <div id="bandas" style="display: none">
-  <?php if($mis_bandas->exists()) : ?>
+  <?php if($mis_bandas->exists() OR $datos->musical_gender->name == "Todos") : ?>
     <div class="musicos-cont">
     <div class="mensaje-tit">Mis Bandas</div>
     <?php foreach($mis_bandas as $mi_banda) : ?>

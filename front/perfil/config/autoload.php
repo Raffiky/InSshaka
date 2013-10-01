@@ -29,7 +29,8 @@ $autoload['model'] = array(
     '_users/notification',
     '_clasificados/clasificado',
     '_users/statu',
-    '_users/users_setting'
+    '_users/users_setting',
+    '_users/inbox',
 );
 
 

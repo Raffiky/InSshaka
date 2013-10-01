@@ -14,6 +14,7 @@ $lang['my_band'] = 'Mis Bandas';
 $lang['my_audition'] = 'Mis Audiciones';
 $lang['my_directory'] = 'Mis Directorios';
 $lang['my_classified'] = 'Mis Clasificados';
+$lang['inbox'] = 'Inbox';
 $lang['settings'] = 'Ajustes';
 $lang['text_profile_provider'] = 'Perfil privado de proveedor';
 $lang['text_profile_player'] = 'Perfil privado de músico';

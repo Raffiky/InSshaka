@@ -449,7 +449,7 @@
       <div class="clr"></div>
       <div class="regis-tit">Integrantes</div>
       <div class="clr"></div>
-      <div id="scroll-band-int" style="height: 130px; margin-bottom: 30px;">
+      <div id="scroll-band-int" style="height: 150px; margin-bottom: 30px;">
         <div class="band-int" >
           <?php foreach ($datos->band->bands_instrument as $member) : ?>
             <?php if ($member->bands_instruments_user->invitation_accepted) : ?>
@@ -458,7 +458,12 @@
               <span style="float:left; width: 100%; text-align: center;">
                 <?= $member->bands_instruments_user->user->first_name .' '.$member->bands_instruments_user->user->last_name ?>
               </span><div class="clr"></div>
-              <img src="<?php echo uploads_url($member->bands_instruments_user->user->users_photo->get_by_profile_active(true)->thumb) ?>" width="60" height="60"/><div class="clr"></div>
+              <?php if($member->bands_instruments_user->user->users_photo->get_by_profile_active(true)->exists()) : ?>
+              <img src="<?php echo uploads_url($member->bands_instruments_user->user->users_photo->get_by_profile_active(true)->thumb) ?>" width="60" height="60"/>
+              <?php else : ?>
+              <img src="<?= front_asset("images/foto-perfil.png") ?>" width="60" height="60"/>
+              <?php endif; ?>
+              <div class="clr"></div>
               <div class="generos" style="clear: both;">
                 <?php $user_instruments_on_band = $member->bands_instruments_user->user->get_instruments_on_band($datos->band->id); ?>
                 <?php if ($user_instruments_on_band->exists()) : ?>
@@ -490,7 +495,7 @@
           text-align: center;
           color: #666;
           width: 130px; 
-          height: 90px; 
+          height: 125px; 
           float: left; 
           margin-right: 7px;
           padding: 7px;

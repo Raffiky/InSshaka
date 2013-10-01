@@ -1,3 +1,17 @@
+<style>
+  ul.message-pub li{
+    width: 97%;
+    overflow: hidden;
+    background: #F5F5F5;
+    border: 1px solid #E5E5E5;
+    box-shadow: inset 0 0 0 1px #F9F9F9;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    margin-top: 3px;
+    padding: 7px;
+  }
+</style>
 <script type="text/javascript">
   $(function(){
     $('.favorite-advertisement, .myself_favorites').tooltipster({
@@ -59,7 +73,36 @@
           <div class="resultado-tit"><?php echo $datos->titulo ?></div>
           <div class="clr"></div>
           <div class="resultado-desc3">
-              <p><?php echo $datos->descripcion ?></p>
+            <?php 
+              $patron = '%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i';
+              if(preg_match_all($patron, $datos->descripcion, $coincidencias, PREG_OFFSET_CAPTURE)) {
+                foreach ($coincidencias[0] as $coincide) {
+                  $words_search[] = "http://".$coincide[0];
+                  if(is_youtube_url("http://".$coincide[0])){
+                    $datos->get_oembed("http://".$coincide[0]);  
+                    $url_status = str_replace($coincide[0], "<a class='group iframe' href='".$datos->oembed->url."' rel='fancy-gallery-iframe' style='float:left;'><img src='".$datos->oembed->thumbnail_url."' style='height: 60px; margin: 0px 3px;' /></a><div style='float:left; width: 410px; margin-left: 15px; font-size: 0.85em;'><span style='color:#E82E7C; font-weight: bold'>".$datos->oembed->title."</span><p> Autor: ".$datos->oembed->author_name."</p><p>".$datos->oembed->description."</p></div>", $coincide[0]);
+                    $url_reemplazar = str_replace($coincide[0], "<a href='".$datos->oembed->url."' target='_blank' style='color: #E82E7C;'>".$coincide[0]."</a>", $coincide[0]);
+                  } 
+                  $mension[] = $url_status;
+                  $videos[] = $url_reemplazar;
+                }
+                $video = true;
+                $status_replace = str_replace($words_search, $videos, $datos->descripcion);
+              }else{
+                $video = false;
+                $status_replace = $datos->descripcion;
+              }
+            ?>     
+              <p><?= $status_replace ?></p>
+              <?php if($video === true) : ?>
+              <div class="clear" style="margin-top: 10px;"></div>
+              <ul class="message-pub">
+                <?php foreach ($mension as $video) : ?>
+                  <li><?= $video ?></li>
+                <?php endforeach; ?>
+              </ul>
+              <?php endif; ?>
+              <div class="clr"></div>
             <div class="anuncio-datos">
               <div><b>Publicado por:</b> <?php echo $datos->user->first_name, ' ', $datos->user->last_name ?></div>
               <div><b>Ciudad:</b> <?php echo $datos->ciudad ?></div>

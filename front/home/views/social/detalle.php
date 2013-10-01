@@ -185,6 +185,79 @@
     text-decoration: none;
   }
 </style>
+<script>
+  function oembed(url, list) {
+    list.find('p').remove();
+
+    $.getJSON('http://soundcloud.com/oembed?callback=?', {
+      format: 'js',
+      url: url,
+      iframe: true,
+      show_comments: false,
+      color: 'E82E7C'
+    },
+    function(data) {
+      if (data.html) {
+        var content = $('<div />', {
+          html: data.html,
+          class: 'song'
+        }).appendTo(list),
+        text_delete = '';
+
+        $('<a />', {
+          "class" : 'delete',
+          css: {
+            "float": "left",
+            "font-size": '.6em',
+            'margin': '3px 0px 0px 485px',
+            'position': 'absolute'
+          },
+          href: '#',
+          html: '<div class="delete_song"></div>',
+          click: function(e) {
+            if (!$(this).hasClass('deleting')) {
+                                    
+              $('#delete-song-confirm').dialog({
+                modal : true,
+                resizable : false,
+                width : 400,
+                show : 'drop',
+                hide : 'drop',
+                buttons : {
+                  Aceptar : function(){
+                                        
+                    $(this).html('Eliminando, por favor espere...').css('opacity', .8).addClass('deleting');
+                                                
+                    $.getJSON(globals.site_url + '/perfil/ajax/delete_songs_url', {
+                      url: url
+                    }, function(json) {
+                      if (json.ok === true) {
+                        content.fadeOut(function() {
+                          return $(this).remove();
+                        });
+                      } else {
+                        alert('Hubo un error al eliminar la canción.');
+                      }
+                      $(this).html(text_delete).css('opacity', 1).addClass('deleting');
+                    });
+                                    
+                    return $(this).dialog('close');
+                  },
+                  Cancelar : function(){
+                    return $(this).dialog('close');
+                  }
+                }
+              });
+
+            }
+
+            return e.preventDefault();
+          }
+        }).prependTo(content);
+      }
+    });
+  }
+</script>
 <div class="contenido">
   <div class="new_follower">
     <?php $photo->where(array('user_id' => $datos->intelligence->user->id, 'profile_active' => true))->get(); ?>
@@ -227,6 +300,8 @@
         Ha aplicado a una audición
       <?php elseif (!empty($datos->intelligence->users_show_id)) : ?>
         Ha creado un evento
+      <?php elseif(!empty($datos->intelligence->users_song_id)) : ?>
+        Ha subido una canción a su álbum
       <?php endif; ?>
       <span style="font-family: 'Arial'; font-style: italic; font-size: 0.85em; float: right;">
         <?= fecha_spanish_full_short($datos->intelligence->update_on).' - '. get_hour($datos->intelligence->update_on) ?>
@@ -243,13 +318,21 @@
           <?php endif; ?>
         </div>
         <?php else : ?>
-        <div style="float:left; <?= !empty($datos->intelligence->statu_id) && !is_youtube_url($datos->intelligence->statu->status) ? 'display: none' : null  ?>">
+        <div style="<?= !empty($datos->intelligence->users_song_id) ? null : 'float:left' ?> <?= !empty($datos->intelligence->statu_id) && !is_youtube_url($datos->intelligence->statu->status) ? 'display: none' : null  ?>">
           <?php if (!empty($datos->intelligence->audicion->imagen)) : ?>
             <img  src="<?= uploads_url($datos->intelligence->audicion->imagen) ?>" width="80" />
           <?php elseif (!empty($datos->intelligence->audiciones_aplicacion->audicion->imagen)) : ?>
             <img  src="<?= uploads_url($datos->intelligence->audiciones_aplicacion->audicion->imagen) ?>" width="80" />
           <?php elseif (!empty($datos->intelligence->clasificado->imagen)) : ?>
             <img  src="<?= uploads_url($datos->intelligence->clasificado->imagen) ?>" width="80" />
+          <?php elseif(!empty($datos->intelligence->users_song_id)) : ?>
+            <div id="song-<?= $datos->intelligence->id ?>"></div>
+            <script>
+              $(function() {
+                $("#song-<?= $datos->intelligence->id ?>").html('<p>Cargando cancion...</p>');
+                oembed("<?= $datos->intelligence->users_song->url ?>", $("#song-<?= $datos->intelligence->id ?>"));
+              });
+            </script>
           <?php elseif(is_youtube_url($datos->intelligence->statu->status)) :  $datos->intelligence->statu->get_oembed()?>
             <a class="group iframe" href="<?php echo $datos->intelligence->statu->oembed->status ?>" rel="fancy-gallery-iframe">
                 <img src="<?= $datos->intelligence->statu->oembed->thumbnail_url ?>" style="width: 80px; height: 80px; position: absolute" />
@@ -260,16 +343,25 @@
               <img id="photo-<?= $datos->intelligence->id ?>" src="<?php echo uploads_url($datos->intelligence->users_photo->thumb) ?>" style="max-height: 163px; width: 270px;"/>
               <div id="mas-<?= $datos->intelligence->id ?>" class="mas" style="position: absolute;"><img src="images/mas.png" /></div>
               <script>
-                $(function(){
-                  alto = $("#photo-<?= $intelligence->id ?>").innerHeight();
-                  ancho = $("#photo-<?= $intelligence->id ?>").innerWidth();
-                  $("#mas-<?= $intelligence->id ?>").css({
+                $(window).load(function() {
+                  alto = $("#photo-<?= $datos->intelligence->id ?>").innerHeight();
+                  ancho = $("#photo-<?= $datos->intelligence->id ?>").innerWidth();
+                  $("#mas-<?= $datos->intelligence->id ?>").css({
                     "margin-top" : alto - 44 + "px",
-                    "margin-left": ancho -43 + "px"
+                    "margin-left": ancho - 44 + "px"
                   });
                 });
               </script>
             </a>
+          <?php elseif(!empty($datos->intelligence->users_song_id)) : ?>
+            <div id="song-<?= $datos->intelligence->id ?>"></div>
+            <script>
+              $(function() {
+                $("#song-<?= $datos->intelligence->id ?>").html('<p>Cargando cancion...</p>');
+                oembed("<?= $datos->intelligence->users_song->url ?>", $("#song-<?= $datos->intelligence->id ?>"));
+
+              });
+            </script>
           <?php elseif(!empty($datos->intelligence->users_show_id)) : ?>
              <?php $date = fecha_spanish($datos->intelligence->users_show->date); ?>
             <div class="show-fecha" style="padding: 15px 5px; width: 80px; height: 50px; margin-right: 0px;">
@@ -371,7 +463,7 @@
       </div>
       <div class="clear"></div>
       <div id="comment-<?= $datos->intelligence->id ?>" style="display:none; padding: 10px; min-height: 40px;">
-          <textarea name="comment-intelligence" id="comment-intelligence-<?= $datos->intelligence->id ?>" cols="20" rows="3" maxlength="145" style="font-family: 'Arial'; background:#E4E7E7; border-color: #C7C9CA; width: 100%;" placeholder="Deja aquí su comentario (máx. 140 caracteres)"></textarea>
+          <textarea name="comment-intelligence" id="comment-intelligence-<?= $datos->intelligence->id ?>" cols="20" rows="3" maxlength="250" style="font-family: 'Arial'; background:#E4E7E7; border-color: #C7C9CA; width: 100%;" placeholder="Deja aquí su comentario (máx. 250 caracteres)"></textarea>
           <input class="bot-aceptar" type="submit" onclick="save_comment(<?= $datos->intelligence->id ?>, '#comment-intelligence-<?= $datos->intelligence->id ?>', '#ajax-load-<?= $datos->intelligence->id ?>', '#comentarios-<?= $datos->intelligence->id ?>' );" value="Enviar">
           <script>
             $(function(){
@@ -386,27 +478,53 @@
           </script>
       </div>
       <div class="clear"></div>
-      <div id="share-<?= $datos->intelligence->id ?>" style="display:none; padding: 20px;">
-        <div class="share-social-network" style="float: left; width: 100px;"> 
-          <fb:like href="<?= site_url('audiciones/audiciones/detalle/'.$datos->intelligence->audicion->id) ?>" send="false" layout="button_count" width="450" show_faces="false" colorscheme="light" action="like"></fb:like>
-        </div>
-        <div class="share-social-network" style="float: left; width: 100px;"> 
-          <a href="https://twitter.com/share" class="twitter-share-button" data-via="inshaka" data-lang="es">Twittear</a>
-        </div>
-        <script>
-          !function(d,s,id){
-            var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
-            if(!d.getElementById(id)){
-              js=d.createElement(s);
-              js.id=id;
-              js.src=p+'://platform.twitter.com/widgets.js';
-              fjs.parentNode.insertBefore(js,fjs);
-            }
-          }(document, 'script', 'twitter-wjs');
-        </script>
-        <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-        <div class="share-social-network" style="float: left; margin-left: 20px; width: 100px;"> 
-          <div class="g-plusone" data-size="medium" data-href="<?= site_url('audiciones/audiciones/detalle/'.$datos->intelligence->audicion->id) ?>"></div>
+      <?php 
+          if(!empty($datos->intelligence->audicion_id)) {
+            $url = sprintf($urls->audicion_detalle, $datos->intelligence->audicion->id, $datos->intelligence->audicion->var);
+            $text = $datos->intelligence->audicion->titulo;
+          }elseif(!empty ($datos->intelligence->clasificado_id)){
+            $url = sprintf($urls->clasificado_detalle, $datos->intelligence->clasificado->id, $datos->intelligence->clasificado->var);
+            $text = $datos->intelligence->clasificado->titulo;
+          }elseif(!empty ($datos->intelligence->band_id)){
+            $url = site_url('perfil/pagina/'.$datos->intelligence->band->var);
+            $text = "Una nueva banda con el power InShaka se ha creado recientemente. Éxitos para esta banda ";
+          }elseif(!empty ($datos->intelligence->audiciones_aplicacion_id)){
+            $url = sprintf($urls->audicion_detalle, $datos->intelligence->audiciones_aplicacion->audicion->id, $datos->intelligence->audiciones_aplicacion->audicion->var);
+            $text = "Estamos aplicando a esta audición ".$datos->intelligence->audiciones_aplicacion->audicion->titulo." en Inshaka.com";
+          }elseif(!empty ($datos->intelligence->users_show_id)){
+            $url = sprintf($urls->inshaka_url, $datos->intelligence->users_show->user->inshaka_url);
+            $date = fecha_spanish($datos->intelligence->users_show->date);
+            $text = "Nuevo show en ".$datos->intelligence->users_show->place." el ".$date['dia']." de ".$date['mes']. " a las ".$date['hora'];
+          }elseif(!empty ($datos->intelligence->users_song_id)){
+            $url = sprintf($urls->inshaka_url, $datos->intelligence->users_song->user->inshaka_url);
+            $text = "Un nuevo single con el power InShaka ".$datos->intelligence->users_song->url ;
+          }elseif(!empty ($datos->intelligence->users_photo_id)){
+            $url = sprintf($urls->inshaka_url, $datos->intelligence->users_photo->user->inshaka_url);
+            $text = $datos->intelligence->users_photo->user->first_name." ".$datos->intelligence->users_photo->user->last_name." ha compartido una imágen es su perfil de Inshaka";
+          }elseif(!empty ($datos->intelligence->users_video_id)){
+            $url = sprintf($urls->inshaka_url, $datos->intelligence->users_video->user->inshaka_url);
+            $text = $datos->intelligence->users_video->user->first_name." ".$datos->intelligence->users_video->user->last_name." ha compartido una imágen es su perfil de Inshaka";
+          }elseif(!empty ($datos->intelligence->statu_id)){
+            $url = sprintf($urls->inshaka_url, $datos->intelligence->statu->user->inshaka_url);
+            $text = $datos->intelligence->statu->user->first_name." ".$datos->intelligence->statu->user->last_name.' ha cambiado su estado en InShaka.com';
+          }else{
+            $url = site_url();
+            $text = "InShaka Music: Amplifica tu sonido";
+          }
+        ?>
+      <div id="share-<?= $datos->intelligence->id ?>" style="display:none">
+        <div class="shared-network">
+          <ul class="social-buttons cf">
+            <li>
+              <a href="http://twitter.com/share" class="socialite twitter-share-button" data-text="<?= $text ?>" data-url="<?= $url ?>" data-via="inshaka" data-hashtags="TryInshaka" rel="nofollow" target="_blank"><span class="vhidden">Share on Twitter</span></a>
+            </li>
+            <li>
+              <a href="https://plus.google.com/share?url=http://socialitejs.com" class="socialite googleplus-share" data-size="tall" data-href="<?= $url ?>" rel="nofollow" target="_blank"><span class="vhidden">Share on Google+</span></a>
+            </li>
+            <li>
+              <a href="http://www.facebook.com/sharer.php?u=http://www.socialitejs.com&amp;t=Socialite.js" class="socialite facebook-like" data-href="<?= $url ?>" data-send="false" data-layout="button_count" data-width="100" data-show-faces="false" rel="nofollow" target="_blank"><span class="vhidden">Share on Facebook</span></a>
+            </li>
+          </ul>
         </div>
       </div>
       <div class="clear"></div>

@@ -15,8 +15,8 @@
 <?php if($datos->exists()) : ?>
   <div class="capa-comentarios" id="capa-comentarios-<?= $datos->id ?>">
   <?php foreach ($datos as $dato) : ?>
-    <div class="random_user" style="box-shadow: none; height: 47px;">
-      <?php $photo->where('user_id', $dato->user->id)->get(); ?>
+    <div class="random_user" style="box-shadow: none; min-height: 50px; overflow: hidden">
+      <?php $photo->where('user_id', $dato->user->id)->get_by_profile_active(true); ?>
       <div style="float:left">
         <?php if ($photo->exists()) : ?>
           <img  src="<?= uploads_url($photo->get_photo($dato->user->id)) ?>" width="35" height="35" />
@@ -44,7 +44,7 @@
         ?>
         <?= substr($status_replace, 0, 500) ?>
         <div class="clr"></div>
-        <span style="font-family: 'Arial'; font-style: italic; font-size: 0.75em; float: right; margin-top: 17px;"><?= fecha_spanish_full_short($dato->created_on).' - '. get_hour($dato->created_on) ?></span>
+        <span style="font-family: 'Arial'; font-style: italic; font-size: 0.75em; float: right; margin-top: 5px; position: absolute; margin-left: 281px;"><?= fecha_spanish_full_short($dato->created_on).' - '. get_hour($dato->created_on) ?></span>
       </div>  
     </div>
   <?php endforeach; ?>

@@ -5,6 +5,32 @@
 
 
         $("#contenu3").scrollbar(430);
+        /******************************************/
+        
+        $("#contactar-inbox").fancybox();
+        $("#direct-message").on("submit", function(e){
+            e.preventDefault();
+            var url = $(this).attr("action");
+            var datos = {
+              user_id : $(this).data("id"),
+              message : $(this).find("#message").val() 
+            };
+            
+            $.ajax({
+              type      : "post",
+              url       : url,
+              dataType  : "json",
+              data      : datos,
+              success   : function(json){
+                if(json.ok){
+                  alert("Tu mensaje se ha enviado satisfactoriamente!.");
+                }
+              },
+              error   : function(){
+                alert("Se ha producido un error. Inténtelo más tarde!.");
+              }
+            });        
+          });
         
         /*****************************************/
         
@@ -136,6 +162,21 @@
       line-height: 2;
       float: left;
     }
+    .form-usuario {
+    background-color: transparent;
+    border-radius: 10px 10px 10px 10px;
+    height: 99px;
+    margin-left: 22px;
+    padding-left: 17px;
+    padding-top: 12px;
+    width: 393px;
+  }
+    .area-msg {
+      border: 1px solid #CCCCCC;
+      height: 60px;
+      width: 360px;
+      color: black;
+    }
 </style>
 
 
@@ -203,9 +244,9 @@
                       
                             <!-- Modal para postulantes a la audición -->
                             <div id="aplicaciones-<?= $dato->id ?>" style="display: none; width: 950px;">      
-                            <div class="musicos-cont" style="width: 90%">
+                            <div class="musicos-cont" style="width: 97%">
                               <div class="mensaje-tit">Audición -  <?= $dato->titulo ?></div>
-                              <div class="musicos" style="width: 90%;">
+                              <div class="musicos" style="width: 100%;">
                                   <?php if ($quien_aplico->exists()) : ?>
                                       <?php foreach ($quien_aplico as $postulante) : ?>
                                           <div class="musico">
@@ -225,7 +266,9 @@
                                               </div>
                                               <div class="m-dato"><b><?php echo calculate_years_old($postulante->get_user_aplication($postulante->user_id)->birthday) ?></b></div>
                                               <div class="m-dato"><?php echo $postulante->get_user_aplication($postulante->user_id)->city ?></div>
+                                              <a href="#contactar-cont" id="contactar-inbox" onclick="$(this).trigger('click');"><div class="inbox">Contactar</div></a>
                                               <a href="<?php echo site_url('perfil/' . $postulante->get_user_aplication($postulante->user_id)->inshaka_url) ?>"><div class="ver-mas" style="margin-top: 0px;">Ver más</div></a>
+                                              
                                               <div class="editar definir-estado" style="margin-top: 0px;" onclick="DefineEstado(<?= $postulante->id ?>);">Estado</div>
                                               <div id="estado-<?= $postulante->id ?>" title="Definir estado" style="display:none">
                                                 <p>
@@ -242,6 +285,25 @@
                             </div>
                           </div>
                           <!-- Fin modal -->
+                          
+<!-- Formulario modal para contactar un usuario -->
+<div id="contactar-cont" style="display:none;">
+  <div class="mensaje-tit">Mensaje directo a: 
+    <br><?= $postulante->get_user_aplication($postulante->user_id)->first_name, ' ', $postulante->get_user_aplication($postulante->user_id)->last_name ?>
+  </div>
+  <div class="form-usuario">
+    <div class="form-foto">
+      <?= form_open(site_url("perfil/mensajes/response_message"), "id='direct-message' data-id='".$postulante->user_id."'") ?>
+        <div id="success-message"></div>
+        <textarea id="message" name="message" class="area-msg" placeholder="Escribele un mensaje a este usuario en este espacio..."></textarea>
+        <input class="bot-enviar" type="submit" value="enviar">
+      <?= form_close() ?>
+      <div class="clr"></div>
+    </div>
+  </div>
+</div>
+
+                          
                         <?php endforeach; ?>
 
                     </div>

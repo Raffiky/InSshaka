@@ -212,6 +212,80 @@
     padding: 5px 10px;
   }
 </style>
+<script>
+  function oembed(url, list) {
+    list.find('p').remove();
+
+    $.getJSON('http://soundcloud.com/oembed?callback=?', {
+      format: 'js',
+      url: url,
+      iframe: true,
+      show_comments: false,
+      color: 'E82E7C'
+    },
+    function(data) {
+      if (data.html) {
+        var content = $('<div />', {
+          html: data.html,
+          class: 'song'
+        }).appendTo(list),
+        text_delete = '';
+
+        $('<a />', {
+          "class" : 'delete',
+          css: {
+            "float": "left",
+            "font-size": '.6em',
+            'margin': '3px 0px 0px 485px',
+            'position': 'absolute'
+          },
+          href: '#',
+          html: '<div class="delete_song"></div>',
+          click: function(e) {
+            if (!$(this).hasClass('deleting')) {
+                                    
+              $('#delete-song-confirm').dialog({
+                modal : true,
+                resizable : false,
+                width : 400,
+                show : 'drop',
+                hide : 'drop',
+                buttons : {
+                  Aceptar : function(){
+                                        
+                    $(this).html('Eliminando, por favor espere...').css('opacity', .8).addClass('deleting');
+                                                
+                    $.getJSON(globals.site_url + '/perfil/ajax/delete_songs_url', {
+                      url: url
+                    }, function(json) {
+                      if (json.ok === true) {
+                        content.fadeOut(function() {
+                          return $(this).remove();
+                        });
+                      } else {
+                        alert('Hubo un error al eliminar la canción.');
+                      }
+                      $(this).html(text_delete).css('opacity', 1).addClass('deleting');
+                    });
+                                    
+                    return $(this).dialog('close');
+                  },
+                  Cancelar : function(){
+                    return $(this).dialog('close');
+                  }
+                }
+              });
+
+            }
+
+            return e.preventDefault();
+          }
+        }).prependTo(content);
+      }
+    });
+  }
+</script>
+
 <div class="bgEncabezado">
     <div class="conEncabezado">
         <div id="txEncabezado" style="padding: 16px 0;">
@@ -550,14 +624,16 @@
                 <?php elseif(!empty($intelligence->users_show_id)) : ?>
                   Te invita a un evento
                 <?php elseif(!empty($intelligence->users_photo_id)) : ?>
-                  Ha subido una imágen a su album
+                  Ha subido una imágen a su álbum
+                <?php elseif(!empty($intelligence->users_song_id)) : ?>
+                  Ha subido una canción a su álbum
                 <?php endif; ?>
                 <span style="font-family: 'Arial'; font-style: italic; font-size: 0.85em; float: right;">
                   <?= fecha_spanish_full_short($intelligence->update_on).' - '. get_hour($intelligence->update_on) ?>
                 </span>
                 <div class="clear"></div>
                 <div class="follower_new">
-                  <div style="float:left">
+                  <div style="<?= !empty($intelligence->users_song_id) ? null : 'float:left' ?>">
                     <?php if(!empty($intelligence->audicion_id)) : ?>
                       <?php if (!empty($intelligence->audicion->imagen)) : ?>
                         <img  src="<?= uploads_url($intelligence->audicion->imagen) ?>" style="width: 80px; height: 80px;" />
@@ -593,16 +669,25 @@
                         <img id="photo-<?= $intelligence->id ?>" src="<?php echo uploads_url($intelligence->users_photo->thumb) ?>" style="max-height: 204px; max-width: 270px;"/>
                         <div id="mas-<?= $intelligence->id ?>" class="mas" style="position: absolute;"><img src="images/mas.png" /></div>
                         <script>
-                          $(function(){
+                          $(window).load(function() {
                             alto = $("#photo-<?= $intelligence->id ?>").innerHeight();
                             ancho = $("#photo-<?= $intelligence->id ?>").innerWidth();
                             $("#mas-<?= $intelligence->id ?>").css({
                               "margin-top" : alto - 44 + "px",
-                              "margin-left": ancho -43 + "px"
+                              "margin-left": ancho - 44 + "px"
                             });
                           });
                         </script>
                       </a>
+                    <?php elseif(!empty($intelligence->users_song_id)) : ?>
+                        <div id="song-<?= $intelligence->id ?>"></div>
+                        <script>
+                          $(function() {
+                            $("#song-<?= $intelligence->id ?>").html('<p>Cargando cancion...</p>');
+                            oembed("<?= $intelligence->users_song->url ?>", $("#song-<?= $intelligence->id ?>"));
+
+                          });
+                        </script>
                     <?php elseif(!empty($intelligence->statu_id)) : ?>
                         <?php if(is_youtube_url($intelligence->statu->status)) :  $intelligence->statu->get_oembed()?>
                         <a class="group iframe" href="<?php echo $intelligence->statu->oembed->status ?>" rel="fancy-gallery-iframe">
@@ -612,7 +697,7 @@
                         <?php endif; ?>
                   <?php endif; ?>
                   </div>
-                  <div class="subcontent_follower" style="float:left; margin-left: 10px; width: 72%; <?= !empty($intelligence->users_photo_id) ? "display:none" : null ?>">
+                  <div class="subcontent_follower" style="float:left; margin-left: 10px; width: 72%; <?= !empty($intelligence->users_photo_id) || !empty($intelligence->users_song_id) ? "display:none" : null ?>">
                     <?php if(!empty($intelligence->audicion_id)) : ?>
                       <a href="<?php echo sprintf($urls->audicion_detalle, $intelligence->audicion->id, $intelligence->audicion->var) ?>">
                         <span><?= $intelligence->audicion->titulo ?></span>
@@ -699,7 +784,7 @@
                 </div>
                 <div class="clear"></div>
                 <div id="comment-<?= $intelligence->id ?>" style="display:none; padding: 10px; min-height: 40px;">
-                    <textarea name="comment-intelligence" id="comment-intelligence-<?= $intelligence->id ?>" cols="20" rows="3" maxlength="145" style="font-family: 'Arial'; background:#E4E7E7; border-color: #C7C9CA; width: 100%;" placeholder="Deja aquí su comentario (máx. 140 caracteres)"></textarea>
+                    <textarea name="comment-intelligence" id="comment-intelligence-<?= $intelligence->id ?>" cols="20" rows="3" maxlength="250" style="font-family: 'Arial'; background:#E4E7E7; border-color: #C7C9CA; width: 100%;" placeholder="Deja aquí su comentario (máx. 250 caracteres)"></textarea>
                     <input class="bot-aceptar" type="submit" onclick="save_comment(<?= $intelligence->id ?>, '#comment-intelligence-<?= $intelligence->id ?>', '#ajax-load-<?= $intelligence->id ?>', '#comentarios-<?= $intelligence->id ?>' );" value="Enviar">
                     <script>
                       $(function(){
@@ -714,7 +799,7 @@
                     </script>
                 </div>
                 <div class="clear"></div>
-                <div id="share-<?= $intelligence->id ?>" style="display:none; padding: 20px;">
+                <div id="share-<?= $intelligence->id ?>" style="display:none;">
                 <?php 
                   if(!empty($intelligence->audicion_id)) {
                     $url = sprintf($urls->audicion_detalle, $intelligence->audicion->id, $intelligence->audicion->var);
@@ -737,37 +822,31 @@
                     $text = "Un nuevo single con el power InShaka ".$intelligence->users_song->url ;
                   }elseif(!empty ($intelligence->users_photo_id)){
                     $url = sprintf($urls->inshaka_url, $intelligence->users_photo->user->inshaka_url);
+                    $text = $intelligence->users_photo->user->first_name." ".$intelligence->users_photo->user->last_name." ha compartido una imágen es su perfil de Inshaka";
                   }elseif(!empty ($intelligence->users_video_id)){
                     $url = sprintf($urls->inshaka_url, $intelligence->users_video->user->inshaka_url);
+                    $text = $intelligence->users_video->user->first_name." ".$intelligence->users_video->user->last_name." ha compartido una imágen es su perfil de Inshaka";;
                   }elseif(!empty ($intelligence->statu_id)){
                     $url = sprintf($urls->inshaka_url, $intelligence->statu->user->inshaka_url);
                     $text = $intelligence->statu->user->first_name." ".$intelligence->statu->user->last_name.' ha cambiado su estado en InShaka.com';
+                  }else{
+                    $url = site_url();
+                    $text = "InShaka Music: Amplifica tu sonido";
                   }
                 ?>
                   <!-- Enlaces de compartir -->
-                  <!-- Facebook -->
-                  <div class="share-social-network" style="float: left; width: 100px;"> 
-                    <div class="fb-like" data-send="false" data-href="<?= $url ?>" data-layout="button_count" data-width="100" data-show-faces="false" data-action="like" ></div>
-                  </div>
-                  <!-- Twitter --> <!--
-                <div class="share-social-network" style="float: left; width: 100px;"> 
-                  <a href="https://twitter.com/share" class="twitter-share-button" data-url="<?= $url ?>" data-text="<?= $text ?>" data-via="inshaka" data-lang="es" data-hashtags="TryInshaka">Twittear</a>
-                </div>
-                <script>
-                  !function(d,s,id){
-                    var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
-                    if(!d.getElementById(id)){
-                      js=d.createElement(s);
-                      js.id=id;
-                      js.src=p+'://platform.twitter.com/widgets.js';
-                      fjs.parentNode.insertBefore(js,fjs);
-                    }
-                  }(document, 'script', 'twitter-wjs');
-                </script> -->
-
-                  <!-- Google + -->
-                  <div class="share-social-network" style="float: left; margin-left: 20px; width: 100px;"> 
-                    <div class="g-plusone" data-size="medium" data-href="<?= $url ?>"></div>
+                  <div class="shared-network">
+                    <ul class="social-buttons cf">
+                      <li>
+                        <a href="http://twitter.com/share" class="socialite twitter-share" data-text="<?= $text ?>" data-url="<?= $url ?>" data-via="inshaka" data-hashtags="TryInshaka" rel="nofollow" target="_blank"><span class="vhidden">Share on Twitter</span></a>
+                      </li>
+                      <li>
+                        <a href="https://plus.google.com/share?url=http://socialitejs.com" class="socialite googleplus-share" data-size="tall" data-href="<?= $url ?>" rel="nofollow" target="_blank"><span class="vhidden">Share on Google+</span></a>
+                      </li>
+                      <li>
+                        <a href="http://www.facebook.com/sharer.php?u=http://www.socialitejs.com&amp;t=Socialite.js" class="socialite facebook-like" data-href="<?= $url ?>" data-send="false" data-layout="button_count" data-width="100" data-show-faces="false" rel="nofollow" target="_blank"><span class="vhidden">Share on Facebook</span></a>
+                      </li>
+                    </ul>
                   </div>
                   <!-- Fin enlaces de compartir -->
                 </div>
@@ -788,48 +867,48 @@
       
       $(function(){
         $(".comments-intelligence").each(function(){
-          $(this).load($(this).attr('data-load-url'));
+          $(this).load($(this).data('load-url'));
         });
         
-              /************************************************/
-        
-          function last_msg_funtion(){
-            var datos = {
-              id: $(".new_follower:last").attr("data-dni")
-            };    
-            $('div#last_msg_loader').html('<img src="<?= front_asset('images/load_notifications.gif') ?>">');
-            $.ajax({
-              type : "post",
-              url: "<?= site_url('perfil/social/load_data') ?>",
-              data: datos,
-              beforeSend: function(){
-                if(repetir === false){
-                  return false;
-                }
-              },
-              success: function(datos){
-                if (datos != "") {
-                  $(".new_follower:last").after(datos);
-                }
-                $('div#last_msg_loader').empty();
-                repetir = true;
-              },
-              error : function(){
-                alert("hubo un error con la aplicación");
+        /************************************************/
+
+        function last_msg_funtion(){
+          var datos = {
+            id: $(".new_follower:last").attr("data-dni")
+          };    
+          $('div#last_msg_loader').html('<img src="<?= front_asset('images/load_notifications.gif') ?>">');
+          $.ajax({
+            type : "post",
+            url: "<?= site_url('perfil/social/load_data') ?>",
+            data: datos,
+            beforeSend: function(){
+              if(repetir === false){
+                return false;
               }
-            });
-            return false; 
-          };
-          var repetir = true;
-          
-          if(repetir === true){
-            $(window).scroll(function(){
-              if ($(window).scrollTop() >= ($('.new_follower:last').offset().top) ){                
-                last_msg_funtion();
-                repetir = false;
+            },
+            success: function(datos){  
+              if (datos != "") {
+                $(".new_follower:last").after(datos);
               }
-            });
-          }
+              $('div#last_msg_loader').empty();
+              repetir = true;
+            },
+            error : function(){
+              alert("hubo un error con la aplicación");
+            }
+          });
+          return false; 
+        };
+        var repetir = true;
+
+        if(repetir === true){
+          $(window).scroll(function(){
+            if ($(window).scrollTop() >= ($('.new_follower:last').offset().top) ){                
+              last_msg_funtion();
+              repetir = false;
+            }
+          });
+        }
         
       });
       

@@ -4,8 +4,8 @@ $regexp = '[a-zA-Z0-9.-_]+';
 
 $route['(perfil)'] = 'mi_perfil';
 
-$route['(perfil)/(social|audiciones|clasificados|conciertos|build_a_band|directorios|pages|configuracion)'] = '$2/index';
-$route['(perfil)/(social|editar|ajax|audiciones|clasificados|conciertos|build_a_band|pages|directorios|actions|configuracion)/(:any)'] = '$2/$3';
+$route['(perfil)/(social|audiciones|clasificados|conciertos|build_a_band|directorios|pages|configuracion|mensajes)'] = '$2/index';
+$route['(perfil)/(social|editar|ajax|audiciones|clasificados|conciertos|build_a_band|pages|directorios|actions|configuracion|mensajes)/(:any)'] = '$2/$3';
 
 // Rutas para el cargue de shows
 $route["(perfil)/({$regexp})/(load_shows)"] = 'ajax/$3/$2';

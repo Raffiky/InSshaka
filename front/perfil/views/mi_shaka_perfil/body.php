@@ -1,163 +1,33 @@
 <script src="<?= front_asset('/js/mishaka.js') ?>"></script>
-<script type="text/javascript">
-  $(document).ready(function() {
-    /*$(".contactar-m").colorbox({iframe:true, innerWidth:"500", innerHeight:"300"});
- $(".contratar-m").colorbox({iframe:true, innerWidth:"500", innerHeight:"300"});
- $(".valorar-m").colorbox({iframe:true, innerWidth:"500", innerHeight:"500"});*/
-    $(".more-songs").fancybox({
-        'onClosed': function(){ 
-            $('#songs-url-list').show('slow')
-        }
-    });
-    $('.contactar-m').fancybox();
-    $('.contratar-m').fancybox();
-    $('#close-help').fancybox();
-    $('.valorar-m').fancybox();
-    $(function() {
-      var alto_show = ($('.conDestacadoPerfil').height() - 150);
-      
-      if( alto_show <= 200 ){
-        alto_show = 250;
-      };
-          
-      $('#scroll20').css('height', alto_show);
-      $('#scroll20').jScrollPane();
-    });
+<script>
+    var songs_all_urls = <?php echo json_encode($datos->users_songs->get_all_songs_urls()) ?>;
+    var songs_urls = <?php echo json_encode($datos->users_songs->get_songs_urls()) ?>;
 
-    $(function() {
-      $('#scroll22').jScrollPane();
+  // Formulario para comentar
+  $("form#create-comment-form").on("submit", function(){
+    var datos = $(this).serialize();
+    $.ajax({
+      type  : "post",
+      url   : "<?= site_url("perfil/ajax/create_comment") ?>",
+      data  : datos,
+      beforeSend  : function(){
+        $("#btn-send-comment").val("Enviando...").css("opacity", "0.6");
+      },
+      success : function(){
+        $.fancybox.close();
+      },
+      complete  : function(){
+        $("#btn-send-comment").val("Enviar").css("opacity", "1");
+        $.fancybox.close();
+      },
+      error   : function(){
+        $.fancybox.close();
+        $("#btn-send-comment").val("Enviar").css("opacity", "1");
+      }
     });
-
   });
-  $(function() {
-    function log(message) {
-      $("<div>").text(message).prependTo("#log");
-      $("#log").scrollTop(0);
-    }
-
-    $("#city").autocomplete({
-      source: function(request, response) {
-        $.ajax({
-          url: "http://ws.geonames.org/searchJSON",
-          dataType: "jsonp",
-          data: {
-            featureClass: "P",
-            style: "full",
-            maxRows: 12,
-            name_startsWith: request.term
-          },
-          success: function(data) {
-            response($.map(data.geonames, function(item) {
-              return {
-                label: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName,
-                value: item.name
-              };
-            }));
-          }
-        });
-      },
-      minLength: 2,
-      select: function(event, ui) {
-        log(ui.item ?
-          "Selected: " + ui.item.label :
-          "Nothing selected, input was " + this.value);
-      },
-      open: function() {
-        $(this).removeClass("ui-corner-all").addClass("ui-corner-top");
-      },
-      close: function() {
-        $(this).removeClass("ui-corner-top").addClass("ui-corner-all");
-      }
-    });
-        
-    $("#siguiendo-user, #siguiendo-provider").mouseover(function() {      
-      $(this).fadeIn(500, function(){
-        $(this).css('margin', '-3px -9px 0px 0px');
-        $(this).text('Dejar de seguir');
-      });
-    }).mouseout(function(){
-      $(this).fadeOut(100, function(){
-        $(this).css('margin', '-3px 20px 0px 0px');
-        $(this).text('Siguiendo');
-      });
-      $(this).fadeIn(500);
-    });
-    
-    $("#cancelar_solicitud").mouseover(function(){
-      $(this).fadeIn(500, function(){
-        $(this).text('Cancelar');
-      });
-    }).mouseout(function(){
-      $(this).fadeOut(100, function(){
-        $(this).text('Enviada');
-      });
-      $(this).fadeIn(500);
-    });
-    $('#first-help').trigger('click');
-
-  });
-  function addfavorite(id) {
-    $("#anuncio").dialog({
-      resizable: false,
-      modal: true,
-      show : 'drop',
-      hide : 'drop',
-      width: '400px',
-      buttons: {
-        "Aceptar": function() { 
-          $.getJSON('<?= site_url("directorios/directorios/add_favorite_provider") ?>', {
-            id : id
-          }, function() {
-            location.reload();
-          });
-          return $(this).dialog('close');
-        },
-        Cancel: function() {
-          $( this ).dialog("close");
-        }
-      }
-    });
-  }
-  
-  function follow(id, elemento1, elemento2, elemento3){
-    $(elemento1).dialog({
-      resizable : false,
-      modal     : true,
-      show      : 'drop',
-      hide      : 'drop',
-      width     : '400px',
-      buttons   : {
-        "Aceptar" : function(){
-          var datos = {
-            id : id
-          };
-          $.ajax({
-            type  : "get",
-            url   : "<?= site_url("perfil/social/follow") ?>",
-            data  : datos,
-            success : function(){
-              $(elemento2).fadeOut("slow");
-              $(elemento3).fadeIn("slow");
-            },
-            error   : function(){
-              alert("Se ha producido un error. Inténtelo más tarde");
-            }
-          });
-          $(this).dialog('close');
-        },
-        Cancel  : function(){
-          $(this).dialog('close');
-        }
-      }
-    });
-  } 
-  
-  function disparador(elemento){
-   var next_help = elemento.data('next-help');
-   $(next_help).trigger('click');
-  
-  }
 </script>
+<script defer src="<?php echo front_asset('js/perfil-usuario.js') ?>"></script>
 <style>
   .bgSlider{
     display:none;
@@ -165,13 +35,22 @@
 /*  .login{
     display:none;
   }*/
+  #form_directorio label.error {
+    float: left;
+    color: red;
+    font-weight: normal;
+    padding-left: .5em;
+    vertical-align: top;
+    font-size: .72em;
+    width: 345px;
+    margin-bottom: 10px;
+  }
   .b2{
     color:#333 !important;	
   }
   .c1{
     color:#333 !important;	
   }
-
   .can-cont{
     height:auto;
     max-height: 340px;
@@ -264,10 +143,8 @@
     height: 30px;
     width: 150px;
   }
-
   .slider.ui-widget-content{ background: #E93580; }
   .slider .ui-slider-range{ background: #666; }
-
   .campos-show input[type="text"]{
     background-color: #E5E8E9 !important;
     background-image: none !important;
@@ -279,8 +156,7 @@
     padding-right: 10px !important;
     width: 270px !important;
   }
-
-  .thumb-album-img > img{
+ .thumb-album-img > img{
 
   }
   #contenu {
@@ -289,12 +165,34 @@
     width: 650px;
     height: 150px;
   }
-  
-  
+  .banda {
+          font-family: 'BebasNeueRegular';
+          font-size: 1.1em;
+          text-align: center;
+          color: #666;
+          width: 130px; 
+          height: 90px; 
+          float: left; 
+          margin-right: 7px;
+          padding: 7px;
+          border: 3px solid #DEDEDE;
+          border-radius: 10px;
+          -moz-border-radius: 10px;
+          -webkit-border-radius: 10px;
+        }
+  #fans-count{
+    background-color: #E82E7C; 
+    border-radius: 4px; 
+    -moz-border-radius: 4px; 
+    -webkit-border-radius: 4px;
+  }
+  .alert{
+    margin-bottom: 0px;
+  }
 </style>
-
 <div id="fb-root"></div>
-<script>(function(d, s, id) {
+<script>
+  (function(d, s, id) {
     var js, fjs = d.getElementsByTagName(s)[0];
     if (d.getElementById(id))
         return;
@@ -302,13 +200,44 @@
     js.id = id;
     js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=420842527964948";
     fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
+}(document, 'script', 'facebook-jssdk'));
+</script>
+<script>
+  $(function() {
+    $(".more-songs").fancybox({
+        onClosed: function(){ 
+            $('#songs-url-list').show('slow');
+        }
+    });
+    
+    $(function() {
+      var alto_show = ($('.conDestacadoPerfil').height() - 150);
+      
+      if( alto_show <= 200 ){
+        alto_show = 250;
+      };
+          
+      $('#scroll20').css('height', alto_show);
+      $('#scroll20').jScrollPane();
+    });
 
+    $(function() {
+      $('#scroll22').jScrollPane();
+    });
+
+  });
+ 
+</script>
 <div class="perfil-cont">
+  <!-- Contenido del lado izquierdo -->
   <div class="perfil-cont-iz">
-
     <?php if ($is_owner_usuario): ?>
-      <div class="lapiz2" style="margin-top: 50px;"><a href="<?php echo site_url('perfil/editar/informacion_personal') ?>"><img src="<?php echo base_url('assets/images/editar.png') ?>" /></a></div>
+      <!-- Bóton para editar la información personal -->
+      <div class="lapiz2" style="margin-top: 50px;">
+        <a href="<?php echo site_url('perfil/editar/informacion_personal') ?>">
+          <img src="<?= front_asset('images/editar.png') ?>" />
+        </a>
+      </div>
       <div id="first-help" class="help-inshaka" title="<span class='title-help'><?= lang('tooltip_edit_personal_info') ?></span>
           <div class='content-help'>
           <?= lang('tooltip_content_edit_personal_info') ?>
@@ -317,6 +246,8 @@
           style="float:right; margin-right: -10px; margin-top: 21px; ">
      </div>
     <?php endif; ?>
+    
+    <!-- Género musical -->
     <?php if ($datos->musical_gender->exists()) : ?>
       <div class="genero">
         <b>Género(s):</b> 
@@ -325,64 +256,56 @@
         <?php endforeach; ?>
       </div>
     <?php endif; ?>
+    
+    <!-- Imágen de perfil -->
     <div class="foto-banda">
-      <?php $profile_photo->where(array('user_id' => $datos->id, 'profile_active' => true))->get(); ?>
-      <?php if ($profile_photo->exists()) { ?>
-        <img  src="<?php echo uploads_url($profile_photo->get_photo($datos->id)) ?>" width="250" />
-      <?php } else { ?>
+      <?php $datos->users_photo->get_by_profile_active(true)?>
+      <?php if ($datos->users_photo->exists()) :?>
+        <img  src="<?php echo uploads_url($datos->users_photo->get_photo($datos->id)) ?>" width="250" />
+      <?php else : ?>
         <img  src="images/imagensino.png" width="250" />
-        <?php }
-      ?>
+      <?php endif; ?>
     </div>
-    <div style="float:left; margin-top:1.5em;"><div class="fb-like" data-send="false" data-layout="button_count" data-width="100" data-show-faces="false"></div></div>
+    
+    <!-- Botón para compartir en facebook -->
+    <div style="float:left; margin-top:1.5em;">
+      <div class="fb-like" data-send="false" data-layout="button_count" data-width="100" data-show-faces="false"></div>
+    </div>
+    
+    <!-- Obtenemos el rating -->
     <div class="rating">
       <?php echo $datos->get_rating(); ?>
     </div>
     <div class="clear"></div>
-    <?php if($es_usuario) : ?>
-    <?php if (!$is_owner_usuario): ?>
-      <div class="bot-acciones">
-        <a href="#contactar-cont" class="contactar-m"><div class="bot-acc2">Contactar</div></a>
-        <?php if($datos->is_proveedor) : ?>
+    <?php if($is_usuario) : ?>
+      <?php if(!$is_owner_usuario) : ?>
+        <!-- Botones de contactar, rating y seguir -->
+        <div class="bot-acciones">
+          <!-- Botón de contactar -->
+          <a href="#contactar-cont" class="form-m"><div class="bot-acc2">Contactar</div></a>
+          
+          <!-- Botón de seguir -->
           <?php $follow->where(array('user_follow_id' => $datos->id, 'user_id' => $userinfo->id))->get() ?>
-          <div id="btn-follow-provider-seguir" class="bot-acc2" style="<?= !$follow->exists() ? null : 'display:none;' ?>" onclick="follow(<?= $datos->id ?>, '#follow-provider', '#btn-follow-provider-seguir', '#cancelar_solicitud_provider');">Seguir</div>
-          <div id="follow-provider" title="Seguir" style="display:none">
-            <p>
-              Estás seguro que deseas seguir a este proveedor, y agregarlo a tus favoritos?
-            </p>
-          </div>
-          <div id="siguiendo-provider" class="bot-logout" style="margin: -3px 20px 0px 0px; <?= $follow->allow_follow == true ? null : 'display:none;' ?>" onclick="follow(<?= $datos->id ?>, '#no-follow-provider', '#siguiendo-provider', '#btn-follow-provider-seguir')">Siguiendo</div>
-          <div id="cancelar_solicitud_provider" class="bot-acc2" style="<?= $follow->exists() && $follow->allow_follow == false ? null : 'display:none' ?>" onclick="follow(<?= $datos->id ?>, '#no-follow-provider', '#cancelar_solicitud_provider', '#btn-follow-provider-seguir')">Enviada</div>
-          <div id="no-follow-provider" title="Seguir" style="display:none">
-            <p>
-              Estás seguro que deseas dejar de seguir a este proveedor, y quitarlo de tus favoritos?
-            </p>
-          </div>
-        <?php else : ?>
-        <?php $follow->where(array('user_follow_id' => $datos->id, 'user_id' => $userinfo->id))->get() ?>
-        <div id="btn-follow-user" class="bot-acc2" style="<?= !$follow->exists() ? null : 'display:none;' ?>" onclick="follow(<?= $datos->id ?>, '#follow-him-her', '#btn-follow-user', '#cancelar_solicitud-user')">Seguir</div>
-        <div id="follow-him-her" title="Seguir" style="display:none">
-          <p>
-            Estás seguro que deseas seguir a este usuario?
-          </p>
+          <div id="btn-follow-user" class="bot-acc2" style="<?= !$follow->exists() ? null : 'display:none;' ?>" onclick="follow(<?= $datos->id ?>, '#follow-him-her', '#btn-follow-user', '#cancelar_solicitud-user', '<?= site_url("perfil/social/follow") ?>');">Seguir</div>
+          
+          <!-- Botón de siguiendo, con ajax cambia a dejar de seguir -->
+          <div id="siguiendo-user" class="bot-logout" style="margin: -3px 20px 0px 0px; <?= $follow->allow_follow == true ? null : 'display:none;' ?>" onclick="follow(<?= $datos->id ?>, '#follow-her-him','#siguiendo-user', '#btn-follow-user', '<?= site_url("perfil/social/follow") ?>')">Siguiendo</div>
+          
+          <!-- Botón de enviada -->
+          <div id="cancelar_solicitud-user" class="bot-acc2" style="<?= $follow->exists() && $follow->allow_follow == false ? null : 'display:none' ?>" onclick="follow(<?= $datos->id ?>, '#follow-her-him', '#cancelar_solicitud-user', '#btn-follow-user', '<?= site_url("perfil/social/follow") ?>')">Enviada</div>
+          
+          <!-- Botón de rating -->
+          <a href="#rating-cont" class="form-m"><div class="bot-acc2">Rating</div></a>
+          <div class="clear"></div>
         </div>
-        <div id="siguiendo-user" class="bot-logout" style="margin: -3px 20px 0px 0px; <?= $follow->allow_follow == true ? null : 'display:none;' ?>" onclick="follow(<?= $datos->id ?>, '#follow-her-him','#siguiendo-user', '#btn-follow-user')">Siguiendo</div>
-        <div id="cancelar_solicitud-user" class="bot-acc2" style="<?= $follow->exists() && $follow->allow_follow == false ? null : 'display:none' ?>" onclick="follow(<?= $datos->id ?>, '#follow-her-him', '#cancelar_solicitud-user', '#btn-follow-user')">Enviada</div>
-        <?php endif; ?>
-        <a href="#rating-cont" class="valorar-m"><div class="bot-acc2">Rating</div></a>
-        <div class="clear"></div>
-      </div>
-      <div id="follow-her-him" title="Dejar de Seguir" style="display:none">
-        <p>
-          Estás seguro que deseas dejar de seguir a este usuario?
-        </p>
-      </div>
+      <?php endif; ?>
     <?php endif; ?>
-    <?php endif; ?>
-
+    <!-- Bloque de información personal -->
     <?php if(!$datos->is_proveedor) : ?>
+      <!-- Información de músico -->
       <div class="genero"><b>Experiencia:</b> <?php echo!empty($datos->users_personal_info->nivel_experiencia) ? $datos->users_personal_info->nivel_experiencia : 'Sin definir' ?></div>
       <?php if($datos->is_band) : ?>
+      <!-- Información de banda -->
       <div class="genero"><b>Genero Principal:</b> <?= $band_gender->get_name_gender("Genero Principal", $datos->id) ? $band_gender->get_name_gender("Genero Principal", $datos->id) : 'Sin definir' ?></div>
       <div class="genero"><b>Subgenero uno:</b> <?= $band_gender->get_name_gender("Subgenero uno", $datos->id) ? $band_gender->get_name_gender("Subgenero uno", $datos->id) : 'Sin definir' ?></div>
       <div class="genero"><b>Subgenero dos:</b> <?= $band_gender->get_name_gender("Subgenero dos", $datos->id) ? $band_gender->get_name_gender("Subgenero dos", $datos->id) : 'Sin definir' ?></div>
@@ -390,7 +313,7 @@
     <?php else : ?>
       <?php if ($is_owner_usuario): ?>
         <div class="lapiz4" style="display: none;">
-          <a href="<?php echo site_url('perfil/editar/informacion_profesional') ?>"><img src="<?php echo base_url('assets/images/editar.png') ?>" /></a>
+          <a href="<?php echo site_url('perfil/editar/informacion_profesional') ?>"><img src="<?= front_asset('images/editar.png') ?>" /></a>
         </div>
       <?php endif; ?>
       <div class="genero"><b>Información profesional</b></div>
@@ -419,77 +342,50 @@
         </div>
       <?php endif; ?>
       <br>
+      <!-- Información de proveedor -->
       <div class="genero"><b>Teléfono:</b> <?php echo!empty($datos->users_personal_info->phone_provider) ? $datos->users_personal_info->phone_provider: 'Sin definir' ?></div>
       <div class="genero"><b>Dirección:</b> <?php echo!empty($datos->adress_provider) ? $datos->adress_provider : 'Sin definir' ?></div>
       <div class="genero"><b>Ciudad:</b> <?php echo!empty($datos->city) ? $datos->city : 'Sin definir' ?></div>
       <div class="genero"><b>Sitio web:</b> <?php echo!empty($datos->users_personal_info->sitio_web) ? $datos->users_personal_info->sitio_web : 'Sin definir' ?></div>
       <div class="genero"><b>Experiencia:</b> <?php echo!empty($datos->users_personal_info->anos_experiencia) ? $datos->users_personal_info->anos_experiencia.' años' : 'Sin definir' ?></div>
     <?php endif; ?>
-      
     <div class="clear" style="margin-top: 10px;"></div>
+    
+    <!-- Botón de listado de fans -->
     <?php if(!$is_owner_usuario) : ?>
-    <a href="#fans-cont" class="valorar-m"><div class="bot-acc2">Fans de <?= $datos->username ?></div></a>
+    <a href="#fans-cont" class="form-m"><div class="bot-acc2" id="fans-count">Fans de <?= $datos->username ?> [<?= $follow->where(array('user_follow_id' => $datos->id, 'allow_follow' => true))->get()->result_count() ?>]</div></a>
     <div class="clear" style="margin-bottom: 10px;"></div>
     <?php endif; ?>
     
-    <!-- Modal de fans -->
-    <div id="fans-cont" style="display:none">
-      <div class="regis-tit" style="margin-bottom: 30px;">Fans de <?= $datos->first_name." ".$datos->last_name ?></div>
-      <?php $mis_fans = $follow->where(array('user_follow_id' => $datos->id, 'allow_follow' => true))->get() ?>
-      <?php if($mis_fans->exists()) : ?>
-        <?php foreach ($mis_fans as $fans) : ?>
-          <a href="<?= site_url('perfil/'.$fans->user->inshaka_url) ?>" target="_blank">
-          <div style="clear: both; width: 370px; height: 45px; background-color: #F5F5F5; border: 1px solid #999; border-radius: 7px; -webkit-border-radius: 7px; padding: 10px 20px; margin-top: 5px;">
-            <div style="float: left">
-              <?php $profile_photo->where(array('user_id' => $fans->user->id, 'profile_active' => true))->get(); ?>
-              <?php if ($profile_photo->exists()) : ?>
-                <img  src="<?php echo uploads_url($profile_photo->get_photo($fans->user->id)) ?>" style="width: 50px; height: 51px;" />
-              <?php else :?>
-                <img  src="images/imagensino.png" style="width: 50px; height: 51px;" />
-              <?php endif; ?>
-            </div>
-            <div style="float: left; margin-left: 7px; width: 313px;">
-              <span class="genero"><?= $fans->user->first_name." ".$fans->user->last_name ?></span><br>
-              <p style="color: #666; text-align: justify; font-size: 0.75em;"><?=  strlen($fans->user->bio) > 100 ? substr($fans->user->bio, 0, 100)."..." : $fans->user->bio ?></p>
-            </div>
-          </div>
-          </a>
-        <?php endforeach; ?>
-      <?php endif; ?>
-    </div>
-    
-    <?php if($es_usuario) : ?>
-    <div class="link-perfil" style="<?= $datos->is_proveedor ? 'margin-bottom: 5px;' : null?>">
-      <div class="link-perfil-tit">Links de contacto</div>
-      <div class="link-perfil-icos">
-        <ul>
-          <?php if (!empty($datos->users_personal_info->social_facebook)) : ?>
-            <li><a href="<?php echo $datos->users_personal_info->social_facebook ?>" target="_blank" class="ico-perfil1"></a></li>
-          <?php endif; ?>
-          <?php if (!empty($datos->users_personal_info->social_twitter)) : ?>
-            <li><a href="<?php echo $datos->users_personal_info->social_twitter ?>" target="_blank"  class="ico-perfil2"></a></li>
-          <?php endif; ?>
-          <?php if (!empty($datos->users_personal_info->social_youtube)) : ?>
-            <li><a href="<?php echo$datos->users_personal_info->social_youtube ?>" target="_blank" class="ico-perfil3"></a></li>
-          <?php endif; ?>
-            
-
-          <li> <?php echo mailto($datos->email, ' ', array('class' => 'ico-perfil6')); ?> </li>
-
-          <div class="clr"></div>
-        </ul>
+    <!-- Links de contacto -->
+    <?php if($is_usuario) : ?>
+      <div class="link-perfil" style="<?= $datos->is_proveedor ? 'margin-bottom: 5px;' : null?>">
+        <div class="link-perfil-tit">Links de contacto</div>
+        <div class="link-perfil-icos">
+          <ul>
+            <?php if (!empty($datos->users_personal_info->social_facebook)) : ?>
+              <li><a href="<?php echo $datos->users_personal_info->social_facebook ?>" target="_blank" class="ico-perfil1"></a></li>
+            <?php endif; ?>
+            <?php if (!empty($datos->users_personal_info->social_twitter)) : ?>
+              <li><a href="<?php echo $datos->users_personal_info->social_twitter ?>" target="_blank"  class="ico-perfil2"></a></li>
+            <?php endif; ?>
+            <?php if (!empty($datos->users_personal_info->social_youtube)) : ?>
+              <li><a href="<?php echo$datos->users_personal_info->social_youtube ?>" target="_blank" class="ico-perfil3"></a></li>
+            <?php endif; ?>
+            <li> <?php echo mailto($datos->email, ' ', array('class' => 'ico-perfil6')); ?> </li>
+            <div class="clr"></div>
+          </ul>
+        </div>
       </div>
-
-    </div>
-      <?php endif; ?>
-      
+    <?php endif; ?>
+    
+    <!-- Bloque de fotos y videos -->
     <?php if(!$datos->is_proveedor) : ?>
       <div class="regis-tit" id="misAlbumes">Mis Álbumes</div>
     <?php endif; ?>
-
     <?php if ($is_owner_usuario): ?>
       <div class="lapiz3" style="display: none; ">
-         <a href="<?php echo sprintf($urls->current_inshaka_url_format, 'fotos') ?>"><img src="<?php echo base_url('assets/images/editar.png') ?>" /></a>
+        <a href="<?php echo sprintf($urls->current_inshaka_url_format, 'fotos') ?>"><img src="<?= front_asset('images/editar.png') ?>" /></a>
       </div>
       <div id="secound_help" class="help-inshaka" title="<span class='title-help'><?= lang('tooltip_edit_photos_and_videos') ?></span>
         <div class='content-help'>
@@ -499,96 +395,68 @@
         style="float:right; margin-right: 20px; margin-top: -29px;">
       </div>
     <?php endif; ?>
-
-    <?php if ($datos->users_photo->exists()): ?>
-
-      <div class="thumb-album">
-        <div class="regis-subtit">Fotos</div>
-        <a href="<?= site_url('perfil/'.$datos->inshaka_url.'/fotos') ?>">
-          <div class="thumb-album-img">
-            <div class="mas"><img src="<?php echo base_url('assets/images/mas.png') ?>" /></div>
+    <!-- Bloque de fotos -->
+    <div class="thumb-album">
+      <div class="regis-subtit">Fotos</div>
+      <a href="<?= site_url('perfil/'.$datos->inshaka_url.'/fotos') ?>">
+        <div class="thumb-album-img">
+          <div class="mas"><img src="<?= front_asset('images/mas.png') ?>" /></div>
+          <?php if ($datos->users_photo->exists()): ?>
             <img src="<?php echo uploads_url($datos->users_photo->thumb) ?>" height="86px" width="115" />
-
-          </div>
-        </a>
-      </div>
-    <?php else : ?>
-      <div class="thumb-album">
-        <div class="regis-subtit">Fotos</div>
-        <a href="<?= site_url('perfil/'.$datos->inshaka_url.'/fotos') ?>">
-          <div class="thumb-album-img">
-            <div class="mas"><img src="<?php echo base_url('assets/images/mas.png') ?>" /></div>
+          <?php else : ?>
             <img src="images/imagensino.png" height="101px" width="115" />
-
-          </div>
-        </a>
-      </div>
-    <?php endif; ?>
-
-    <?php if ($datos->users_video->exists()): $datos->users_video->get_oembed(); ?>
-
-      <div class="thumb-album">
-        <div class="regis-subtit">Videos</div>
-        <a href="<?= site_url('perfil/'.$datos->inshaka_url.'/videos') ?>">
-          <div class="thumb-album-img">
-            <div class="mas"><img src="<?php echo base_url('assets/images/mas.png') ?>" /></div>
-            <img src="<?php echo $datos->users_video->oembed->thumbnail_url ?>"  width="115"/>
-
-          </div>
-        </a>
-      </div>
-    <?php else : ?>
-      <div class="thumb-album">
-        <div class="regis-subtit">Videos</div>
-        <a href="<?= site_url('perfil/'.$datos->inshaka_url.'/videos') ?>">
-          <div class="thumb-album-img">
-            <div class="mas"><img src="<?php echo base_url('assets/images/mas.png') ?>" /></div>
-            <img src="images/imagensino.png"  width="115"/>
-
-          </div>
-        </a>
-      </div>
-    <?php endif; ?>
-      
+          <?php endif; ?>
+        </div>
+      </a>
+    </div>
+    <!-- Bloque de videos -->
+    <div class="thumb-album">
+      <div class="regis-subtit">Videos</div>
+      <a href="<?= site_url('perfil/'.$datos->inshaka_url.'/videos') ?>">
+        <div class="thumb-album-img">
+          <div class="mas"><img src="<?= front_asset('images/mas.png') ?>" /></div>
+          <?php if ($datos->users_video->exists()): $datos->users_video->get_oembed(); ?>
+          <img src="<?php echo $datos->users_video->oembed->thumbnail_url ?>"  width="115"/>
+          <?php else : ?>
+          <img src="images/imagensino.png"  width="115"/>
+          <?php endif; ?>
+        </div>
+      </a>
+    </div>
+    
+    <!-- Bloque de mapa de proveedor -->
     <?php if($datos->is_proveedor) : ?>
       <div class="mapa"><div id="map_canvas" style="width:260px; height:280px; margin-top: 10px; border: 1px solid #000;"></div></div>
       <script src="https://maps.google.com/maps/api/js?sensor=true"></script>
-      <script src="<?= base_url('assets/js/jquery.gmap.js') ?>"></script>
-      
+      <script src="<?= front_asset('js/jquery.gmap.js') ?>"></script>      
       <script type="text/javascript">
         $('#map_canvas').gMap({
            markers: [
-               {
-                   address: '<?= $datos->adress_provider,' , ', $datos->city ?>',
-                   html: '<span style="color: #E82E7C; font-size:2.1em;"> <?= json_encode($datos->name_proveedor)?> </span>'
-               }
+            {
+               address: '<?= $datos->adress_provider,' , ', $datos->city ?>',
+               html: '<span style="color: #E82E7C; font-size:2.1em;"> <?= json_encode($datos->name_proveedor)?> </span>'
+            }
            ],
            address: '<?= $datos->adress_provider,' , ', $datos->city ?>',
            zoom:12
        });
      </script>
-    <?php endif; ?>
-      
-    <?php if(!$datos->is_proveedor) : ?>
-    <div class="conDestacadoPerfil">    
-
+    <?php else : ?>
+     <!-- Información profesional de músico -->
+     <div class="conDestacadoPerfil"> 
       <div class="titColumnas">
-
         <?php if ($is_owner_usuario): ?>
           <div class="lapiz4" style="display: none; margin-top: 42px;">
-            <a href="<?php echo site_url('perfil/editar/informacion_profesional') ?>"><img src="<?php echo base_url('assets/images/editar.png') ?>" /></a>
+            <a href="<?php echo site_url('perfil/editar/informacion_profesional') ?>"><img src="<?= front_asset('images/editar.png') ?>" /></a>
           </div>
-          <?php if (!$datos->is_proveedor) : ?>
-            <div id="third_help" class="help-inshaka" title="<span class='title-help'><?= lang('tooltip_edit_professional_info') ?></span>
-              <div class='content-help'>
-              <?= lang('tooltip_content_edit_professional_info') ?>
-              <button class='bot-logout' data-next-help='#fourth_help' style='border: 0px;' onclick='disparador($(this));'><?= lang('next_tooltip_button') ?></button>
-              </div>" 
-              style="float:right; margin-right: 20px; margin-top: -1px;">
-            </div>
-          <?php endif; ?>
+          <div id="third_help" class="help-inshaka" title="<span class='title-help'><?= lang('tooltip_edit_professional_info') ?></span>
+            <div class='content-help'>
+            <?= lang('tooltip_content_edit_professional_info') ?>
+            <button class='bot-logout' data-next-help='#fourth_help' style='border: 0px;' onclick='disparador($(this));'><?= lang('next_tooltip_button') ?></button>
+            </div>" 
+            style="float:right; margin-right: 20px; margin-top: -1px;">
+          </div>
         <?php endif; ?>
-
         <?php if ($datos->is_band) : ?>
           <span class="titDestacados"><?php echo $datos->band_name ?></span><br>
         <?php else : ?>
@@ -596,11 +464,9 @@
           <span class="subDestacados"><?php echo $datos->first_name, ' ', $datos->last_name ?></span>
         <?php endif; ?>
       </div>
-
       <div class="txLista">
         <span class="tLista">Edad: <b><?php echo calculate_years_old($datos->birthday) ?></b></span><br>
       </div>
-
       <div class="txLista">
         <?php if ($datos->talent->exists()) : ?>
           <span class="tLista">Talentos:</span><br><br>
@@ -632,18 +498,16 @@
       </div>
       <div class="txLista">
         <?php if ($datos->musical_gender->exists()) : ?>
-
           <span class="tLista">Género(s):
             <?php foreach ($datos->musical_gender as $musical_gender) : ?>
               <strong><?php echo $musical_gender->name . (next($datos->musical_gender) == true ? ',' : null) ?></strong>
             <?php endforeach; ?>
           <?php endif; ?>
-      </div>
-	
+      </div>	
     </div>
-      <?php endif; ?>
+    <?php endif; ?>
     <div class="clear"></div>
-    <!-- Shows -->
+        <!-- Shows -->
     <?php if(!$datos->is_proveedor) : ?>
     <div class="perfil-extra-iz">
       <div class="regis-tit">Shows</div>
@@ -701,7 +565,6 @@
     </div>
     <?php endif; ?>
     <!-- Fin shows -->
-    
     <!-- Comentarios -->
     <div class="clear"></div>
     <div class="perfil-extra-de">
@@ -714,24 +577,15 @@
           </div>" 
           style="float:right; margin-right: 156px; margin-top: -29px;">
      </div>
-      <script>
-      function closetooltip(elemento){
-          $(elemento).tooltipster('hide');
-          console.log(elemento);
-        }
-      </script>
       <?php endif; ?>
-      <?php if($es_usuario) : ?>
-      <?php if (!$is_owner_usuario): ?>
-        <a class="valorar-m" href="#rating-cont">
-          <div class="bot-acc2">Rating</div></a>
-        <div class="clear"></div>
+      <?php if($is_usuario) : ?>
+        <?php if (!$is_owner_usuario): ?>
+          <a class="form-m" href="#rating-cont">
+            <div class="bot-acc2">Rating</div></a>
+          <div class="clear"></div>
+        <?php endif; ?>
       <?php endif; ?>
-      <?php endif; ?>
-
-
       <?php if ($datos->comment->exists()): ?>
-
         <div class="coment-cont" id="scroll20" style="width: 280px; <?php echo !$datos->is_proveedor ? '' : 'height: 260px !important; margin-bottom: 50px;' ?>">
           <div class="coment-list" style="width: 250px;">
             <ul>
@@ -786,28 +640,24 @@
             </ul>
           </div>
         </div>
-
       <?php endif; ?>
-
     </div>
     <!-- Fin comentarios -->
   </div>
+  <!-- Contenido del lado derecho -->
   <div class="perfil-cont-de">
+    <!-- Nombre del proveedor o músico -->
     <?php if(!$datos->is_proveedor) : ?>
       <div class="usuario-tit"><?php echo $datos->is_band ? $datos->band_name : $datos->first_name.' '.$datos->last_name ?></div>
     <?php else: ?>
       <?php if ($is_owner_usuario): ?>
-      <a id="pub_directorio" class="bot-rosa2 cambia-cont" style="float: right;" href="#publicar">Publicar en directorio</a>
+      <a id="pub_directorio" class="bot-rosa2 cambia-cont" style="float: right; <?php $datos->directorio->exists() ? "display:none" : null ?>" href="#publicar">Publicar en directorio</a>
       <?php endif; ?>
       <div class="usuario-tit"><?php echo $datos->name_proveedor ?></div>
     <?php endif; ?>
+    <!-- Formulario de status -->
     <div class="usuario-subtit close-form" style="position:relative;">
-
-      <div class="edit-profile-status" data-profile-status="inline">
-
-      </div>
-
-
+      <div class="edit-profile-status" data-profile-status="inline"></div>
       <span id="profile-status">
         <?php if (!empty($datos->status)) : ?>
           <?php echo $datos->status ?>
@@ -815,15 +665,9 @@
           <?php if ($is_owner_usuario) : ?>
             Escribe tu “status” aca.       
           <?php endif; ?>
-
         <?php endif; ?>
       </span>
-
-
       <?php if ($is_owner_usuario) : ?>
-
-
-
         <?php echo form_open('perfil/ajax/update_status', 'id="profile-status-form" style="display:none;"') ?> 
         <div>
           <?php echo form_textarea(array('name' => 'status', 'required' => 'required', 'maxlength' => 200)) ?>
@@ -831,8 +675,6 @@
           <a class="cancel" href="#">Cancelar</a>
         </div>
         <?php echo form_close() ?>
-
-
         <script>
           var form_status = $('#profile-status-form'),
              status_inline = '[data-profile-status="inline"]',
@@ -849,9 +691,7 @@
             parent.removeClass('close-form');
                           
           });
-                      
           $('.cancel', form_status).on('click', hide_form);
-                      
           $(form_status).on('submit', function(){
             var $this = $(this),
                status_inline_text = $(status_inline).html();
@@ -880,27 +720,23 @@
                           
             return false;
           });
-                      
           function hide_form(){
             profile_status.show();
             form_status.hide();
             parent.addClass('close-form');
           }
-                      
         </script>
-
       <?php endif; ?>
-
     </div>
+    <!-- Biografía del usuario -->
     <div class="usaurio-desc"><?php echo $datos->bio ?></div>
-    
-    <!-- Espacio para integrantes-banda o banda-músico -->
+    <!-- Bloque de integrantes-banda o banda-músico -->
     <?php if(!$datos->is_proveedor && !$datos->is_band) : ?>
       <?php if($datos->band->exists()) : ?>
       <div class="clr"></div>
       <div class="regis-tit">Mis bandas</div>
       <div class="clr"></div>
-      <div id="scroll-band-int" style="height: 130px; margin-bottom: 30px;">
+      <div id="scroll-band-int" style="height: 160px;">
         <div class="band-int" >
           <?php foreach ($datos->band->all as $my_bands) : ?>
           <a href="<?= site_url('perfil/pagina/'.$my_bands->var) ?>" target="_blank">
@@ -925,113 +761,73 @@
           <?php endforeach; ?>
         </div>
       </div>
-      <style type="text/css">
-        .banda {
-          font-family: 'BebasNeueRegular';
-          font-size: 1.1em;
-          text-align: center;
-          color: #666;
-          width: 130px; 
-          height: 90px; 
-          float: left; 
-          margin-right: 7px;
-          padding: 7px;
-          border: 3px solid #DEDEDE;
-          border-radius: 10px;
-          -moz-border-radius: 10px;
-          -webkit-border-radius: 10px;
-        }
-      </style>
-      <script type="text/javascript">
-        $(function(){
-          var numThumbs = $(".band-int div.banda").size();
-          var thumbsWidth = $(".band-int div.banda").width();
-          var marg_tot = numThumbs * 130;
-          var widthBox = thumbsWidth * 2 + marg_tot;
-          $(".band-int").width(widthBox);
-          $('#scroll-band-int').jScrollPane();
-        });
-      </script>
       <?php endif; ?>
     <?php endif; ?>
     <!-- Fin integrantes - banda -->
-   
     <div class="clr"></div>
 
     <!-- Inicio div de fotografias para proveedores -->
       <?php if($datos->is_proveedor) : ?>
-      <?php if ($datos->users_photo->exists()) : ?>
-        <div class="regis-tit">Fotos</div>
-        <div class="clr"></div>
-        <div class="album-cont">
+        <?php if ($datos->users_photo->exists()) : ?>
+          <div class="regis-tit">Fotos</div>
+          <div class="clr"></div>
+          <div class="album-cont">
             <div id="contenu">
-                <div class="albumes">
-                    <?php foreach ($datos->users_photo as $user_photo) : ?>
-                        <div class="album">
-                            <a href="<?php echo site_url('perfil/actions/remove_users_photo/' . $user_photo->id.'?next=' . uri_string()) ?>" class="b_cerrar" style="display: none;margin-left: 170px;margin-right: 0;margin-top: -9px;position: absolute;z-index: 9999;"></a>
-                            <a class="group" href="<?php echo uploads_url($user_photo->image) ?>" rel="fancy-gallery">
-                                <img src="<?php echo uploads_url($user_photo->thumb) ?>" height="233"/>
-                                <div class="mas" style="margin-left: 136px;margin-top: -47px;"><img src="<?php echo base_url('assets/images/mas.png') ?>" /></div>
-                            </a>
-                        </div>
-                    <?php endforeach; ?>
-                    <div class="clr"></div>
-                </div>
+              <div class="albumes">
+                <?php foreach ($datos->users_photo as $user_photo) : ?>
+                  <div class="album">
+                    <a href="<?php echo site_url('perfil/actions/remove_users_photo/' . $user_photo->id.'?next=' . uri_string()) ?>" class="b_cerrar" style="display: none;margin-left: 170px;margin-right: 0;margin-top: -9px;position: absolute;z-index: 9999;"></a>
+                    <a class="group" href="<?php echo uploads_url($user_photo->image) ?>" rel="fancy-gallery">
+                      <img src="<?php echo uploads_url($user_photo->thumb) ?>" height="233"/>
+                      <div class="mas" style="margin-left: 136px;margin-top: -47px;"><img src="<?php echo base_url('assets/images/mas.png') ?>" /></div>
+                    </a>
+                  </div>
+                <?php endforeach; ?>
+                <div class="clr"></div>
+              </div>
             </div>
-        </div>
-
+          </div>
+      <?php endif; ?>
     <?php endif; ?>
-    <?php endif; ?>
-      
-      <!-- Fin fotografias -->
+    <!-- Fin fotografias -->
+    <!-- Listado de canciones -->
     <?php if(!$datos->is_proveedor) : ?>
-    <div class="regis-tit">Canciones</div>
-    <?php if ($is_owner_usuario): ?>
-      <div class="conBtMas agrCancion">
-        <div id="txBtMas">
-          <a style="float: right;">
-            <span class="verMas ">Agregar canción</span>
-          </a>
+      <div class="regis-tit">Canciones</div>
+      <?php if ($is_owner_usuario): ?>
+        <div class="conBtMas agrCancion">
+          <div id="txBtMas">
+            <a style="float: right;"><span class="verMas ">Agregar canción</span></a>
+          </div>
+          <a href="#"><div id="imgBtMas"></div></a>
         </div>
-        <a href="#">
-          <div id="imgBtMas"></div>
-        </a>
-      </div>
-      <div id='fourth_help' class="help-inshaka" title="<span class='title-help'><?= lang('tooltip_add_songs') ?></span>
-        <div class='content-help'>
-        <?= lang('tooltip_content_add_songs') ?>
-        <button class='bot-logout' data-next-help='#fifth_help' style='border: 0px;' onclick='disparador($(this));'><?= lang('next_tooltip_button') ?></button>
-        </div>" 
-        style="float:right; margin-right: 158px; margin-top: -55px;">
-      </div>
-    
-      <div class="cancionesInputBox" id="agrCancion" style="float: left;margin-top: -21px; display: none">
-        <form id="save-song-url-form" action="<?php echo site_url('perfil/ajax/save_song_url') ?>">
-          <small style="float:left; font-size:.8em; margin-top:.6em;margin-right: 32px;">URL de la canción en Soundcloud.com: </small><input name="url" type="url" class="campo" placeholder="Ej: http://soundcloud.com/user/song"  required="required" />
-          <input class="bot-aceptar" type="submit" value="Guardar">
-          <div class="bot-aceptar" onclick="$('#agrCancion').hide()" style="width: 77px; padding-top: 4px; height: 23px; cursor: pointer;">Cancelar</div>
-        </form>
-      </div>
-
-      <div id="delete-song-confirm" title="Eliminar canción de soundcloud" style="display:none;">
-        <p>¿Estás seguro que quieres eliminar la canción?</p>
-      </div>
-    <?php endif; ?>
+        <div id='fourth_help' class="help-inshaka" title="<span class='title-help'><?= lang('tooltip_add_songs') ?></span>
+          <div class='content-help'>
+          <?= lang('tooltip_content_add_songs') ?>
+          <button class='bot-logout' data-next-help='#fifth_help' style='border: 0px;' onclick='disparador($(this));'><?= lang('next_tooltip_button') ?></button>
+          </div>" 
+          style="float:right; margin-right: 158px; margin-top: -55px;">
+        </div>
+        <div class="cancionesInputBox" id="agrCancion" style="float: left;margin-top: -21px; display: none">
+          <form id="save-song-url-form" action="<?php echo site_url('perfil/ajax/save_song_url') ?>">
+            <small style="float:left; font-size:.8em; margin-top:.6em;margin-right: 32px;">URL de la canción en Soundcloud.com: </small><input name="url" type="url" class="campo" placeholder="Ej: http://soundcloud.com/user/song"  required="required" />
+            <input class="bot-aceptar" type="submit" value="Guardar">
+            <div class="bot-aceptar" onclick="$('#agrCancion').hide()" style="width: 77px; padding-top: 4px; height: 23px; cursor: pointer;">Cancelar</div>
+          </form>
+        </div>
+      <?php endif; ?>
     <div class="clear"></div>
     <div id="songs-url-list" class="can-cont scroll22 no-result" >
       <p>Ninguna canción agregada.</p>
     </div>
-
     <div class="conBtMas" style="margin-top: -10px; width: 120px;">
       <div id="txBtMas" style="width: 90px;"><a class="more-songs" href="#list-songs"><span class="verMas">Más canciones</span></a></div>
       <a class="more-songs" href="#list-songs"><div id="imgBtMas"></div></a>
     </div>
     <div id="list-songs" style="display: none; width: 660px;"></div>
-  <?php endif; ?>
-    <div class="clr"></div>
-    <div class="clr"></div>
-    <div class="clr"></div>
-    <!-- Prueba div de video -->
+    <?php endif; ?>
+    <div class="clear"></div>
+    
+    <!-- Bloque de videos -->
     <?php if($datos->users_video->exists()) : ?>
     <div class="regis-tit">Videos</div>
     <div class="clr"></div>
@@ -1053,8 +849,7 @@
         </div>
     </div>
     <?php endif; ?>
-    <!-- Fin prueba video -->
-    <div class="clear"></div>
+    <div class="clr"></div>
     
     <!-- Bloque de posts -->
     <div class="perfil-extra-iz" style="width: 98%;">
@@ -1063,106 +858,68 @@
         <p><small>Cargando posts...</small></p>
       </div>
       <div id="last_msg_loader" style="margin: 28px 230px;"></div>
-      <div id="post-compartido" title="Compartir post" style="display:none">
-        <p>
-          Este post ha sido compartido en tu muro!.
-        </p>
-      </div>
-      <div id="aplicar-compartido" title="Aplicar audición" style="display:none">
-        <p>
-          Haz aplicado a la audición correctamente!.
-        </p>
-      </div>
-      <script>
-        $(function(){
-          $("#posts-list").load($("#posts-list").data('load-url'));
-        });
-      </script>
     </div>
     <!-- Fin bloque de posts -->
+    <div class="clr"></div>
   </div>
   <div class="clr"></div>
 </div>
 
+<!-- 
+-------- Modales y cuadros de diálogos ------------ 
+-->
+<!-- Cuadros de diálogo -->
+<div id="follow-him-her" title="Seguir" style="display:none">
+  <p>
+    <?php if(!$datos->is_proveedor) : ?>
+    Estás seguro que deseas seguir a este usuario?
+    <?php else : ?>
+    Estás seguro que deseas seguir a este proveedor, y agregarlo a tus favoritos?
+    <?php endif; ?>
+  </p>
+</div>
+<div id="follow-her-him" title="Dejar de Seguir" style="display:none">
+  <p>
+    Estás seguro que deseas dejar de seguir a este usuario?
+  </p>
+</div>
+<div id="delete-song-confirm" title="Eliminar canción de soundcloud" style="display:none;">
+  <p>¿Estás seguro que quieres eliminar la canción?</p>
+</div>
+<div id="post-compartido" title="Compartir post" style="display:none">
+  <p>
+    Este post ha sido compartido en tu muro!.
+  </p>
+</div>
+<div id="aplicar-compartido" title="Aplicar audición" style="display:none">
+  <p>
+    Haz aplicado a la audición correctamente!.
+  </p>
+</div>
 
+<!-- Show delete dialog -->
+<div id="shows-delete-dialog" style="display:none;">
+  <p>Test</p>
+</div>
+
+<!-- Formulario modal para contactar un usuario -->
 <div id="contactar-cont" style="display:none;">
-  <div class="mensaje-tit">Contactar</div>
+  <div class="mensaje-tit">Mensaje directo</div>
+  <div id="success-message"></div>
   <div class="form-usuario">
-    <div class="form-top">
-      <div class="form-foto"> <?php $profile_photo->where('user_id', $datos->id)->get(); ?>
-      <?php if ($profile_photo->exists()) { ?>
-        <img  src="<?php echo uploads_url($profile_photo->get_photo($datos->id)) ?>" width="225" />
-      <?php } else { ?>
-        <img  src="images/imagensino.png" width="225" />
-        <?php }
-      ?>
-    <form action="<?php site_url("perfil/mi_shaka_perfil/submit") ?>" method="post" id="envios_form_os1">
-      <div class="form-campos">
-        
-		<div class="campo-msg_SZ" >De:</div>
-		<input type="text" id="nombres" class="campo-msg" placeholder="" value="<?php echo $current_username ?>"  />
-        <p style="line-height:10px">&nbsp;</p>
-		<div class="campo-msg_SZ">Para:</div>
-		<textarea id="textos" class="area-msg" placeholder="Escribele un mensaje a este usuario en este espacio..."></textarea>
-      </div>
-      <div class="clr"></div>     
-	 <div class="lista-check2">
-        <input class="bot-enviar"  id="envios_fi1" type="submit" value="enviar">
-      </div>
-    </form>
-    <div class="clr"></div>
-  </div>
-</div>
-</div>
-
-</div>
-
-<div id="contratar-cont" style="display:none;">
-  <div class="mensaje-tit">Contratar</div>
-  <div class="form-usuario">
-    <div class="form-top">
-      <div class="form-foto"> <?php $profile_photo->where('user_id', $datos->id)->get(); ?>
-      <?php if ($profile_photo->exists()) { ?>
-        <img  src="<?php echo uploads_url($profile_photo->get_photo($datos->id)) ?>" width="225" />
-      <?php } else { ?>
-        <img  src="images/imagensino.png" width="225" />
-        <?php }
-      ?>
-    <form action="<?php site_url("front/perfil/mi_shaka_perfil/submit") ?>" method="post" id="envios_form_os">
-      <div class="form-campos">
-        <div class="campo-msg_SZ" >De:</div>
-		<input type="text" id="nombres" class="campo-msg" placeholder="" value="<?php echo $current_username ?>"  />
-		 <p style="line-height:10px">&nbsp;</p>
-		<div class="campo-msg_SZ">Para:</div>
-        <textarea id="textos" class="area-msg" >Hola Usuario, quiero invitarte a que formes parte de mi banda!</textarea>
-      </div>
+    <div class="form-foto">
+      <?= form_open(site_url("perfil/mensajes/response_message"), "id='direct-message' data-id='".$datos->id."'") ?>
+        <textarea id="message" name="message" class="area-msg" placeholder="Escribele un mensaje a este usuario en este espacio..."></textarea>
+        <input class="bot-enviar" type="submit" value="enviar">
+      <?= form_close() ?>
       <div class="clr"></div>
-      <div class="lista-check2">
-        <input class="bot-enviar"  id="envios_fi" type="submit" value="enviar">
-
-      </div>
-    </form>
-    <div class="clr"></div>
+    </div>
   </div>
 </div>
-</div>
-</div>
-<script type="text/javascript">
-  $('#envios_fi').click(function(){
-    alert("Mensaje enviado correctamente");
-    $('#envios_form_os').submit();
-  });
-  $('#envios_fi1').click(function(){
-    alert("Mensaje enviado correctamente");
-    $('#envios_form_os1').submit();
-  });
-</script>
 
-
-
-<?php if (!$is_owner_usuario): ?>
-  <div id="rating-cont" class="rating-cont" style="display:none;">
-  <?php echo form_open(null, 'id="create-comment-form"', array('ui' => base64_encode($datos->id))) ?>
+<!-- Formulario modal para el rating de un usuario -->
+<div id="rating-cont" class="rating-cont" style="display:none;">
+  <?php echo form_open(site_url("perfil/ajax/create_comment"), 'id="create-comment-form"', array('ui' => base64_encode($datos->id))) ?>
 
     <div class="mensaje-tit">Rating</div>
     <div class="rating-txt">Conoces a este artista? Que piensas de él? Lo has visto tocar en Vivo? Dale un Rating o déjale un comentario!</div>
@@ -1221,38 +978,32 @@
       </div>
     </div>
   <?php echo form_close() ?>
-  </div>
-  <script>
-  $(function(){
-    $("form#create-comment-form").on("submit", function(){
-      var datos = $(this).serialize();
-      $.ajax({
-        type  : "post",
-        url   : "<?= site_url("perfil/ajax/create_comment") ?>",
-        data  : datos,
-        beforeSend  : function(){
-          $("#btn-send-comment").val("Enviando...").css("opacity", "0.6");
-        },
-        success : function(){
-          $.fancybox.close();
-        },
-        complete  : function(){
-          $("#btn-send-comment").val("Enviar").css("opacity", "1");
-          $.fancybox.close();
-        },
-        error   : function(){
-          $.fancybox.close();
-          $("#btn-send-comment").val("Enviar").css("opacity", "1");
-        }
-      });
-    });
-  });
-  </script>
-  <?php endif; ?>
+</div>
 
-<!-- Show delete dialog -->
-<div id="shows-delete-dialog" style="display:none;">
-  <p>Test</p>
+<!-- Modal de fans -->
+<div id="fans-cont" style="display:none">
+  <div class="regis-tit" style="margin-bottom: 30px;">Fans de <?= $datos->first_name." ".$datos->last_name ?></div>
+  <?php $mis_fans = $follow->where(array('user_follow_id' => $datos->id, 'allow_follow' => true))->get() ?>
+  <?php if($mis_fans->exists()) : ?>
+    <?php foreach ($mis_fans as $fans) : ?>
+      <a href="<?= site_url('perfil/'.$fans->user->inshaka_url) ?>" target="_blank">
+      <div style="clear: both; width: 370px; height: 45px; background-color: #F5F5F5; border: 1px solid #999; border-radius: 7px; -webkit-border-radius: 7px; padding: 10px 20px; margin-top: 5px;">
+        <div style="float: left">
+          <?php $fans->user->users_photo->where(array('user_id' => $fans->user_id, 'profile_active' => true))->get(); ?>
+          <?php if ($fans->user->users_photo->exists()) : ?>
+            <img  src="<?php echo uploads_url($fans->user->users_photo->get_photo($fans->user->id)) ?>" style="width: 50px; height: 51px;" />
+          <?php else :?>
+            <img  src="images/imagensino.png" style="width: 50px; height: 51px;" />
+          <?php endif; ?>
+        </div>
+        <div style="float: left; margin-left: 7px; width: 313px;">
+          <span class="genero"><?= $fans->user->first_name." ".$fans->user->last_name ?></span><br>
+          <p style="color: #666; text-align: justify; font-size: 0.75em;"><?=  strlen($fans->user->bio) > 100 ? substr($fans->user->bio, 0, 100)."..." : $fans->user->bio ?></p>
+        </div>
+      </div>
+      </a>
+    <?php endforeach; ?>
+  <?php endif; ?>
 </div>
 <!-- Formulario crear directorio -->
 <div id="publicar" style="display: none">
@@ -1329,61 +1080,6 @@
   <?= form_close(); ?>
 </div>
 <!-- Fin formulario directorio -->
-<script>
-  var songs_urls = <?php echo json_encode($datos->users_songs->get_songs_urls()) ?>;
-</script>
-
-<script defer src="<?php echo front_asset('js/perfil-usuario.js') ?>"></script>
-<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.js" ></script>
-<script type="text/javascript">
-  $(function() {
-
-    $(".slider").slider({
-      range: "max",
-      min: 0,
-      max: 10,
-      value: 0,
-      slide: function(event, ui) {
-        var parent = $(this).parent();
-        return parent.find('input').val(ui.value).end().find('.rating-dato').text(ui.value);
-      }
-    });
-    $("#pub_directorio").fancybox({
-      onComplete: function() {
-        $("#form_directorio").validate({
-        rules: {
-          sitio_web: { required: false, url: true},
-          facebook_provider: { required: false, url: true},
-          twitter_provider: { required: false, url: true},
-          youtube_provider: { required: false, url: true},
-          email_provider: { required:true, email: true},
-          description_provider: { required:true, minLenght: 100}
-        },
-        messages: {
-          sitio_web: "El Sitio Web digitado no corresponde a una url válida.",
-          facebook_provider: "El perfil de Facebook digitado no corresponde a una url válida.",
-          twitter_provider: "El perfil de Twitter digitado no corresponde a una url válida.",
-          youtube_provider: "El perfil de YouTube digitado no corresponde a una url válida.",
-          email_provider : "El E-mail es obligatorio y debe tener formato de email correcto.",
-          description_provider: "El campo Quienes Somos es obligatorio."
-        }
-     });
-      }
-    });
-  });
-</script>
-<style type="text/css">
-  #form_directorio label.error {
-    float: left;
-    color: red;
-    font-weight: normal;
-    padding-left: .5em;
-    vertical-align: top;
-    font-size: .72em;
-    width: 345px;
-    margin-bottom: 10px;
-  }
-</style>
 <div id="help-modal" style="display:none; width: 520px; height: 140px;">
   <div class="mensaje-tit">Primeros pasos</div>
   <div class="clr"></div>

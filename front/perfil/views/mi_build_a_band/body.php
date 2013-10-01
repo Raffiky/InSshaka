@@ -1,6 +1,32 @@
     <script src="<?php echo base_url('assets/js/mi-build-a-band.js') ?>"></script>
 <script>
   $(function(){
+     $("#contactar-inbox").fancybox();
+    $("#direct-message").on("submit", function(e){
+        e.preventDefault();
+        var url = $(this).attr("action");
+        var datos = {
+          user_id : $(this).data("id"),
+          message : $(this).find("#message").val() 
+        };
+
+        $.ajax({
+          type      : "post",
+          url       : url,
+          dataType  : "json",
+          data      : datos,
+          success   : function(json){
+            if(json.ok){
+              alert("Tu mensaje se ha enviado satisfactoriamente!.");
+            }
+          },
+          error   : function(){
+            alert("Se ha producido un error. Inténtelo más tarde!.");
+          }
+        });        
+      });
+      
+      
       $('#first-help').trigger('click');
     var estado = 1;
         var estado2 = 0;
@@ -36,8 +62,8 @@
 		
 			
         });
-  })
-
+  });
+  
 </script>
 <style>
   #msdrpdd20_titletext {
@@ -99,6 +125,21 @@
     }
     .dato-banda b{
         color: #E82E7C;
+    }
+    .form-usuario {
+    background-color: transparent;
+    border-radius: 10px 10px 10px 10px;
+    height: 99px;
+    margin-left: 22px;
+    padding-left: 17px;
+    padding-top: 12px;
+    width: 393px;
+  }
+    .area-msg {
+      border: 1px solid #CCCCCC;
+      height: 60px;
+      width: 360px;
+      color: black;
     }
 </style>
 
@@ -246,7 +287,7 @@
                             <?= $musico->user->first_name, ' ', $musico->user->last_name ?>
                           </label>
                         </div>
-                        <div class="m-dato"><?php echo $musico->city ?></div>
+                        <div class="m-dato"><?php echo $musico->user->city ?></div>
                          <?php $user_instruments_on_band = $musico->user->get_instruments_on_band($member->id); ?>
                             <?php if ($user_instruments_on_band->exists()) : ?>
                             <div class="m-exp">
@@ -356,10 +397,6 @@
                                 <div class="mus-sel">
                                     <label for="check_01" class="m-nombre"><?php echo $member->user->first_name, ' ', $member->user->last_name ?></label>
                                 </div>
-                                <div class="m-dato"><b><?php echo calculate_years_old($member->user->birthday) ?></b></div>
-                                <div class="m-dato"><?php echo!empty($member->user->gender) ? $member->user->gender : 'Sin definir' ?></div>
-                                <div class="m-dato"><?php echo $member->city ?></div>
-
                                 <?php $user_instruments_on_band = $member->user->get_instruments_on_band($dato->id); ?>
 
                                 <?php if ($user_instruments_on_band->exists()) : ?>
@@ -377,12 +414,26 @@
 
                                 <?php endif; ?>
   <div class="opciones-ico">
-
+  
+  <a href="#contactar-cont" id="contactar-inbox" onclick="$(this).trigger('click');"><div class="inbox">Contactar</div></a>
   <a href="<?php echo site_url('perfil/' . $member->user->inshaka_url) ?>"><div class="ver-mas">Ver más</div></a>
   <a href="<?= site_url('perfil/build-a-band/delete_member/' . $member->id) ?>"><div class="borrar" style="margin-top: 0px">Borrar</div></a>
-
                                 </div>
                             </div>
+  <!-- Formulario modal para contactar un usuario -->
+    <div id="contactar-cont" style="display:none;">
+      <div class="mensaje-tit">Mensaje directo a: <br><?= $member->user->first_name." ".$member->user->last_name ?></div>
+      <div id="success-message"></div>
+      <div class="form-usuario">
+        <div class="form-foto">
+          <?= form_open(site_url("perfil/mensajes/response_message"), "id='direct-message' data-id='".$member->user->id."'") ?>
+            <textarea id="message" name="message" class="area-msg" placeholder="Escribele un mensaje a este usuario en este espacio..."></textarea>
+            <input class="bot-enviar" type="submit" value="enviar">
+          <?= form_close() ?>
+          <div class="clr"></div>
+        </div>
+      </div>
+    </div>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <strong>Sin integrantes</strong>

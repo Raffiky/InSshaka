@@ -40,6 +40,7 @@ class Clasificados extends Front_Controller {
         $this->_data['paginator_url'] = $_SERVER['QUERY_STRING'] ? $paginator_url . '?' . $_SERVER['QUERY_STRING'] : $paginator_url;
         
         $this->_data['favoritos'] = $favorito;
+        $this->_data["user"] = $user;
 
         $this->set_title('Mis clasificados');
 

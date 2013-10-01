@@ -109,46 +109,7 @@
     // Cargamos los comentarios para cada actualización
     $(".comments-intelligence").each(function(){
       $(this).load($(this).data('load-url'));
-    });
-    
-    // Creamos la variable para repetir
-    var repetir = true;
-    
-    // Verificamos si repetimos la secuencia de actualizaciones
-    if(repetir === true){
-      $(window).scroll(function(){
-        if($(window).scrollTop() >= $(".new_follower:last").offset().top){
-          // Mostramos el gif de loading
-          $(".div#last_msg_loader").html("<img src='<?= front_asset("images/load_notifications.gif") ?>' />");
-          
-          // Variable que obtiene todos los datos
-          var datos = {
-            id: $(".new_follower:last").data("dni")
-          };
-          $.ajax({
-            type  : "post",
-            url   : "<?= site_url("perfil/social/load_self_data/$is_inshaka_url") ?>",
-            data  : datos,
-            beforeSend  : function(){
-              if(repetir === false)
-                return false;
-            },
-            success     : function(response){
-              if(response !== null) {
-                $(".new_follower:last").after(response);
-                $('div#last_msg_loader').empty();
-                repetir = true;
-              }
-            },
-            error       : function(){
-              alert("hubo un error con la aplicación");
-            }
-          });
-
-          repetir = false;
-        }
-      });
-    }    
+    }); 
   });
 </script>
 <script>
@@ -314,8 +275,8 @@
                     alto = $("#photo-<?= $dato->id ?>").innerHeight();
                     ancho = $("#photo-<?= $dato->id ?>").innerWidth();
                     $("#mas-<?= $dato->id ?>").css({
-                      "margin-top" : alto - 44 + "px",
-                      "margin-left": ancho - 44 + "px"
+                      "margin-top" : alto - 44 + "px'",
+                      "margin-left": ancho - 44 + "px'"
                     });
                   });
                 </script>
@@ -330,7 +291,7 @@
                 });
               </script>
             <?php elseif(!empty($dato->statu_id)) : ?>
-                <?php if(is_youtube_url($dato->statu->status)) :  $dato->statu->get_oembed() ?>
+                <?php if(is_youtube_url($dato->statu->status)) :  $dato->statu->get_oembed()?>
                 <a class="group iframe" href="<?php echo $dato->statu->oembed->status ?>" rel="fancy-gallery-iframe">
                     <img src="<?= $dato->statu->oembed->thumbnail_url ?>" style="width: 80px; height: 80px; position: absolute" />
                     <div class="mas" style=" margin-left: 37px; margin-top: 36px;"><img src="<?= front_asset('images/mas.png') ?>" /></div>
@@ -449,7 +410,7 @@
           </script>
         </div>
         <div class="clear"></div>
-        <div id="share-<?= $dato->id ?>" style="display:none; padding: 5px 0px;">
+        <div id="share-<?= $dato->id ?>" style="display:none; padding: 5px 0px">
           <?php if(!empty($dato->audicion_id)) : 
               $url = sprintf($urls->audicion_detalle, $dato->audicion->id, $dato->audicion->var);
               $text = $dato->audicion->titulo; ?>
@@ -484,6 +445,7 @@
             $text = "InShaka Music: Amplifica tu sonido"; ?>
           <?php endif; ?>
           <!-- Enlaces de compartir -->
+          <!-- Facebook -->
           <div class="shared-network">
             <ul class="social-buttons cf">
               <li>

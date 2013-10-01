@@ -74,14 +74,24 @@
     margin-top: 0;
 
   }
+  .tabs{
+    background: #DCDCDC;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    -webkit-border-top-left-radius: 7px;
+    -webkit-border-top-right-radius: 7px;
+    -moz-border-top-left-radius: 7px;
+    -moz-border-top-right-radius: 7px;
+  }
 </style>
 
 
 <div class="contenido" id="page-mis-audiciones">
   <div class="directorio-cont">
-    <ul class="tabs">
+    <ul class="tabs" style="width: 540px;">
       <li class="t1 active"><a href="#tab1">Mis Clasificados</a></li>
-      <li class="t7"><a href="#tab2">Mis favoritos</a></li>
+      <li class="t7"><a href="#tab2">Mis aplicaciones</a></li>
+      <li class="t7"><a href="#tab3">Mis favoritos</a></li>
       <li class="t2"><a href="<?php echo site_url('clasificados/crear_anuncio') ?>">Crear</a></li>
     </ul>
   </div>
@@ -158,8 +168,39 @@
 
       <div class="clr"></div>
     </div>
-    
+    <!-- Mis aplicaciones a clasificados -->
     <div id="tab2" class="tab_content">
+      <?php if($user->clasificados_aplicacion->exists()) :  ?>
+      <div class="nuevas-audiciones">
+        <div id="contenu3">
+        <?php foreach ($user->clasificados_aplicacion as $aplicaciones) : ?>
+          <div class="resultado">
+            <div class="audicion-info">
+              <div class="resultado-tit"><a href="<?php echo sprintf($urls->clasificado_detalle, $aplicaciones->clasificado->id, $aplicaciones->clasificado->var) ?>"><?php echo $aplicaciones->clasificado->titulo ?></a></div>
+              <div class="audicion-datos">
+
+                <div class="audicion-lugar">Ciudad </br><b><?php echo $aplicaciones->clasificado->ciudad ?></b></div>
+                <div class="audicion-fecha2">Fecha de cierre </br><b><?php echo fecha_spanish_full_short($aplicaciones->clasificado->fecha_cierre) ?></b></div>
+              </div>
+              <div class="clear"></div>
+            </div>
+            <div class="clr"></div>
+            <div class="resultado-desc2"><?php echo $aplicaciones->clasificado->descripcion ?></div>
+
+            <div class="clr"></div>
+            <div class="opciones-ico">
+              <div class="ver-mas"><a href="<?php echo sprintf($urls->clasificado_detalle, $aplicaciones->clasificado->id, $aplicaciones->clasificado->var) ?>">Ver más</a></div>
+            </div>
+
+            <div class="clr"></div>
+          </div>
+        <?php endforeach; ?>  
+        </div>
+      </div>        
+      <?php endif; ?>
+    </div>
+    <!-- Mis clasificados favoritos -->
+    <div id="tab3" class="tab_content">
       <?php if($favoritos->exists()) : ?>
       <div class="nuevas-audiciones">
         <div id="contenu3">

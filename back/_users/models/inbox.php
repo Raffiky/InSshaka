@@ -1,42 +1,33 @@
 <?php
 
-class Users_video extends DataMapper {
+class Inbox extends DataMapper {
 
-    public $model = 'users_video';
-    public $table = 'users_videos';
-    public $has_one = array(
+    public $model = 'inbox';
+    public $table = 'inbox';
+    public $has_one = array();
+    public $has_many = array(
         'user' => array(
-            'auto_populate' => true
-        ),
-        'intelligence' => array(
+            'join_table' => 'users_inbox',
             'auto_populate' => true
         )
     );
-    public $has_many = array();
-    public $validation = array(
-        'url' => array(
-            'label' => 'URL del video',
-            'rules' => array('required')
-        )
-    );
+    public $validation = array();
+    public $default_order_by = array('created_on' => 'DESC');
+
+    // ----------------------------------------------------------------------
 
     public function __construct($id = NULL) {
         parent::__construct($id);
     }
 
     // ----------------------------------------------------------------------
-
-    public function get_oembed() {
+    
+    public function get_oembed($req_url = null) {
         if ($this->exists()) {
             
-            $url = $this->url;
+            $url = $req_url;
             $return = null;
-
-            $url_get = 'http://vimeo.com/api/oembed.json?url=%s';
-
-            if (is_youtube_url($url)) {
-                $url_get = 'http://www.youtube.com/oembed?url=%s&format=json';
-            }
+            $url_get = 'http://api.embed.ly/1/oembed?key=8cd3553a2bb8467fb13765b54347db62&url=%s&format=json';
 
             $this->oembed = json_decode(file_get_contents(sprintf($url_get, rawurlencode($url))));
         }
@@ -50,11 +41,10 @@ class Users_video extends DataMapper {
         foreach ($embeds as $embed) {
             $this->oembed->url = $embed->getAttribute('src');
         }
-        
 
         return $this;
     }
 
     // ----------------------------------------------------------------------
+    
 }
-?>

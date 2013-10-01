@@ -7,7 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Audiciones extends Front_Controller {
     
-    protected $user_area = false;
+    protected $user_area = true;
 
     private $_title = 'Nuevas audiciones', $_datos = null, $_page = 1;
 
@@ -24,6 +24,7 @@ class Audiciones extends Front_Controller {
     // ----------------------------------------------------------------------
 
     public function index($seccion = 'audiciones_individual') {
+//        $this->user_area = false;
         $genders = new Musical_gender();
         
         $this->_data['genders'] = $genders->get_for_select('Género musical');
@@ -298,7 +299,6 @@ class Audiciones extends Front_Controller {
     // ----------------------------------------------------------------------
 
     public function detalle($audicion_id) {
-
         $this->_datos->get_by_id($audicion_id);
         
         $talents = new Talent;        
@@ -306,7 +306,9 @@ class Audiciones extends Front_Controller {
         $mis_band = new \Band;
         $user = clone $usuario;
         $musical_gender = new \Musical_gender;
-        
+        $bandas = clone $mis_band;
+
+
         $true = null;
         $ok = null;
         
@@ -322,7 +324,7 @@ class Audiciones extends Front_Controller {
         
         if($this->_datos->tipo_audicion == 'Banda'){
   
-            if($mis_band->exists()){
+            if($mis_band->exists() OR $this->_datos->musical_gender->name == "Todos"){
               $true = true;
             }
         }
@@ -367,7 +369,7 @@ class Audiciones extends Front_Controller {
         $this->_data['is_owner'] = $this->userinfo->username == $this->_datos->user->username;
         $this->_data['talento'] = $talents->get_talent($this->_datos->talent_id);
         $this->_data['banda'] = $musical_gender->get_by_id($this->_datos->musical_gender_id);
-        $this->_data['mis_bandas'] = $mis_band;
+        $this->_data['mis_bandas'] = $mis_band->exists() ? $mis_band : $bandas->get_by_related($user);
 
         $this->set_datos($this->_datos)->set_title('Audición: ' . $this->_datos->titulo);
 
@@ -401,6 +403,7 @@ class Audiciones extends Front_Controller {
               // Cargando interacción
               $intelligence = new \Intelligence;
               $intelligence->audiciones_aplicacion_id = $audicion_aplicacion->id;
+              $intelligence->created_on = datetime_now();
               $intelligence->save($user);
               
               // Cargando notificación

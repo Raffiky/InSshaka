@@ -72,11 +72,9 @@
         <script type="text/javascript" src="<?php echo base_url('assets/js/jquery.fancybox.js') ?>"></script>
         <script type="text/javascript" src="<?php echo base_url('assets/js/timepicker.js') ?>"></script>
         <script src="<?php echo base_url('assets/js/jquery.dataTables.js') ?>"></script>
-        <script src="<?php echo base_url('assets/js/acordeon.js') ?>"></script>
-        <script type='text/javascript' src="<?php echo base_url('assets/js/jquery.scrollto.js') ?>"></script>
-        <script type='text/javascript' src="<?php echo base_url('assets/js/jquery.nav.js') ?>"></script>
         <script type="text/javascript" src="<?php echo base_url('assets/js/jquery.carouFredSel.js') ?>"></script>
         <script type="text/javascript" src="js/jquery.tooltipster.min.js"></script>
+        <script src="<?= front_asset("js/socialite.js") ?>"></script>
         
 <!--        <script src="http://bp.yahooapis.com/2.4.21/browserplus-min.js"></script>-->
 
@@ -112,6 +110,9 @@
 
         <script type="text/javascript">
             $(document).ready(function() {
+               
+              Socialite.load();
+            
                $('.registro-modal').fancybox();
                 $('.help-inshaka').tooltipster({
                   theme: '.theme-help',

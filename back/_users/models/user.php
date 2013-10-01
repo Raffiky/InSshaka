@@ -65,6 +65,10 @@ class User extends DataMapper {
             'join_table' => 'users_clasificados_aplicaciones',
             'auto_populate' => true
         ),
+        'inbox' => array(
+            'join_table' => 'users_inbox',
+            'auto_populate' => true
+        ),
         'comment' => array(
             'join_table' => 'users_comments',
             'auto_populate' => true
@@ -87,6 +91,9 @@ class User extends DataMapper {
         ),
         'musical_gender' => array(
             'join_table' => 'users_musical_genders',
+            'auto_populate' => true
+        ),
+        'faq' => array(
             'auto_populate' => true
         )
     );
@@ -202,10 +209,9 @@ class User extends DataMapper {
 
         if (!empty($this->{$field})) {
           // Encontramos los espacios entre palabras
-          $words = explode(" ", $this->{$field});
-          $total = count($words);
+          $words = strpos($this->{$field}, " ");
           
-          if($total >= 1){
+          if($words){
             return FALSE;
           }          
           return TRUE;
@@ -219,6 +225,26 @@ class User extends DataMapper {
       $user->get_by_id($id);
       
       return $user->username;
+    }
+    
+    // ----------------------------------------------------------------------
+    
+    public function get_message($id = NULL){
+      // Clonamos el objeto del usuario
+      $user = clone $this;
+      
+      // Creamos el objeto del inbox
+      $inbox = new \Inbox;
+      $inbox->where("user_id", $id)->get();
+      
+      $user->select("id")
+              ->include_related($inbox, array("message", "ready"))
+              ->where_related($inbox, "user_id", $id)
+              ->order_by_related($inbox, "created_on", "DESC")
+              ->limit(1)->get();
+      $user->check_last_query();
+
+      return $user;
     }
     
     // ----------------------------------------------------------------------

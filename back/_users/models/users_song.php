@@ -7,6 +7,9 @@ class Users_song extends DataMapper {
     public $has_one = array(
         'user' => array(
             'auto_populate' => true
+        ),
+        'intelligence' => array(
+            'auto_populate' => true
         )
     );
     public $has_many = array();
@@ -24,6 +27,21 @@ class Users_song extends DataMapper {
     // ----------------------------------------------------------------------
 
     public function get_songs_urls() {
+        if (!$this->exists()) {
+            return false;
+        }
+        $return = array();
+
+        foreach ($this->limit(2)->get() as $dato) {
+            array_push($return, $dato->url);
+        }
+
+        return $return;
+    }
+
+    // ----------------------------------------------------------------------
+    
+    public function get_all_songs_urls() {
         if (!$this->exists()) {
             return false;
         }

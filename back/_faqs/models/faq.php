@@ -7,7 +7,11 @@ class Faq extends DataMapper {
     public $model = 'faq';
     public $table = 'faqs';
     
-    public $has_one = array();
+    public $has_one = array(
+        "user" => array(
+            "auto_populate" => true
+        )
+    );
     public $has_many = array(
         'faqs' => array(
             'auto_populate' => true

@@ -7,7 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Social extends Front_Controller {
 
-    protected $user_area = false;
+    protected $user_area = true;
     private $_datos = null;
     private $_count = 0;
 
@@ -156,7 +156,7 @@ class Social extends Front_Controller {
     // ----------------------------------------------------------------------
     
     public function ready_notify(){      
-      $id = $this->_get('id');
+      $id = $this->_get('notification');
       $notificacion = new \Notification;
       $datos = $notificacion->get_by_id($id);
       
@@ -184,7 +184,7 @@ class Social extends Front_Controller {
       $this->_data['intelligence_comments'] = $intelligence_comments;
       
       $notificacion = new \Notification;
-      $datos = $notificacion->get_by_id($id);
+      $datos = $notificacion->get_by_intelligence_id($id);
       
       $titulo = null;
       
@@ -279,6 +279,26 @@ class Social extends Front_Controller {
         $intelligences_comment->created_on = datetime_now();
         
         if($intelligences_comment->save()){
+          // Cargamos la libreria de los mensajes
+          $this->load->library('email');
+          $this->email->clear();
+          
+          $this->_data = array(
+              'user' => $user->first_name." ".$user->last_name,
+              'comment' => $comentario,
+              'inshaka_url' => $user->inshaka_url,
+              'post' => $intelligences->id
+          );
+
+          $html = parent::view('home/social/email_posts');
+
+          $this->email->from(SITEEMAIL, SITENAME);
+          $this->email->to($intelligences->user->email);
+
+          $this->email->subject($user->first_name." ".$user->last_name. " ha comentado en uno de tus posts");
+          $this->email->message($html);
+          $this->email->send();
+          
           $notification = new \Notification;
           $notification->user_id = $intelligences->user_id;
           $notification->intelligence_id = $id;
@@ -477,9 +497,9 @@ class Social extends Front_Controller {
       $this->_data['photo'] = $photo;
         
       $this->set_datos($intelligence);
-      
+
       if($intelligence->exists())
-        return parent::view('perfil/mi_shaka_perfil/posts', false); 
+        return parent::view('perfil/mi_shaka_perfil/posts_self', false); 
     }
     
     // ---------------------------------------------------------------------

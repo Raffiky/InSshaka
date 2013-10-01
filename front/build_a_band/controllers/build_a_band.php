@@ -7,7 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Build_a_band extends Front_Controller {
 
-    protected $user_area = false;
+    protected $user_area = true;
     private $_datos = null;
 
     public function __construct() {

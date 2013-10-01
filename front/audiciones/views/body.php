@@ -70,17 +70,17 @@ $( "#city" ).autocomplete({
         <ul class="tabs">
 
             <li class="t1 <?php echo $seccion == 'audiciones_individual' ? 'active' : null ?>">
-              <a href="<?php echo site_url('audiciones') ?>">
+              <a href="<?= $is_usuario ? site_url('audiciones') : site_url("audiciones/no_audiciones") ?>">
                 Músico
               </a>
             </li>
             <li class="t1 <?php echo $seccion == 'audiciones_banda' ? 'active' : null ?>">
-              <a href="<?php echo site_url('audiciones/index/audiciones_banda') ?>">
+              <a href="<?= $is_usuario ? site_url('audiciones/index/audiciones_banda') : site_url('audiciones/no_audiciones/index/audiciones_banda') ?>">
                 Banda
               </a>
             </li>
             <li class="t2 <?php echo $seccion == 'crear_audicion' ? 'active' : null ?>">
-              <a href="<?= $es_usuario ? site_url('audiciones/crear/') :  site_url('usuarios/login?continue-uri=audiciones/crear')?>">
+              <a href="<?= site_url('audiciones/crear/') ?>">
                 Crear
               </a>
             </li>

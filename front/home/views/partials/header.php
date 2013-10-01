@@ -48,7 +48,7 @@
         text-align: right;
     }
     
-    #notificaciones, #solicitudes{
+    #notificaciones, #solicitudes, #mensajes{
       width: 17px;
       height: 17px;
       float: right;
@@ -60,7 +60,7 @@
       border-radius: 5px;
     }
     
-    #cant_not, #notify_not{
+    #cant_not, #notify_not, #message_not{
       background-color: #E82E7C;
       border-radius: 10px;
       -moz-border-radius: 10px;
@@ -134,6 +134,79 @@
     padding: 3px 9px;
   }
 </style>
+<script>
+  function oembed(url, list) {
+    list.find('p').remove();
+
+    $.getJSON('http://soundcloud.com/oembed?callback=?', {
+      format: 'js',
+      url: url,
+      iframe: true,
+      show_comments: false,
+      color: 'E82E7C'
+    },
+    function(data) {
+      if (data.html) {
+        var content = $('<div />', {
+          html: data.html,
+          class: 'song'
+        }).appendTo(list),
+        text_delete = '';
+
+        $('<a />', {
+          "class" : 'delete',
+          css: {
+            "float": "left",
+            "font-size": '.6em',
+            'margin': '3px 0px 0px 485px',
+            'position': 'absolute'
+          },
+          href: '#',
+          html: '<div class="delete_song"></div>',
+          click: function(e) {
+            if (!$(this).hasClass('deleting')) {
+
+              $('#delete-song-confirm').dialog({
+                modal : true,
+                resizable : false,
+                width : 400,
+                show : 'drop',
+                hide : 'drop',
+                buttons : {
+                  Aceptar : function(){
+
+                    $(this).html('Eliminando, por favor espere...').css('opacity', .8).addClass('deleting');
+
+                    $.getJSON(globals.site_url + '/perfil/ajax/delete_songs_url', {
+                      url: url
+                    }, function(json) {
+                      if (json.ok === true) {
+                        content.fadeOut(function() {
+                          return $(this).remove();
+                        });
+                      } else {
+                        alert('Hubo un error al eliminar la canción.');
+                      }
+                      $(this).html(text_delete).css('opacity', 1).addClass('deleting');
+                    });
+
+                    return $(this).dialog('close');
+                  },
+                  Cancelar : function(){
+                    return $(this).dialog('close');
+                  }
+                }
+              });
+
+            }
+
+            return e.preventDefault();
+          }
+        }).prependTo(content);
+      }
+    });
+  }
+</script>
 <div class="header">
     <div class="conMenu">
         <div class="menu">
@@ -141,7 +214,7 @@
               <li><a class="b1 <?php echo $current_page == 'home' ? 'active' : null ?>" href="<?php echo site_url('/') ?>"><?= lang('home') ?></a></li>
               <li><a class="b2 <?php echo $current_page == 'mishaka' ? 'active' : null ?>" href="<?php echo site_url('mishaka/buscar?city=&edad=0&anos_experiencia=0&necesitas_band=&numero_conciertos=0&talent=0&gender=0') ?>"><?= lang('mishaka') ?></a></li>
               <li><a class="b3 <?php echo $current_page == 'build-a-band' ? 'active' : null ?>" href="<?php echo site_url('build-a-band') ?>"><?= lang('build_a_band') ?></a></li>
-              <li><a class="b4 <?php echo $current_page == 'audiciones' ? 'active' : null ?>" href="<?php echo site_url('audiciones') ?>"><?= lang('audition') ?></a></li>
+              <li><a class="b4 <?php echo $current_page == 'audiciones' ? 'active' : null ?>" href="<?= $is_usuario ? site_url('audiciones') : site_url("audiciones/no_audiciones") ?>"><?= lang('audition') ?></a></li>
               <li><a class="b5 <?php echo $current_page == 'directorio' ? 'active' : null ?>" href="<?php echo site_url('directorio') ?>"><?= lang('directory') ?></a></li>
                <!-- <li><a class="b6 <?php echo $current_page == 'media' ? 'active' : null ?>" href="<?php echo site_url('media/buscar/pagina/1?artist=0&musical_gender=0') ?>">MEDIA</a></li> -->
               <li><a class="b7 <?php echo $current_page == 'clasificados' ? 'active' : null ?>" href="<?php echo site_url('clasificados') ?>"><?= lang('classified') ?></a></li>
@@ -185,6 +258,13 @@
                     $("#notify_not").show();
                     $("#notify_not").text(notificacion);
                   }
+                  
+                  var mensajes  = <?= $inbox ?>;
+                  
+                  if(mensajes >= 1){
+                    $("#message_not").show();
+                    $("#message_not").text(<?= $inbox ?>);
+                  }
 
               });
 
@@ -216,10 +296,10 @@
                 });      
               }
 
-              function ready_notify(elemento, id){
+              function ready_notify(elemento, id, notification){
                 var cant = parseInt($("#notify_not").text());
                 var data = {
-                  id: id
+                  notification: notification
                 };
                 $.ajax({
                   url   : "<?= site_url('perfil/social/ready_notify') ?>",
@@ -250,6 +330,7 @@
             <?php if($is_usuario) : ?>
             <div id="notificaciones" style="margin-right: 20px;"><img src="images/ico1.png"><div id="notify_not" style="display:none"></div></div>
             <div id="solicitudes"><img src="images/ico2.png"><div id="cant_not" style="display:none"></div></div>
+            <a id="mensajes" href="<?= site_url("perfil/mensajes") ?>"><img src="images/ico6.png"><div id="message_not" style="display:none"></div></a>
             <div id="search-inshaka-users">
               <?= form_open(site_url('perfil/social/find_inshaka'), null) ?>
               <input id="find-inshaka-users" name="find-inshaka-users" placeholder="Que estás buscando..." />
@@ -258,7 +339,19 @@
             <script type="text/javascript">
               $(function(){
                 $( "#find-inshaka-users" ).autocomplete({ 
-                  source: "<?= site_url('home/get_all') ?>"
+                  source: function( request, response ) {
+                    $.ajax({
+                        type: "get",
+                        url: "<?= site_url('home/get_all') ?>",
+                        dataType: "json",
+                        data: {
+                            term: escape(request.term)
+                        },
+                        success: function( data ) {
+                            response(data);
+                        }
+                    });
+                  }
                 });
               })
             </script>
@@ -314,7 +407,7 @@
   <?php if($notifications->exists()) : ?>
     <?php foreach($notifications as $allowed) : ?>
       <?php if(!empty($allowed->intelligence->users_follow_id)) : ?>
-      <div id="allowed_<?= $allowed->id ?>" class="my_follow notify" style="cursor: pointer;" onclick="ready_notify('#allowed_<?= $allowed->id ?>', <?= $allowed->id ?>)">
+      <div id="allowed_<?= $allowed->id ?>" class="my_follow notify" style="cursor: pointer;" onclick="ready_notify('#allowed_<?= $allowed->id ?>', <?= $allowed->intelligence_id ?>, <?= $allowed->id ?>)">
         <?php $photo_user->where(array('user_id' => $allowed->intelligence->users_follow->user_follow_id, 'profile_active' => true))->get(); ?>
         <div style="float:left">
           <?php if ($photo_user->exists()) : ?>
@@ -332,7 +425,7 @@
       </div>
       <?php elseif(!empty($allowed->intelligence->audiciones_aplicacion_id)) : ?>
         <?php foreach ($allowed->intelligence->audiciones_aplicacion as $apply_audition) : ?>
-          <div id="allowed_<?= $allowed->id ?>" class="my_follow notify" style="cursor: pointer;  <?= !$allowed->ready ? 'background-color: #D5D5D5' : null ?>" onclick="ready_notify('#allowed_<?= $allowed->id ?>', <?= $allowed->id ?>)">
+          <div id="allowed_<?= $allowed->id ?>" class="my_follow notify" style="cursor: pointer;  <?= !$allowed->ready ? 'background-color: #D5D5D5' : null ?>" onclick="ready_notify('#allowed_<?= $allowed->id ?>', <?= $allowed->intelligence_id ?>, <?= $allowed->id ?>)">
             <?php $photo_user->where(array('user_id' => $apply_audition->user_id, 'profile_active' => true))->get(); ?>
             <div style="float:left">
               <?php $photo_profile = $photo_user->get_photo($apply_audition->user_id) ?>
@@ -362,7 +455,7 @@
         <?php endforeach; ?>
       <?php elseif(!empty($allowed->intelligence->statu_id)) : ?>
         <?php foreach ($allowed->intelligence->statu as $mencionado) : ?>
-          <div id="allowed_<?= $allowed->id ?>" class="my_follow notify" style="cursor: pointer;  <?= !$allowed->ready ? 'background-color: #D5D5D5' : null ?>" onclick="ready_notify('#allowed_<?= $allowed->id ?>', <?= $allowed->id ?>)">
+          <div id="allowed_<?= $allowed->id ?>" class="my_follow notify" style="cursor: pointer;  <?= !$allowed->ready ? 'background-color: #D5D5D5' : null ?>" onclick="ready_notify('#allowed_<?= $allowed->id ?>', <?= $allowed->intelligence_id ?>, <?= $allowed->id ?>)">
             <?php $photo_user->where(array('user_id' => $mencionado->user_id, 'profile_active' => true))->get(); ?>
             <div style="float:left">
               <?php $photo_profile = $photo_user->get_photo($mencionado->user_id) ?>
@@ -385,7 +478,7 @@
       <?php else : ?>
         <?php $comentarios = $allowed->intelligence->intelligences_comment->get() ?>
         <?php foreach ($comentarios as $comentario) :?>
-          <div id="allowed_<?= $allowed->id ?>" class="my_follow notify" style="cursor: pointer;  <?= !$allowed->ready ? 'background-color: #D5D5D5' : null ?>" onclick="ready_notify('#allowed_<?= $allowed->id ?>', <?= $allowed->id ?>)">
+          <div id="allowed_<?= $allowed->id ?>" class="my_follow notify" style="cursor: pointer;  <?= !$allowed->ready ? 'background-color: #D5D5D5' : null ?>" onclick="ready_notify('#allowed_<?= $allowed->id ?>', <?= $allowed->intelligence_id ?>, <?= $allowed->id ?>)">
             <?php $photo_user->where(array('user_id' => $comentario->user_id, 'profile_active' => true))->get(); ?>
             <div style="float:left">
               <?php $photo_profile = $photo_user->get_photo($comentario->user_id) ?>
@@ -437,6 +530,18 @@
                       <img  src="images/imagensino.png" style="width: 40px; height: 40px;" />
                     <?php endif; ?>
                   <!-- Fin bloq. clasificados -->
+                  
+                  <!-- Bloq. canciones -->
+                  <?php elseif(!empty($allowed->intelligence->users_song_id)) : ?>
+                    <div id="song-<?= $allowed->intelligence->id ?>"></div>
+                    <script>
+                      $(function() {
+                        $("#song-<?= $allowed->intelligence->id ?>").html('<p>Cargando cancion...</p>');
+                        oembed("<?= $allowed->intelligence->users_song->url ?>", $("#song-<?= $allowed->intelligence->id ?>"));
+
+                      });
+                    </script>
+                  <!-- Fin bloq. canciones -->
                       
                   <?php endif; ?>
                 </div>

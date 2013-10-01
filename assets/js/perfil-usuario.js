@@ -1,6 +1,7 @@
 (function($, globals) {
 
-  var list = $('#songs-url-list, #list-songs');
+  var listado = $('#songs-url-list');
+  var listado_all = $('#list-songs');
 
   $(document).on('submit', '#save-song-url-form', function() {
     var $this = $(this), submitBtn = $this.find('[type="submit"]');
@@ -28,7 +29,7 @@
     return false;
   });
 
-  function oembed(url) {
+  function oembed(url, list) {
     list.find('p').remove();
 
     $.getJSON('http://soundcloud.com/oembed?callback=?', {
@@ -104,14 +105,28 @@
 
   $(function() {
 
-    list.html('<p>Cargando canciones...</p>');
+    listado.html('<p>Cargando canciones...</p>');
 
     if (songs_urls.length > 0) {
       $.each(songs_urls, function(index, url) {
-        return oembed(url);
+        return oembed(url, listado);
       });
     } else {
-      list.html('<p>Ninguna canción agregada.</p>');
+      listado.html('<p>Ninguna canción agregada.</p>');
+    }
+
+  });
+  
+  $(function() {
+
+    listado_all.html('<p>Cargando canciones...</p>');
+
+    if (songs_all_urls.length > 0) {
+      $.each(songs_all_urls, function(index, url) {
+        return oembed(url, listado_all);
+      });
+    } else {
+      listado_all.html('<p>Ninguna canción agregada.</p>');
     }
 
   });
